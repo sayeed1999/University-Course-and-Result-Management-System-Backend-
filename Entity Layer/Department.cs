@@ -8,9 +8,14 @@ namespace Entity_Layer
 {
     public class Department
     {
+        public Department()
+        {
+            this.Courses = new HashSet<Course>();
+        }
+
         public int Id { get; set; }
         public string Code { get; set; }
-
         public string Name { get; set; }
+        public ICollection<Course> Courses { get; set; }
     }
 }
