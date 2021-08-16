@@ -11,6 +11,7 @@ namespace Data_Access_Layer
     public class ApplicationDbContext : DbContext
     {
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Course> Courses { get; set; } // it references Semister, so even if i dont create Semisters table here, it will auto create in the db!
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -40,6 +41,39 @@ namespace Data_Access_Layer
                     new Department { Id = 5, Code = "MTE", Name = "Mechatronics Engineering" },
                     new Department { Id = 6, Code = "IPE", Name = "Industrial Production & Engineering" }
                 );
+            });
+
+            /// Table : Semisters
+
+            builder.Entity<Semister>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Name).IsRequired();
+                entity.HasData(
+                    new Semister { Id = 1, Name = "1st" },
+                    new Semister { Id = 2, Name = "2nd" },
+                    new Semister { Id = 3, Name = "3rd" },
+                    new Semister { Id = 4, Name = "4th" },
+                    new Semister { Id = 5, Name = "5th" },
+                    new Semister { Id = 6, Name = "6th" },
+                    new Semister { Id = 7, Name = "7th" },
+                    new Semister { Id = 8, Name = "8th" }
+                );
+            });
+
+            /// Table : Courses
+
+            builder.Entity<Course>(entity =>
+            {
+                entity.HasOne(x => x.Department).WithMany(x => x.Courses).HasForeignKey(x => x.DepartmentId);
+                entity.HasKey(x => new { x.Code, x.DepartmentId });
+                entity.Property(x => x.Code).IsRequired();
+                entity.Property(x => x.Name).IsRequired();
+                // Credit, SemisterId, DepartmentId by default required for their data types..
+                // Description is the only field in this table nullable..
+                entity.HasCheckConstraint("CHK_LengthOfCodeOfCourse", "LEN(Code) >= 5");
+                entity.HasCheckConstraint("CHK_CreditRangeOfCourse", "Credit BETWEEN 0.5 AND 5.0");
+
             });
 
         }
