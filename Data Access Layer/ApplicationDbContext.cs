@@ -76,7 +76,6 @@ namespace Data_Access_Layer
                 // Description is the only field in this table nullable..
                 entity.HasCheckConstraint("CHK_LengthOfCodeOfCourse", "LEN(Code) >= 5");
                 entity.HasCheckConstraint("CHK_CreditRangeOfCourse", "Credit BETWEEN 0.5 AND 5.0");
-
             });
 
             /// Table : Designations
@@ -104,6 +103,7 @@ namespace Data_Access_Layer
                 entity.HasCheckConstraint("CHK_TeacherContactInCorrectFormat", "LEN(CAST(Contact as varchar(max))) between 6 and 15");
                 entity.HasOne(a => a.Department).WithMany(b => b.Teachers).HasForeignKey(x => x.DepartmentId);
                 entity.HasCheckConstraint("CHK_CreditToBeTakenByTeacher", "CreditToBeTaken !< 0");
+                entity.HasCheckConstraint("CHK_RemainingCreditOfTeacher", "RemainingCredit BETWEEN 0 AND CreditToBeTaken");
             });
 
         }

@@ -17,5 +17,7 @@ namespace Entity_Layer
         public int DepartmentId { get; set; }
         public Semister? Semister { get; set; }
         public byte SemisterId { get; set; }
+        public Teacher? Teacher { get; set; }
+        public int? TeacherId {  get; set; }
     }
 }
