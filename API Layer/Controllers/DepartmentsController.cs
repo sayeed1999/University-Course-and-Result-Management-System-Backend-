@@ -20,6 +20,15 @@ namespace API_Layer.Controllers
             _service = service;
         }
 
+        // GET: api/Departments
+        [HttpGet]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Department>>>> GetDepartments()
+        {
+            var serviceResponse = await _service.GetAll();
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
         // POST: Departments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
