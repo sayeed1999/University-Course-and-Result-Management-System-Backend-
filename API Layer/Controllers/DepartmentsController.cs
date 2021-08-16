@@ -29,7 +29,6 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
-
         // POST: Departments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
