@@ -13,8 +13,8 @@ namespace Data_Access_Layer
         public DbSet<Department> Departments { get; set; }
         public DbSet<Course> Courses { get; set; } // it references Semister, so even if i dont create Semisters table here, it will auto create in the db!
         public DbSet<Semister> Semisters { get; set; }
-        public DbSet<Designation> Designations { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<Designation> Designations { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
