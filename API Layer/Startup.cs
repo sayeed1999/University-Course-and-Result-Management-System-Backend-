@@ -13,6 +13,8 @@ using Repository_Layer;
 using Service_Layer.CourseService;
 using Service_Layer.DepartmentService;
 using Service_Layer.SemisterService;
+using Service_Layer.DesignationService;
+using Service_Layer.TeacherService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +48,8 @@ namespace API_Layer
             services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<ICourseService, CourseService>();
             services.AddScoped<ISemisterService, SemisterService>();
+            services.AddScoped<IDesignationService, DesignationService>();
+            services.AddScoped<ITeacherService, TeacherService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
