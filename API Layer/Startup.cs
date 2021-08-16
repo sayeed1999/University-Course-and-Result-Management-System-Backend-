@@ -10,7 +10,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Repository_Layer;
+using Service_Layer.CourseService;
 using Service_Layer.DepartmentService;
+using Service_Layer.SemisterService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +44,8 @@ namespace API_Layer
             services.AddScoped<ApplicationDbContext>();
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IDepartmentService, DepartmentService>();
+            services.AddScoped<ICourseService, CourseService>();
+            services.AddScoped<ISemisterService, SemisterService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
