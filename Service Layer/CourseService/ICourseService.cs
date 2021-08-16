@@ -10,5 +10,6 @@ namespace Service_Layer.CourseService
 {
     public interface ICourseService : IRepository<Course>
     {
+        public Task<ServiceResponse<Course>> GetByCompositeKey(int departmentId, string courseCode);
     }
 }
