@@ -11,11 +11,13 @@ namespace Entity_Layer
         public Department()
         {
             this.Courses = new HashSet<Course>();
+            this.Teachers = new HashSet<Teacher>();
         }
 
         public int Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
         public ICollection<Course> Courses { get; set; }
+        public ICollection<Teacher> Teachers { get; set; }
     }
 }
