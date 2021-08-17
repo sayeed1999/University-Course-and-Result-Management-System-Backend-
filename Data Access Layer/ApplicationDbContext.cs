@@ -15,6 +15,7 @@ namespace Data_Access_Layer
         public DbSet<Semister> Semisters { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Designation> Designations { get; set; }
+        public DbSet<Student> Students { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -106,6 +107,18 @@ namespace Data_Access_Layer
                 entity.HasCheckConstraint("CHK_RemainingCreditOfTeacher", "RemainingCredit BETWEEN 0 AND CreditToBeTaken");
             });
 
+            builder.Entity<Student>(entity =>
+            {
+                entity.Property(x => x.Name).IsRequired();
+                entity.Property(x => x.Email).IsRequired();
+                entity.HasIndex(x => x.Email).IsUnique();
+                entity.HasCheckConstraint("CHK_StudentEmailInCorrectFormat", "Email like '%_@_%._%'");
+                entity.Property(x => x.Contact).IsRequired();
+                entity.Property(x => x.Address).IsRequired();
+                entity.Property(x => x.RegistrationNumber).IsRequired();
+                entity.HasIndex(x => x.RegistrationNumber).IsUnique();
+                entity.HasCheckConstraint("CHK_RegistrationNumberMinLength", "LEN(RegistrationNumber) between 11 and 13");
+            });
         }
     }
 }
