@@ -8,6 +8,10 @@ namespace Entity_Layer
 {
     public class Teacher
     {
+        public Teacher()
+        {
+            this.Courses = new HashSet<Course>();
+        }
         public int Id { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
@@ -18,5 +22,7 @@ namespace Entity_Layer
         public Department? Department { get; set; }
         public int DepartmentId { get; set; }
         public float CreditToBeTaken { get; set; }
+        public float RemainingCredit { get; set; }
+        public ICollection<Course> Courses { get; set; }
     }
 }

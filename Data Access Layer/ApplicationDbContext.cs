@@ -15,6 +15,7 @@ namespace Data_Access_Layer
         public DbSet<Semister> Semisters { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Designation> Designations { get; set; }
+        public DbSet<Student> Students { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -76,7 +77,6 @@ namespace Data_Access_Layer
                 // Description is the only field in this table nullable..
                 entity.HasCheckConstraint("CHK_LengthOfCodeOfCourse", "LEN(Code) >= 5");
                 entity.HasCheckConstraint("CHK_CreditRangeOfCourse", "Credit BETWEEN 0.5 AND 5.0");
-
             });
 
             /// Table : Designations
@@ -104,8 +104,21 @@ namespace Data_Access_Layer
                 entity.HasCheckConstraint("CHK_TeacherContactInCorrectFormat", "LEN(CAST(Contact as varchar(max))) between 6 and 15");
                 entity.HasOne(a => a.Department).WithMany(b => b.Teachers).HasForeignKey(x => x.DepartmentId);
                 entity.HasCheckConstraint("CHK_CreditToBeTakenByTeacher", "CreditToBeTaken !< 0");
+                entity.HasCheckConstraint("CHK_RemainingCreditOfTeacher", "RemainingCredit BETWEEN 0 AND CreditToBeTaken");
             });
 
+            builder.Entity<Student>(entity =>
+            {
+                entity.Property(x => x.Name).IsRequired();
+                entity.Property(x => x.Email).IsRequired();
+                entity.HasIndex(x => x.Email).IsUnique();
+                entity.HasCheckConstraint("CHK_StudentEmailInCorrectFormat", "Email like '%_@_%._%'");
+                entity.Property(x => x.Contact).IsRequired();
+                entity.Property(x => x.Address).IsRequired();
+                entity.Property(x => x.RegistrationNumber).IsRequired();
+                entity.HasIndex(x => x.RegistrationNumber).IsUnique();
+                entity.HasCheckConstraint("CHK_RegistrationNumberMinLength", "LEN(RegistrationNumber) between 11 and 13");
+            });
         }
     }
 }

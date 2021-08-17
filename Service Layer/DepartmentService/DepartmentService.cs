@@ -13,5 +13,25 @@ namespace Service_Layer.DepartmentService
     public class DepartmentService : Repository<Department>, IDepartmentService
     {
         public DepartmentService(ApplicationDbContext dbContext) : base(dbContext) { }
+
+        public virtual async Task<ServiceResponse<IEnumerable<Department>>> GetAllIncludingTeachersAndCourses()
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<Department>>();
+            try
+            {
+                serviceResponse.Data = await _dbContext.Departments
+                        .Include(x => x.Teachers)
+                        .Include(x => x.Courses)
+                        .ToListAsync();
+                serviceResponse.Message = "Data fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+
     }
 }

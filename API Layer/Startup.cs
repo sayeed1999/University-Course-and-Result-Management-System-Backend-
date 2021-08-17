@@ -15,6 +15,7 @@ using Service_Layer.DepartmentService;
 using Service_Layer.SemisterService;
 using Service_Layer.DesignationService;
 using Service_Layer.TeacherService;
+using Service_Layer.StudentService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +51,7 @@ namespace API_Layer
             services.AddScoped<ISemisterService, SemisterService>();
             services.AddScoped<IDesignationService, DesignationService>();
             services.AddScoped<ITeacherService, TeacherService>();
+            services.AddScoped<IStudentService, StudentService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +67,10 @@ namespace API_Layer
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors(builder => builder.WithOrigins("http://localhost:4200")
+                              .AllowAnyMethod()
+                              .AllowAnyHeader());
 
             app.UseAuthorization();
 

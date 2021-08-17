@@ -10,5 +10,6 @@ namespace Service_Layer.DepartmentService
 {
     public interface IDepartmentService : IRepository<Department>
     {
+        public Task<ServiceResponse<IEnumerable<Department>>> GetAllIncludingTeachersAndCourses();
     }
 }
