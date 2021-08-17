@@ -39,7 +39,7 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
-        [HttpPost]
+        [HttpPost("CourseAssignToTeacher")]
         public async Task<ActionResult<ServiceResponse<Course>>> CourseAssignToTeacher(int departmentId, int teacherId, string code)
         {
             var response = await _service.GetByCompositeKey(departmentId, code);
