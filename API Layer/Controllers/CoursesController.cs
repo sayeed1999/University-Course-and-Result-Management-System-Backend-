@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace API_Layer.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class CoursesController : ControllerBase
     {
         private readonly ICourseService _service;
