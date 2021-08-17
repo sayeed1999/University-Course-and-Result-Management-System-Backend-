@@ -25,6 +25,7 @@ namespace API_Layer.Controllers
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<Teacher>>> PostTeacher(Teacher teacher)
         {
+            teacher.RemainingCredit = teacher.CreditToBeTaken;
             var serviceResponse = await _service.Add(teacher);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
