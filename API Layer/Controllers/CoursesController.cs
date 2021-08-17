@@ -19,6 +19,16 @@ namespace API_Layer.Controllers
         {
             _service = service;
         }
+
+        // GET: Courses
+        [HttpGet]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(int departmentId)
+        {
+            var serviceResponse = await _service.GetCoursesByDepartment(departmentId);
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
         // POST: Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]

@@ -57,5 +57,24 @@ namespace Service_Layer.CourseService
             return serviceResponse;
         }
 
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(int departmentId)
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
+            try
+            {
+                serviceResponse.Data = await _dbContext.Courses
+                    .Include(x => x.Teacher)
+                    .Where(x => x.DepartmentId == departmentId)
+                    .ToListAsync();
+
+                serviceResponse.Message = "Data fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
     }
 }
