@@ -33,7 +33,7 @@ namespace API_Layer.Controllers
         [HttpGet("All")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Department>>>> GetDepartmentsIncludingTeachersAndCourses()
         {
-            var serviceResponse = await _service.GetAll();
+            var serviceResponse = await _service.GetAllIncludingTeachersAndCourses();
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }
