@@ -21,7 +21,7 @@ namespace Service_Layer.DepartmentService
             {
                 serviceResponse.Data = await _dbContext.Departments
                         .Include(x => x.Teachers)
-                        .Include(x => x.Courses)
+                        .Include(x => x.Courses).ThenInclude(x => x.Semister)
                         .ToListAsync();
                 serviceResponse.Message = "Data fetched successfully from the database";
             }
