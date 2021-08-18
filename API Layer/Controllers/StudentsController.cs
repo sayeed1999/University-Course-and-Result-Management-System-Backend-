@@ -22,9 +22,19 @@ namespace API_Layer.Controllers
 
         // GET: Students
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<Student>>> GetStudents()
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Student>>>> GetStudents()
         {
             var serviceResponse = await _service.GetAll();
+            if (serviceResponse.Success == false) return NotFound(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
+        // GET: Students/Results
+        [HttpGet]
+        [Route("Results")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Student>>>> GetStudentsResults()
+        {
+            var serviceResponse = await _service.GetStudentsResults();
             if (serviceResponse.Success == false) return NotFound(serviceResponse);
             return Ok(serviceResponse);
         }
