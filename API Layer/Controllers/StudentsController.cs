@@ -46,5 +46,14 @@ namespace API_Layer.Controllers
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }
+
+        [HttpPost]
+        [Route("save-result")]
+        public async Task<ActionResult<ServiceResponse<StudentCourse>>> SaveResult([FromBody] StudentCourse data)
+        {
+            var serviceResponse = await _service.SaveResult(data);
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
     }
 }

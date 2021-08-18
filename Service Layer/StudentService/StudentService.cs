@@ -89,5 +89,24 @@ namespace Service_Layer.StudentService
             };
             return await this.Add(newStudent);
         }
+
+        public async Task<ServiceResponse<StudentCourse>> SaveResult(StudentCourse data)
+        {
+            var serviceResponse = new ServiceResponse<StudentCourse>();
+            try
+            {
+                var course = await _dbContext.StudentsCourses.FindAsync(data.DepartmentId, data.CourseCode, data.StudentId);
+                course.Grade = data.Grade;
+                _dbContext.StudentsCourses.Update(course);
+                await _dbContext.SaveChangesAsync();
+                serviceResponse.Data = course;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = $"Something failed. Please try with proper data.\nError: {ex.Message}";
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
     }
 }
