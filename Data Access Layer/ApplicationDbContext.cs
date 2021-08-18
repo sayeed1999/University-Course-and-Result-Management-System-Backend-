@@ -17,6 +17,7 @@ namespace Data_Access_Layer
         public DbSet<Designation> Designations { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<StudentCourse> StudentsCourses { get; set; }
+        public DbSet<GradeLetter> GradeLetters { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -108,6 +109,8 @@ namespace Data_Access_Layer
                 entity.HasCheckConstraint("CHK_RemainingCreditOfTeacher", "RemainingCredit BETWEEN 0 AND CreditToBeTaken");
             });
 
+            /// Table : Students
+
             builder.Entity<Student>(entity =>
             {
                 entity.Property(x => x.Name).IsRequired();
@@ -121,13 +124,37 @@ namespace Data_Access_Layer
                 entity.HasCheckConstraint("CHK_RegistrationNumberMinLength", "LEN(RegistrationNumber) between 11 and 13");
             });
 
+            /// Table : StudentsCourses
+
             builder.Entity<StudentCourse>(entity =>
             {
                 entity.HasKey(x => new { x.DepartmentId, x.CourseCode, x.StudentId });
                 entity.Property(x => x.CourseCode).IsRequired();
-
+                entity.Property(x => x.Grade).IsRequired(false);
                 entity.HasOne(x => x.Student).WithMany(x => x.StudentsCourses).HasForeignKey(x => x.StudentId);
                 entity.HasOne(x => x.Course).WithMany(x => x.StudentsCourses).HasForeignKey(x => new { x.CourseCode, x.DepartmentId });
+            });
+
+            /// Table : GradeLetter
+
+            builder.Entity<GradeLetter>(entity =>
+            {
+                entity.HasKey(x => x.Grade);
+                entity.HasData(
+                    new GradeLetter() { Grade = "A+" },
+                    new GradeLetter() { Grade = "A" },
+                    new GradeLetter() { Grade = "A-" },
+                    new GradeLetter() { Grade = "B+" },
+                    new GradeLetter() { Grade = "B" },
+                    new GradeLetter() { Grade = "B-" },
+                    new GradeLetter() { Grade = "C+" },
+                    new GradeLetter() { Grade = "C" },
+                    new GradeLetter() { Grade = "C-" },
+                    new GradeLetter() { Grade = "D+" },
+                    new GradeLetter() { Grade = "D" },
+                    new GradeLetter() { Grade = "D-" },
+                    new GradeLetter() { Grade = "F" }
+                );
             });
         }
     }
