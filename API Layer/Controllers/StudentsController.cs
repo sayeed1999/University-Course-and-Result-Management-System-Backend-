@@ -39,7 +39,7 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
-        [HttpPost("enroll-student-in-course")]
+        [HttpPost("enroll-in-course")]
         public async Task<ActionResult<ServiceResponse<StudentCourse>>> EnrollStudentInCourse([FromBody] StudentCourse data)
         {
             var serviceResponse = await _service.EnrollStudentInCourse(data);
