@@ -4,14 +4,16 @@ using Data_Access_Layer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210818104057_ChangedStudentIdFromIntToLong")]
+    partial class ChangedStudentIdFromIntToLong
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,76 +226,6 @@ namespace Data_Access_Layer.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Entity_Layer.Student", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Contact")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RegistrationNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("RegistrationNumber")
-                        .IsUnique();
-
-                    b.ToTable("Students");
-
-                    b.HasCheckConstraint("CHK_StudentEmailInCorrectFormat", "Email like '%_@_%._%'");
-
-                    b.HasCheckConstraint("CHK_RegistrationNumberMinLength", "LEN(RegistrationNumber) between 11 and 13");
-                });
-
-            modelBuilder.Entity("Entity_Layer.StudentCourse", b =>
-                {
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CourseCode")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<long>("StudentId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("DepartmentId", "CourseCode", "StudentId");
-
-                    b.HasIndex("StudentId");
-
-                    b.HasIndex("CourseCode", "DepartmentId");
-
-                    b.ToTable("StudentsCourses");
-                });
-
             modelBuilder.Entity("Entity_Layer.Teacher", b =>
                 {
                     b.Property<int>("Id")
@@ -376,36 +308,6 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("Teacher");
                 });
 
-            modelBuilder.Entity("Entity_Layer.Student", b =>
-                {
-                    b.HasOne("Entity_Layer.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Department");
-                });
-
-            modelBuilder.Entity("Entity_Layer.StudentCourse", b =>
-                {
-                    b.HasOne("Entity_Layer.Student", "Student")
-                        .WithMany("StudentsCourses")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entity_Layer.Course", "Course")
-                        .WithMany("StudentsCourses")
-                        .HasForeignKey("CourseCode", "DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("Entity_Layer.Teacher", b =>
                 {
                     b.HasOne("Entity_Layer.Department", "Department")
@@ -423,21 +325,11 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("Designation");
                 });
 
-            modelBuilder.Entity("Entity_Layer.Course", b =>
-                {
-                    b.Navigation("StudentsCourses");
-                });
-
             modelBuilder.Entity("Entity_Layer.Department", b =>
                 {
                     b.Navigation("Courses");
 
                     b.Navigation("Teachers");
-                });
-
-            modelBuilder.Entity("Entity_Layer.Student", b =>
-                {
-                    b.Navigation("StudentsCourses");
                 });
 
             modelBuilder.Entity("Entity_Layer.Teacher", b =>

@@ -16,6 +16,7 @@ namespace Data_Access_Layer
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Designation> Designations { get; set; }
         public DbSet<Student> Students { get; set; }
+        public DbSet<StudentCourse> StudentsCourses { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -118,6 +119,15 @@ namespace Data_Access_Layer
                 entity.Property(x => x.RegistrationNumber).IsRequired();
                 entity.HasIndex(x => x.RegistrationNumber).IsUnique();
                 entity.HasCheckConstraint("CHK_RegistrationNumberMinLength", "LEN(RegistrationNumber) between 11 and 13");
+            });
+
+            builder.Entity<StudentCourse>(entity =>
+            {
+                entity.HasKey(x => new { x.DepartmentId, x.CourseCode, x.StudentId });
+                entity.Property(x => x.CourseCode).IsRequired();
+
+                entity.HasOne(x => x.Student).WithMany(x => x.StudentsCourses).HasForeignKey(x => x.StudentId);
+                entity.HasOne(x => x.Course).WithMany(x => x.StudentsCourses).HasForeignKey(x => new { x.CourseCode, x.DepartmentId });
             });
         }
     }
