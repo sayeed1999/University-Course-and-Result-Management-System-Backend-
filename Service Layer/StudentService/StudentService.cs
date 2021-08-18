@@ -19,6 +19,22 @@ namespace Service_Layer.StudentService
             _departmentService = departmentService;
         }
 
+        public override async Task<ServiceResponse<IEnumerable<Student>>> GetAll()
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<Student>>();
+            try
+            {
+                serviceResponse.Data = await _dbContext.Students.Include(x => x.Department).ToListAsync();
+                serviceResponse.Message = "Data fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+
         public async Task<ServiceResponse<StudentCourse>> EnrollStudentInCourse(StudentCourse data)
         {
             var serviceResponse = new ServiceResponse<StudentCourse>();
