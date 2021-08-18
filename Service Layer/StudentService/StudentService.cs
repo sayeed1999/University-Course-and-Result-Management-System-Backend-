@@ -19,6 +19,24 @@ namespace Service_Layer.StudentService
             _departmentService = departmentService;
         }
 
+        public async Task<ServiceResponse<StudentCourse>> EnrollStudentInCourse(StudentCourse data)
+        {
+            var serviceResponse = new ServiceResponse<StudentCourse>();
+            serviceResponse.Data = data;
+            try
+            {
+                _dbContext.StudentsCourses.Add(data);
+                await _dbContext.SaveChangesAsync();
+                serviceResponse.Message = "Successfully enrolled.";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+
         public async Task<ServiceResponse<Student>> RegisterStudent(StudentRegistration student)
         {
             var serviceResponse = new ServiceResponse<Student>();
