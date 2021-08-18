@@ -12,5 +12,7 @@ namespace Service_Layer.CourseService
     {
         public Task<ServiceResponse<Course>> GetByCompositeKey(int departmentId, string courseCode);
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(int departmentId);
+        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentCode(String departmentCode);
+
     }
 }
