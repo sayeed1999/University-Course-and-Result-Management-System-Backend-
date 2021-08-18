@@ -20,6 +20,15 @@ namespace API_Layer.Controllers
             this._service = service;
         }
 
+        // GET: Students
+        [HttpGet]
+        public async Task<ActionResult<ServiceResponse<Student>>> GetStudents()
+        {
+            var serviceResponse = await _service.GetAll();
+            if (serviceResponse.Success == false) return NotFound(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
         // POST: Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
