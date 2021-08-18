@@ -29,6 +29,15 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
+        // GET: Courses/MTE
+        [HttpGet("{departmentCode:alpha}")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartmentCode(String departmentCode)
+        {
+            var serviceResponse = await _service.GetCoursesByDepartmentCode(departmentCode);
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
         // POST: Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
