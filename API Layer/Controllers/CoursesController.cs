@@ -40,9 +40,9 @@ namespace API_Layer.Controllers
         }
 
         [HttpPost("CourseAssignToTeacher")]
-        public async Task<ActionResult<ServiceResponse<Course>>> CourseAssignToTeacher(int departmentId, int teacherId, string code)
+        public async Task<ActionResult<ServiceResponse<Course>>> CourseAssignToTeacher([FromBody]CourseAssignToTeacher body)
         {
-            var response = await _service.GetByCompositeKey(departmentId, code);
+            var response = await _service.GetByCompositeKey(body.DepartmentId, body.CourseCode);
             
             if (response.Success == false) return BadRequest(response);
 
@@ -51,9 +51,9 @@ namespace API_Layer.Controllers
                 return BadRequest(response);
             }
             
-            if(response.Data.TeacherId == teacherId)
+            if(response.Data.TeacherId == body.TeacherId)
             {
-                response.Message = $"The course {code} of the department is aleady assigned to the same teacher! :)";
+                response.Message = $"The course {body.CourseCode} of the department is aleady assigned to the same teacher! :)";
                 response.Success = false;
                 return BadRequest(response);
             }
@@ -68,7 +68,7 @@ namespace API_Layer.Controllers
                 return BadRequest(response);
             }
             // else, now assign
-            response.Data.TeacherId = teacherId;
+            response.Data.TeacherId = body.TeacherId;
             var response2 = await _service.Update(response.Data);
             if (response2.Success == false) return BadRequest(response2);
 
