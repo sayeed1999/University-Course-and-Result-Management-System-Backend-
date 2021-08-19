@@ -10,6 +10,7 @@ namespace Service_Layer.RoomService
 {
     public interface IRoomService : IRepository<Room>
     {
+        public Task<ServiceResponse<IEnumerable<AllocateClassroom>>> GetAllocatedRoomsByDepartment(int departmentId);
         public Task<ServiceResponse<AllocateClassroom>> AllocateClassroom(AllocateClassroom data);
     }
 }

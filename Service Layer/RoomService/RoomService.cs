@@ -44,5 +44,25 @@ namespace Service_Layer.RoomService
             }
             return response;
         }
+
+        public async Task<ServiceResponse<IEnumerable<AllocateClassroom>>> GetAllocatedRoomsByDepartment(int departmentId)
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<AllocateClassroom>>();
+            try
+            {
+                serviceResponse.Data = await _dbContext.AllocateClassrooms
+                                        .Where(x => x.DepartmentId == departmentId)
+                                        .Include(x => x.Course)
+                                        .ToListAsync();
+                serviceResponse.Message = "Data fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+
+        }
     }
 }

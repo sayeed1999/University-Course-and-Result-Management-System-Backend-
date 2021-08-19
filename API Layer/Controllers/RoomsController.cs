@@ -29,6 +29,14 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
+        [HttpGet("{departmentId:int}")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Room>>>> GetAllocatedRoomsByDepartment(int departmentId)
+        {
+            var serviceResponse = await service.GetAllocatedRoomsByDepartment(departmentId);
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
         [HttpPost("allocate-classroom")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Room>>>> AllocateClassroom(AllocateClassroom data)
         {
