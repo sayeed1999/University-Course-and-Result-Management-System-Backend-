@@ -39,7 +39,7 @@ namespace Service_Layer.DepartmentService
             try
             {
                 serviceResponse.Data = await _dbContext.Departments
-                        .Include(x => x.Courses)
+                        .Include(x => x.Courses).ThenInclude(x => x.AllocateClassrooms)
                         .ToListAsync();
                 serviceResponse.Message = "Data fetched successfully from the database";
             }
