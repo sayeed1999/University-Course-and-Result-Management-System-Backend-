@@ -17,6 +17,8 @@ using Service_Layer.DesignationService;
 using Service_Layer.TeacherService;
 using Service_Layer.StudentService;
 using Service_Layer.GradeService;
+using Service_Layer.RoomService;
+using Service_Layer.DayService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,6 +56,8 @@ namespace API_Layer
             services.AddScoped<ITeacherService, TeacherService>();
             services.AddScoped<IStudentService, StudentService>();
             services.AddScoped<IGradeService, GradeService>();
+            services.AddScoped<IRoomService, RoomService>();
+            services.AddScoped<IDayService, DayService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
