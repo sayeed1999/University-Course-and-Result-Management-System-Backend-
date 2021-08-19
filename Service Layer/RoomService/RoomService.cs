@@ -23,8 +23,7 @@ namespace Service_Layer.RoomService
             var count = await _dbContext.AllocateClassrooms.CountAsync(
                                                             x => x.RoomId == data.RoomId
                                                         && x.DayId == data.DayId
-                                                        && ( ( x.From.Hour < data.To.Hour || (x.From.Hour == data.To.Hour && x.From.Minute < data.To.Minute) )
-                                                        || (x.To.Hour > data.From.Hour || (x.To.Hour == data.From.Hour && x.To.Minute > data.From.Minute) ) )
+                                                        && ((x.From <= data.To && x.To >= data.To) || (data.From <= x.To && data.To >= x.To))
                                                       );
             if ( count > 0)
             {
