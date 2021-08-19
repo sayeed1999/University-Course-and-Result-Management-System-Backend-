@@ -18,6 +18,9 @@ namespace Data_Access_Layer
         public DbSet<Student> Students { get; set; }
         public DbSet<StudentCourse> StudentsCourses { get; set; }
         public DbSet<GradeLetter> GradeLetters { get; set; }
+        public DbSet<Day> Days { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<AllocateClassroom> AllocateClassrooms { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -135,7 +138,7 @@ namespace Data_Access_Layer
                 entity.HasOne(x => x.Course).WithMany(x => x.StudentsCourses).HasForeignKey(x => new { x.CourseCode, x.DepartmentId });
             });
 
-            /// Table : GradeLetter
+            /// Table : GradeLetters
 
             builder.Entity<GradeLetter>(entity =>
             {
@@ -155,6 +158,48 @@ namespace Data_Access_Layer
                     new GradeLetter() { Grade = "D-" },
                     new GradeLetter() { Grade = "F" }
                 );
+            });
+
+            /// Table: Days
+
+            builder.Entity<Day>(entity =>
+            {
+                entity.HasKey(x => x.Name);
+                entity.Property(x => x.Name).IsRequired().HasMaxLength(3);
+                entity.HasData(
+                    new Day { Name = "Sun" },
+                    new Day { Name = "Mon" },
+                    new Day { Name = "Tue" },
+                    new Day { Name = "Wed" },
+                    new Day { Name = "Thu" },
+                    new Day { Name = "Fri" },
+                    new Day { Name = "Sat" }
+                );
+            });
+
+            /// Table: Rooms
+
+            builder.Entity<Room>(entity =>
+            {
+                entity.HasKey(x => x.Id);
+                entity.Property(x => x.Id).IsRequired().HasMaxLength(10);
+                entity.HasData(
+                    new Room("A-101"), new Room("A-102"), new Room("A-103"), new Room("A-104"),
+                    new Room("B-101"), new Room("B-102"), new Room("B-103"), new Room("B-104"),
+                    new Room("C-101"), new Room("C-102"), new Room("C-103"), new Room("C-104"),
+                    new Room("D-101"), new Room("D-102"), new Room("D-103"), new Room("D-104")
+                );
+            });
+
+            /// Table: AllocateRooms
+
+            builder.Entity<AllocateClassroom>(entity =>
+            {
+                entity.HasOne(x => x.Day).WithMany(x => x.AllocateClassrooms).HasForeignKey(x => x.DayId);
+                entity.HasOne(x => x.Room).WithMany(x => x.AllocateClassrooms).HasForeignKey(x => x.RoomId);
+                entity.Property(x => x.DayId).IsRequired();
+                entity.Property(x => x.RoomId).IsRequired();
+                entity.Property(x => x.CourseCode).IsRequired();
             });
         }
     }
