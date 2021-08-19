@@ -22,18 +22,18 @@ namespace API_Layer.Controllers
 
         // GET: Courses
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(int departmentId)
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartmentIncludingTeachers(int departmentId)
         {
-            var serviceResponse = await _service.GetCoursesByDepartment(departmentId);
+            var serviceResponse = await _service.GetCoursesByDepartmentIncludingTeachers(departmentId);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }
 
-        // GET: Courses/MTE
-        [HttpGet("{departmentCode:alpha}")]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartmentCode(String departmentCode)
+        // GET: Courses
+        [HttpGet("{departmentId:int}")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(int departmentId)
         {
-            var serviceResponse = await _service.GetCoursesByDepartmentCode(departmentCode);
+            var serviceResponse = await _service.GetCoursesByDepartment(departmentId);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }

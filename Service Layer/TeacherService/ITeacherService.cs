@@ -10,5 +10,6 @@ namespace Service_Layer.TeacherService
 {
     public interface ITeacherService : IRepository<Teacher>
     {
+        public Task<ServiceResponse<IEnumerable<Teacher>>> GetTeachersByDepartment(int departmentId);
     }
 }

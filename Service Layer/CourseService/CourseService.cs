@@ -57,7 +57,7 @@ namespace Service_Layer.CourseService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(int departmentId)
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachers(int departmentId)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
             try
@@ -77,19 +77,19 @@ namespace Service_Layer.CourseService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentCode(String departmentCode)
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(int departmentId)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
             try
             {
-                var department = await _dbContext.Departments.SingleOrDefaultAsync(x => x.Code == departmentCode);
-                serviceResponse.Data = await _dbContext.Courses.Where(x => x.DepartmentId == department.Id).ToListAsync();
-
+                serviceResponse.Data = await _dbContext.Courses
+                    .Where(x => x.DepartmentId == departmentId)
+                    .ToListAsync();
                 serviceResponse.Message = "Data fetched successfully from the database";
             }
             catch (Exception ex)
             {
-                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Message = ex.Message;
                 serviceResponse.Success = false;
             }
             return serviceResponse;
