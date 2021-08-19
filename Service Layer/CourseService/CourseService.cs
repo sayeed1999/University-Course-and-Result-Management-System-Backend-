@@ -76,6 +76,7 @@ namespace Service_Layer.CourseService
             }
             return serviceResponse;
         }
+
         public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(int departmentId)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();

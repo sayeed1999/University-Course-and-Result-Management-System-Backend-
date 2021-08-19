@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace API_Layer.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class CoursesController : ControllerBase
     {
         private readonly ICourseService _service;
@@ -37,7 +37,6 @@ namespace API_Layer.Controllers
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }
-
 
         // POST: Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

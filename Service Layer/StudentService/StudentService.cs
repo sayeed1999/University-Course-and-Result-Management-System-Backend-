@@ -19,6 +19,40 @@ namespace Service_Layer.StudentService
             _departmentService = departmentService;
         }
 
+        public override async Task<ServiceResponse<IEnumerable<Student>>> GetAll()
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<Student>>();
+            try
+            {
+                serviceResponse.Data = await _dbContext.Students.Include(x => x.Department).ToListAsync();
+                serviceResponse.Message = "Data fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<StudentCourse>> EnrollStudentInCourse(StudentCourse data)
+        {
+            var serviceResponse = new ServiceResponse<StudentCourse>();
+            serviceResponse.Data = data;
+            try
+            {
+                _dbContext.StudentsCourses.Add(data);
+                await _dbContext.SaveChangesAsync();
+                serviceResponse.Message = "Successfully enrolled.";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+
         public async Task<ServiceResponse<Student>> RegisterStudent(StudentRegistration student)
         {
             var serviceResponse = new ServiceResponse<Student>();
@@ -54,6 +88,46 @@ namespace Service_Layer.StudentService
                 RegistrationNumber = reg
             };
             return await this.Add(newStudent);
+        }
+
+        public async Task<ServiceResponse<StudentCourse>> SaveResult(StudentCourse data)
+        {
+            var serviceResponse = new ServiceResponse<StudentCourse>();
+            try
+            {
+                var course = await _dbContext.StudentsCourses.FindAsync(data.DepartmentId, data.CourseCode, data.StudentId);
+                course.Grade = data.Grade;
+                _dbContext.StudentsCourses.Update(course);
+                await _dbContext.SaveChangesAsync();
+                serviceResponse.Data = course;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = $"Something failed. Please try with proper data.\nError: {ex.Message}";
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<Student>>> GetStudentsResults()
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<Student>>();
+            try
+            {
+                serviceResponse.Data = await _dbContext.Students
+                                    .Include(x => x.Department)
+                                    .Include(x => x.StudentsCourses)
+                                        .ThenInclude(z => z.Course)
+                                    .ToListAsync();
+
+                serviceResponse.Message = "Data fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
         }
     }
 }
