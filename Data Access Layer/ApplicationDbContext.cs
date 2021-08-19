@@ -200,6 +200,7 @@ namespace Data_Access_Layer
                 entity.Property(x => x.DayId).IsRequired();
                 entity.Property(x => x.RoomId).IsRequired();
                 entity.Property(x => x.CourseCode).IsRequired();
+                entity.HasOne(x => x.Course).WithMany(x => x.AllocateClassrooms).HasForeignKey(x => x.CourseCode).HasPrincipalKey(x => x.Code);
             });
         }
     }
