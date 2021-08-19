@@ -22,12 +22,22 @@ namespace API_Layer.Controllers
 
         // GET: Courses
         [HttpGet]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartmentIncludingTeachers(int departmentId)
+        {
+            var serviceResponse = await _service.GetCoursesByDepartmentIncludingTeachers(departmentId);
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
+        // GET: Courses
+        [HttpGet("{departmentId:int}")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(int departmentId)
         {
             var serviceResponse = await _service.GetCoursesByDepartment(departmentId);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }
+
 
         // POST: Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
