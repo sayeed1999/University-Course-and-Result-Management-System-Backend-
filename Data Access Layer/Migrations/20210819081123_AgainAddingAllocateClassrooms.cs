@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Data_Access_Layer.Migrations
 {
-    public partial class AllocateClassroomsTableCreated : Migration
+    public partial class AgainAddingAllocateClassrooms : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

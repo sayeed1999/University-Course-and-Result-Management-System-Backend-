@@ -609,7 +609,7 @@ namespace Data_Access_Layer.Migrations
                         .IsRequired();
 
                     b.HasOne("Entity_Layer.Course", "Course")
-                        .WithMany()
+                        .WithMany("AllocateClassrooms")
                         .HasForeignKey("CourseCode1", "CourseDepartmentId");
 
                     b.Navigation("Course");
@@ -701,6 +701,8 @@ namespace Data_Access_Layer.Migrations
 
             modelBuilder.Entity("Entity_Layer.Course", b =>
                 {
+                    b.Navigation("AllocateClassrooms");
+
                     b.Navigation("StudentsCourses");
                 });
 
