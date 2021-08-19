@@ -51,6 +51,7 @@ namespace Service_Layer.RoomService
             try
             {
                 serviceResponse.Data = await _dbContext.AllocateClassrooms
+                                        
                                         .Where(x => x.DepartmentId == departmentId)
                                         .Include(x => x.Course)
                                         .ToListAsync();

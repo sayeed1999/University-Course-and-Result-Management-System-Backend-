@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210819081123_AgainAddingAllocateClassrooms")]
-    partial class AgainAddingAllocateClassrooms
+    [Migration("20210819091135_bug-fix")]
+    partial class bugfix
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,13 +30,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.Property<string>("CourseCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CourseCode1")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("CourseDepartmentId")
-                        .HasColumnType("int");
 
                     b.Property<string>("DayId")
                         .IsRequired()
@@ -57,13 +51,13 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CourseCode");
+
                     b.HasIndex("DayId");
 
                     b.HasIndex("DepartmentId");
 
                     b.HasIndex("RoomId");
-
-                    b.HasIndex("CourseCode1", "CourseDepartmentId");
 
                     b.ToTable("AllocateClassrooms");
                 });
@@ -592,6 +586,13 @@ namespace Data_Access_Layer.Migrations
 
             modelBuilder.Entity("Entity_Layer.AllocateClassroom", b =>
                 {
+                    b.HasOne("Entity_Layer.Course", "Course")
+                        .WithMany("AllocateClassrooms")
+                        .HasForeignKey("CourseCode")
+                        .HasPrincipalKey("Code")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Entity_Layer.Day", "Day")
                         .WithMany("AllocateClassrooms")
                         .HasForeignKey("DayId")
@@ -609,10 +610,6 @@ namespace Data_Access_Layer.Migrations
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Entity_Layer.Course", "Course")
-                        .WithMany("AllocateClassrooms")
-                        .HasForeignKey("CourseCode1", "CourseDepartmentId");
 
                     b.Navigation("Course");
 
