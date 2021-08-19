@@ -20,14 +20,15 @@ namespace Service_Layer.RoomService
         {
             var response = new ServiceResponse<AllocateClassroom>();
             response.Data = data;
-            var temp = await _dbContext.AllocateClassrooms.FirstOrDefaultAsync(
+            var count = await _dbContext.AllocateClassrooms.CountAsync(
                                                             x => x.RoomId == data.RoomId
+                                                        && x.DayId == data.DayId
                                                         && ( ( x.From.Hour < data.To.Hour || (x.From.Hour == data.To.Hour && x.From.Minute < data.To.Minute) )
                                                         || (x.To.Hour > data.From.Hour || (x.To.Hour == data.From.Hour && x.To.Minute > data.From.Minute) ) )
                                                       );
-            if ( temp != null)
+            if ( count > 0)
             {
-                response.Message = "Some Overlap occurred";
+                response.Message = "Some overlap occurred.  Check your routine to avoid overlapping!";
                 response.Success = false;
                 return response;
             }
