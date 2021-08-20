@@ -42,5 +42,66 @@ namespace Service_Layer.CourseService
             return serviceResponse;
         }
 
+        public virtual async Task<ServiceResponse<Course>> GetByCompositeKey(int departmentId, string courseCode)
+        {
+            var serviceResponse = new ServiceResponse<Course>();
+            try
+            {
+                serviceResponse.Data = await _dbContext.Courses.Include(x => x.Teacher)
+                    .SingleOrDefaultAsync(x => x.DepartmentId == departmentId 
+                                            && x.Code == courseCode);
+                
+                if (serviceResponse.Data == null)
+                {
+                    serviceResponse.Message = "Data not found with the given constrain.";
+                    serviceResponse.Success = false;
+                }
+                else serviceResponse.Message = "Data  with the given id was fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachers(int departmentId)
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
+            try
+            {
+                serviceResponse.Data = await _dbContext.Courses
+                    .Include(x => x.Teacher)
+                    .Where(x => x.DepartmentId == departmentId)
+                    .ToListAsync();
+
+                serviceResponse.Message = "Data fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(int departmentId)
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
+            try
+            {
+                serviceResponse.Data = await _dbContext.Courses
+                    .Where(x => x.DepartmentId == departmentId)
+                    .ToListAsync();
+                serviceResponse.Message = "Data fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
     }
 }
