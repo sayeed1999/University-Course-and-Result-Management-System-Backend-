@@ -42,7 +42,7 @@ namespace Service_Layer.CourseService
             return serviceResponse;
         }
 
-        public virtual async Task<ServiceResponse<Course>> GetByCompositeKey(int departmentId, string courseCode)
+        public virtual async Task<ServiceResponse<Course>> GetCourseByCompositeKeyIncludingTeacher(int departmentId, string courseCode)
         {
             var serviceResponse = new ServiceResponse<Course>();
             try
