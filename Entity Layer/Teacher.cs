@@ -18,7 +18,7 @@ namespace Entity_Layer
         public string Email { get; set; }
         public long Contact { get; set; }
         public Designation? Designation { get; set; }
-        public int DesignationId { get; set; }
+        public byte DesignationId { get; set; }
         public Department? Department { get; set; }
         public int DepartmentId { get; set; }
         public float CreditToBeTaken { get; set; }

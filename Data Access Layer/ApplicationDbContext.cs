@@ -107,6 +107,7 @@ namespace Data_Access_Layer
                 entity.HasCheckConstraint("CHK_TeacherEmailInCorrectFormat", "Email like '%_@_%._%'"); // Email like '%_@_%.com' can't track dks.mte@ruet.ac.bd !!
                 entity.HasCheckConstraint("CHK_TeacherContactInCorrectFormat", "LEN(CAST(Contact as varchar(max))) between 6 and 15");
                 entity.HasOne(a => a.Department).WithMany(b => b.Teachers).HasForeignKey(x => x.DepartmentId);
+                entity.HasOne(a => a.Designation).WithMany(a => a.Teachers).HasForeignKey(a => a.DesignationId);
                 entity.HasCheckConstraint("CHK_CreditToBeTakenByTeacher", "CreditToBeTaken !< 0");
                 entity.HasCheckConstraint("CHK_RemainingCreditOfTeacher", "RemainingCredit BETWEEN 0 AND CreditToBeTaken");
             });
