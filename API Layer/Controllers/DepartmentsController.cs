@@ -20,11 +20,29 @@ namespace API_Layer.Controllers
             _service = service;
         }
 
-        // GET: api/Departments
+        // GET: Departments
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Department>>>> GetDepartments()
         {
             var serviceResponse = await _service.GetAll();
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
+        // GET: Departments/All
+        [HttpGet("All")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Department>>>> GetDepartmentsIncludingTeachersAndCourses()
+        {
+            var serviceResponse = await _service.GetAllIncludingTeachersAndCourses();
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
+        // GET: Departments/Courses
+        [HttpGet("Courses")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Department>>>> GetDepartmentsIncludingCourses()
+        {
+            var serviceResponse = await _service.GetAllIncludingCourses();
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }

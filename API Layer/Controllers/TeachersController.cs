@@ -25,7 +25,16 @@ namespace API_Layer.Controllers
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<Teacher>>> PostTeacher(Teacher teacher)
         {
+            teacher.RemainingCredit = teacher.CreditToBeTaken;
             var serviceResponse = await _service.Add(teacher);
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
+        [HttpGet("{departmentId:int}")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Teacher>>>> GetTeachersByDepartment(int departmentId)
+        {
+            var serviceResponse = await _service.GetTeachersByDepartment(departmentId);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }

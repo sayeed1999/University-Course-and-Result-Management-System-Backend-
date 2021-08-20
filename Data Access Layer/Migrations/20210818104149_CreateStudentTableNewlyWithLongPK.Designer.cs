@@ -4,61 +4,22 @@ using Data_Access_Layer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210818104149_CreateStudentTableNewlyWithLongPK")]
+    partial class CreateStudentTableNewlyWithLongPK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Entity_Layer.AllocateClassroom", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CourseCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("DayId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(3)");
-
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("From")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RoomId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<DateTime>("To")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseCode");
-
-                    b.HasIndex("DayId");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("RoomId");
-
-                    b.ToTable("AllocateClassrooms");
-                });
 
             modelBuilder.Entity("Entity_Layer.Course", b =>
                 {
@@ -98,47 +59,6 @@ namespace Data_Access_Layer.Migrations
                     b.HasCheckConstraint("CHK_LengthOfCodeOfCourse", "LEN(Code) >= 5");
 
                     b.HasCheckConstraint("CHK_CreditRangeOfCourse", "Credit BETWEEN 0.5 AND 5.0");
-                });
-
-            modelBuilder.Entity("Entity_Layer.Day", b =>
-                {
-                    b.Property<string>("Name")
-                        .HasMaxLength(3)
-                        .HasColumnType("nvarchar(3)");
-
-                    b.HasKey("Name");
-
-                    b.ToTable("Days");
-
-                    b.HasData(
-                        new
-                        {
-                            Name = "Sun"
-                        },
-                        new
-                        {
-                            Name = "Mon"
-                        },
-                        new
-                        {
-                            Name = "Tue"
-                        },
-                        new
-                        {
-                            Name = "Wed"
-                        },
-                        new
-                        {
-                            Name = "Thu"
-                        },
-                        new
-                        {
-                            Name = "Fri"
-                        },
-                        new
-                        {
-                            Name = "Sat"
-                        });
                 });
 
             modelBuilder.Entity("Entity_Layer.Department", b =>
@@ -250,147 +170,6 @@ namespace Data_Access_Layer.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Entity_Layer.GradeLetter", b =>
-                {
-                    b.Property<string>("Grade")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Grade");
-
-                    b.ToTable("GradeLetters");
-
-                    b.HasData(
-                        new
-                        {
-                            Grade = "A+"
-                        },
-                        new
-                        {
-                            Grade = "A"
-                        },
-                        new
-                        {
-                            Grade = "A-"
-                        },
-                        new
-                        {
-                            Grade = "B+"
-                        },
-                        new
-                        {
-                            Grade = "B"
-                        },
-                        new
-                        {
-                            Grade = "B-"
-                        },
-                        new
-                        {
-                            Grade = "C+"
-                        },
-                        new
-                        {
-                            Grade = "C"
-                        },
-                        new
-                        {
-                            Grade = "C-"
-                        },
-                        new
-                        {
-                            Grade = "D+"
-                        },
-                        new
-                        {
-                            Grade = "D"
-                        },
-                        new
-                        {
-                            Grade = "D-"
-                        },
-                        new
-                        {
-                            Grade = "F"
-                        });
-                });
-
-            modelBuilder.Entity("Entity_Layer.Room", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Rooms");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "A-101"
-                        },
-                        new
-                        {
-                            Id = "A-102"
-                        },
-                        new
-                        {
-                            Id = "A-103"
-                        },
-                        new
-                        {
-                            Id = "A-104"
-                        },
-                        new
-                        {
-                            Id = "B-101"
-                        },
-                        new
-                        {
-                            Id = "B-102"
-                        },
-                        new
-                        {
-                            Id = "B-103"
-                        },
-                        new
-                        {
-                            Id = "B-104"
-                        },
-                        new
-                        {
-                            Id = "C-101"
-                        },
-                        new
-                        {
-                            Id = "C-102"
-                        },
-                        new
-                        {
-                            Id = "C-103"
-                        },
-                        new
-                        {
-                            Id = "C-104"
-                        },
-                        new
-                        {
-                            Id = "D-101"
-                        },
-                        new
-                        {
-                            Id = "D-102"
-                        },
-                        new
-                        {
-                            Id = "D-103"
-                        },
-                        new
-                        {
-                            Id = "D-104"
-                        });
-                });
-
             modelBuilder.Entity("Entity_Layer.Semister", b =>
                 {
                     b.Property<byte>("Id")
@@ -497,34 +276,6 @@ namespace Data_Access_Layer.Migrations
                     b.HasCheckConstraint("CHK_RegistrationNumberMinLength", "LEN(RegistrationNumber) between 11 and 13");
                 });
 
-            modelBuilder.Entity("Entity_Layer.StudentCourse", b =>
-                {
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CourseCode")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<long>("StudentId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Grade")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("DepartmentId", "CourseCode", "StudentId");
-
-                    b.HasIndex("Grade");
-
-                    b.HasIndex("StudentId");
-
-                    b.HasIndex("CourseCode", "DepartmentId");
-
-                    b.ToTable("StudentsCourses");
-                });
-
             modelBuilder.Entity("Entity_Layer.Teacher", b =>
                 {
                     b.Property<int>("Id")
@@ -582,42 +333,6 @@ namespace Data_Access_Layer.Migrations
                     b.HasCheckConstraint("CHK_RemainingCreditOfTeacher", "RemainingCredit BETWEEN 0 AND CreditToBeTaken");
                 });
 
-            modelBuilder.Entity("Entity_Layer.AllocateClassroom", b =>
-                {
-                    b.HasOne("Entity_Layer.Course", "Course")
-                        .WithMany("AllocateClassrooms")
-                        .HasForeignKey("CourseCode")
-                        .HasPrincipalKey("Code")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entity_Layer.Day", "Day")
-                        .WithMany("AllocateClassrooms")
-                        .HasForeignKey("DayId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entity_Layer.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entity_Layer.Room", "Room")
-                        .WithMany("AllocateClassrooms")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Day");
-
-                    b.Navigation("Department");
-
-                    b.Navigation("Room");
-                });
-
             modelBuilder.Entity("Entity_Layer.Course", b =>
                 {
                     b.HasOne("Entity_Layer.Department", "Department")
@@ -654,31 +369,6 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("Department");
                 });
 
-            modelBuilder.Entity("Entity_Layer.StudentCourse", b =>
-                {
-                    b.HasOne("Entity_Layer.GradeLetter", "GradeLetter")
-                        .WithMany()
-                        .HasForeignKey("Grade");
-
-                    b.HasOne("Entity_Layer.Student", "Student")
-                        .WithMany("StudentsCourses")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entity_Layer.Course", "Course")
-                        .WithMany("StudentsCourses")
-                        .HasForeignKey("CourseCode", "DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("GradeLetter");
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("Entity_Layer.Teacher", b =>
                 {
                     b.HasOne("Entity_Layer.Department", "Department")
@@ -696,33 +386,11 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("Designation");
                 });
 
-            modelBuilder.Entity("Entity_Layer.Course", b =>
-                {
-                    b.Navigation("AllocateClassrooms");
-
-                    b.Navigation("StudentsCourses");
-                });
-
-            modelBuilder.Entity("Entity_Layer.Day", b =>
-                {
-                    b.Navigation("AllocateClassrooms");
-                });
-
             modelBuilder.Entity("Entity_Layer.Department", b =>
                 {
                     b.Navigation("Courses");
 
                     b.Navigation("Teachers");
-                });
-
-            modelBuilder.Entity("Entity_Layer.Room", b =>
-                {
-                    b.Navigation("AllocateClassrooms");
-                });
-
-            modelBuilder.Entity("Entity_Layer.Student", b =>
-                {
-                    b.Navigation("StudentsCourses");
                 });
 
             modelBuilder.Entity("Entity_Layer.Teacher", b =>
