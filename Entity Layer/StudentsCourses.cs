@@ -13,7 +13,7 @@ namespace Entity_Layer
         public string CourseCode { get; set; }
         public long StudentId { get; set; }
         public DateTime Date {  get; set; }
-        public string Grade {  get; set; }
+        public string? Grade {  get; set; }
         [ForeignKey("Grade")]
         public GradeLetter? GradeLetter { get; set; }
         public Student? Student {  get; set; }
