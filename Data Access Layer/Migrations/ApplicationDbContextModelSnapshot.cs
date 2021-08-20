@@ -715,6 +715,7 @@ namespace Data_Access_Layer.Migrations
             modelBuilder.Entity("Entity_Layer.Designation", b =>
                 {
                     b.Navigation("Teachers");
+                });
 
             modelBuilder.Entity("Entity_Layer.Room", b =>
                 {
@@ -730,7 +731,6 @@ namespace Data_Access_Layer.Migrations
                 {
                     b.Navigation("Courses");
                 });
-#pragma warning restore 612, 618
         }
     }
 }

@@ -19,7 +19,7 @@ namespace Service_Layer.CourseService
             var serviceResponse = new ServiceResponse<Course>();
 
             // find if there remains a course with the same name in the same department
-            if (await _dbContext.Courses.SingleOrDefaultAsync(x => (x.Code == item.Code || x.Name == item.Name) && x.DepartmentId == item.DepartmentId) == null)
+            if (await _dbContext.Courses.SingleOrDefaultAsync(x => (x.Code == item.Code || x.Name == item.Name) && x.DepartmentId == item.DepartmentId) != null)
             {
                 serviceResponse.Data = item;
                 serviceResponse.Message = "Code and name must be unique in the respective department";
