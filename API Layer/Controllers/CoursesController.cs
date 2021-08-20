@@ -22,7 +22,7 @@ namespace API_Layer.Controllers
 
         // GET: Courses
         [HttpGet("IncludeTeachersAndSemisters/Department/{departmentId:int}")]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartmentIncludingTeachers(int departmentId)
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(int departmentId)
         {
             var serviceResponse = await _service.GetCoursesByDepartmentIncludingTeachersAndSemisters(departmentId);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
