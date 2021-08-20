@@ -21,7 +21,7 @@ namespace API_Layer.Controllers
         }
 
         // GET: Courses
-        [HttpGet("IncludeTeachers/Department{departmentId:int}")]
+        [HttpGet("IncludeTeachers/Department/{departmentId:int}")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartmentIncludingTeachers(int departmentId)
         {
             var serviceResponse = await _service.GetCoursesByDepartmentIncludingTeachers(departmentId);
