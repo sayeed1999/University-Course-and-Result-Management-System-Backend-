@@ -21,7 +21,7 @@ namespace API_Layer.Controllers
         }
 
         // GET: Courses
-        [HttpGet]
+        [HttpGet("IncludeTeachers/Department/{departmentId:int}")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartmentIncludingTeachers(int departmentId)
         {
             var serviceResponse = await _service.GetCoursesByDepartmentIncludingTeachers(departmentId);
@@ -30,7 +30,7 @@ namespace API_Layer.Controllers
         }
 
         // GET: Courses
-        [HttpGet("{departmentId:int}")]
+        [HttpGet("Department/{departmentId:int}")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(int departmentId)
         {
             var serviceResponse = await _service.GetCoursesByDepartment(departmentId);
