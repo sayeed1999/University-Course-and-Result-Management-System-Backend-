@@ -41,7 +41,6 @@ namespace Data_Access_Layer
                 entity.HasCheckConstraint("CHK_LengthOfCode", "len(code) >= 2 and len(code) <= 7");
                 entity.Property(x => x.Name).IsRequired().HasMaxLength(255);
                 entity.HasIndex(x => x.Name).IsUnique();
-                entity.HasCheckConstraint("CHK_LengthOfDeptName", "len(name) >= 3");
                 entity.HasData(
                     new Department { Id = 1, Code = "EEE", Name = "Electronics & Electrical Engineering" },
                     new Department { Id = 2, Code = "CSE", Name = "Computer Science & Engineering" },
