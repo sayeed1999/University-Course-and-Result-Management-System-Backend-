@@ -10,5 +10,6 @@ namespace Entity_Layer
     {
         public byte Id { get; set; }
         public string Name { get; set; }
+        public ICollection<Teacher> Teachers { get; set; }
     }
 }
