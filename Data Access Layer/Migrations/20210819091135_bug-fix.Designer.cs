@@ -4,14 +4,16 @@ using Data_Access_Layer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210819091135_bug-fix")]
+    partial class bugfix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -169,6 +171,8 @@ namespace Data_Access_Layer.Migrations
                     b.ToTable("Departments");
 
                     b.HasCheckConstraint("CHK_LengthOfCode", "len(code) >= 2 and len(code) <= 7");
+
+                    b.HasCheckConstraint("CHK_LengthOfDeptName", "len(name) >= 3");
 
                     b.HasData(
                         new
@@ -456,8 +460,9 @@ namespace Data_Access_Layer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("Contact")
-                        .HasColumnType("bigint");
+                    b.Property<string>("Contact")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -542,7 +547,10 @@ namespace Data_Access_Layer.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
-                    b.Property<byte>("DesignationId")
+                    b.Property<int>("DesignationId")
+                        .HasColumnType("int");
+
+                    b.Property<byte?>("DesignationId1")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Email")
@@ -560,7 +568,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.HasIndex("DesignationId");
+                    b.HasIndex("DesignationId1");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -682,10 +690,8 @@ namespace Data_Access_Layer.Migrations
                         .IsRequired();
 
                     b.HasOne("Entity_Layer.Designation", "Designation")
-                        .WithMany("Teachers")
-                        .HasForeignKey("DesignationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("DesignationId1");
 
                     b.Navigation("Department");
 
@@ -711,11 +717,6 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("Teachers");
                 });
 
-            modelBuilder.Entity("Entity_Layer.Designation", b =>
-                {
-                    b.Navigation("Teachers");
-                });
-
             modelBuilder.Entity("Entity_Layer.Room", b =>
                 {
                     b.Navigation("AllocateClassrooms");
@@ -730,6 +731,7 @@ namespace Data_Access_Layer.Migrations
                 {
                     b.Navigation("Courses");
                 });
+#pragma warning restore 612, 618
         }
     }
 }

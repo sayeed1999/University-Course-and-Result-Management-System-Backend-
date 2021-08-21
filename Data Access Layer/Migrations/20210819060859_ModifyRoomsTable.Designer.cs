@@ -4,61 +4,22 @@ using Data_Access_Layer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210819060859_ModifyRoomsTable")]
+    partial class ModifyRoomsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("Entity_Layer.AllocateClassroom", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CourseCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("DayId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(3)");
-
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("From")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("RoomId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<DateTime>("To")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CourseCode");
-
-                    b.HasIndex("DayId");
-
-                    b.HasIndex("DepartmentId");
-
-                    b.HasIndex("RoomId");
-
-                    b.ToTable("AllocateClassrooms");
-                });
 
             modelBuilder.Entity("Entity_Layer.Course", b =>
                 {
@@ -169,6 +130,8 @@ namespace Data_Access_Layer.Migrations
                     b.ToTable("Departments");
 
                     b.HasCheckConstraint("CHK_LengthOfCode", "len(code) >= 2 and len(code) <= 7");
+
+                    b.HasCheckConstraint("CHK_LengthOfDeptName", "len(name) >= 3");
 
                     b.HasData(
                         new
@@ -456,8 +419,9 @@ namespace Data_Access_Layer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("Contact")
-                        .HasColumnType("bigint");
+                    b.Property<string>("Contact")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -542,7 +506,10 @@ namespace Data_Access_Layer.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
-                    b.Property<byte>("DesignationId")
+                    b.Property<int>("DesignationId")
+                        .HasColumnType("int");
+
+                    b.Property<byte?>("DesignationId1")
                         .HasColumnType("tinyint");
 
                     b.Property<string>("Email")
@@ -560,7 +527,7 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.HasIndex("DesignationId");
+                    b.HasIndex("DesignationId1");
 
                     b.HasIndex("Email")
                         .IsUnique();
@@ -574,42 +541,6 @@ namespace Data_Access_Layer.Migrations
                     b.HasCheckConstraint("CHK_CreditToBeTakenByTeacher", "CreditToBeTaken !< 0");
 
                     b.HasCheckConstraint("CHK_RemainingCreditOfTeacher", "RemainingCredit BETWEEN 0 AND CreditToBeTaken");
-                });
-
-            modelBuilder.Entity("Entity_Layer.AllocateClassroom", b =>
-                {
-                    b.HasOne("Entity_Layer.Course", "Course")
-                        .WithMany("AllocateClassrooms")
-                        .HasForeignKey("CourseCode")
-                        .HasPrincipalKey("Code")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entity_Layer.Day", "Day")
-                        .WithMany("AllocateClassrooms")
-                        .HasForeignKey("DayId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entity_Layer.Department", "Department")
-                        .WithMany()
-                        .HasForeignKey("DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entity_Layer.Room", "Room")
-                        .WithMany("AllocateClassrooms")
-                        .HasForeignKey("RoomId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("Day");
-
-                    b.Navigation("Department");
-
-                    b.Navigation("Room");
                 });
 
             modelBuilder.Entity("Entity_Layer.Course", b =>
@@ -682,10 +613,8 @@ namespace Data_Access_Layer.Migrations
                         .IsRequired();
 
                     b.HasOne("Entity_Layer.Designation", "Designation")
-                        .WithMany("Teachers")
-                        .HasForeignKey("DesignationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("DesignationId1");
 
                     b.Navigation("Department");
 
@@ -694,14 +623,7 @@ namespace Data_Access_Layer.Migrations
 
             modelBuilder.Entity("Entity_Layer.Course", b =>
                 {
-                    b.Navigation("AllocateClassrooms");
-
                     b.Navigation("StudentsCourses");
-                });
-
-            modelBuilder.Entity("Entity_Layer.Day", b =>
-                {
-                    b.Navigation("AllocateClassrooms");
                 });
 
             modelBuilder.Entity("Entity_Layer.Department", b =>
@@ -709,16 +631,6 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("Courses");
 
                     b.Navigation("Teachers");
-                });
-
-            modelBuilder.Entity("Entity_Layer.Designation", b =>
-                {
-                    b.Navigation("Teachers");
-                });
-
-            modelBuilder.Entity("Entity_Layer.Room", b =>
-                {
-                    b.Navigation("AllocateClassrooms");
                 });
 
             modelBuilder.Entity("Entity_Layer.Student", b =>
@@ -730,6 +642,7 @@ namespace Data_Access_Layer.Migrations
                 {
                     b.Navigation("Courses");
                 });
+#pragma warning restore 612, 618
         }
     }
 }
