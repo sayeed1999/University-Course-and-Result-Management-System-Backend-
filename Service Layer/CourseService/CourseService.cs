@@ -94,5 +94,22 @@ namespace Service_Layer.CourseService
             }
             return serviceResponse;
         }
+
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(int departmentId)
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
+            try
+            {
+                serviceResponse.Data = await _dbContext.Courses.Where(x => x.DepartmentId == departmentId)
+                                                            .Include(x => x.AllocateClassrooms)
+                                                            .ToListAsync();
+            }
+            catch(Exception ex)
+            {
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
     }
 }

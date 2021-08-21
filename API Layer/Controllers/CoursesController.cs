@@ -84,5 +84,15 @@ namespace API_Layer.Controllers
             response.Message = $"Course successfully assigned to respective teacher.";
             return Ok(response);
         }
+
+
+        [HttpGet("Department/{departmentId:int}/AllocatedRooms")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesWithAllocatedRoomsByDepartment(int departmentId)
+        {
+            var response = await _service.GetCoursesWithAllocatedRoomsByDepartment(departmentId);
+            if (response.Success == false) return BadRequest(response);
+            return Ok(response);
+        }
+
     }
 }
