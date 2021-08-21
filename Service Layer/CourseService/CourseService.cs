@@ -124,6 +124,22 @@ namespace Service_Layer.CourseService
             return serviceResponse;
         }
 
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(string departmentCode)
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
+            var dept = await _dbContext.Departments.SingleOrDefaultAsync(x => x.Code == departmentCode);
+            
+            if(dept == null)
+            {
+                serviceResponse.Message = "Department not found with the code";
+                serviceResponse.Success = false;
+                return serviceResponse;
+            }
+
+            return await this.GetCoursesByDepartment(dept.Id);
+        }
+
+
         public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(int departmentId)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();

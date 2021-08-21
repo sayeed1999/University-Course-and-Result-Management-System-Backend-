@@ -14,6 +14,8 @@ namespace Service_Layer.CourseService
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(int departmentId);
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachers(int departmentId);
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(int departmentId);
+        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(string departmentCode);
+
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(int departmentId);
     }
 }

@@ -42,10 +42,19 @@ namespace API_Layer.Controllers
         }
 
         // GET: Courses
-        [HttpGet("Department/{departmentId:int}")]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(int departmentId)
+        [HttpGet("Department/{id:int}")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(int id)
         {
-            var serviceResponse = await _service.GetCoursesByDepartment(departmentId);
+            var serviceResponse = await _service.GetCoursesByDepartment(id);
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
+        // GET: Courses
+        [HttpGet("Department/{code}")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(string code)
+        {
+            var serviceResponse = await _service.GetCoursesByDepartment(code);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }
