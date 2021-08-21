@@ -20,10 +20,18 @@ namespace Service_Layer.RoomService
         {
             var response = new ServiceResponse<AllocateClassroom>();
             response.Data = data;
+            
+            if(data.From >= data.To)
+            {
+                response.Message = "Class duration cannot be less than one minute!";
+                response.Success = false;
+                return response;
+            }
+
             var count = await _dbContext.AllocateClassrooms.CountAsync(
                                                             x => x.RoomId == data.RoomId
                                                         && x.DayId == data.DayId
-                                                        && ((x.From <= data.To && x.To >= data.To) || (data.From <= x.To && data.To >= x.To))
+                                                        && ((x.From < data.To && x.To > data.From) || (data.From < x.To && data.To > x.From))
                                                       );
             if ( count > 0)
             {
