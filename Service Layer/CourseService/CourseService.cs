@@ -19,7 +19,7 @@ namespace Service_Layer.CourseService
             var serviceResponse = new ServiceResponse<Course>();
 
             // find if there remains a course with the same name in the same department
-            if (await _dbContext.Courses.SingleOrDefaultAsync(x => (x.Code == item.Code || x.Name == item.Name) && x.DepartmentId == item.DepartmentId) == null)
+            if (await _dbContext.Courses.SingleOrDefaultAsync(x => (x.Code == item.Code || x.Name == item.Name) && x.DepartmentId == item.DepartmentId) != null)
             {
                 serviceResponse.Data = item;
                 serviceResponse.Message = "Code and name must be unique in the respective department";
@@ -42,7 +42,7 @@ namespace Service_Layer.CourseService
             return serviceResponse;
         }
 
-        public virtual async Task<ServiceResponse<Course>> GetByCompositeKey(int departmentId, string courseCode)
+        public virtual async Task<ServiceResponse<Course>> GetCourseByCompositeKeyIncludingTeacher(int departmentId, string courseCode)
         {
             var serviceResponse = new ServiceResponse<Course>();
             try
@@ -57,6 +57,26 @@ namespace Service_Layer.CourseService
                     serviceResponse.Success = false;
                 }
                 else serviceResponse.Message = "Data  with the given id was fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(int departmentId)
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
+            try
+            {
+                serviceResponse.Data = await _dbContext.Courses
+                    .Include(x => x.Teacher)
+                    .Include(x => x.Semister)
+                    .Where(x => x.DepartmentId == departmentId)
+                    .ToListAsync();
+
+                serviceResponse.Message = "Data fetched successfully from the database";
             }
             catch (Exception ex)
             {
