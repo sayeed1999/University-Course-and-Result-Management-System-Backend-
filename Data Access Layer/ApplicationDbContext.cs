@@ -21,6 +21,9 @@ namespace Data_Access_Layer
         public DbSet<Day> Days { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<AllocateClassroom> AllocateClassrooms { get; set; }
+        public DbSet<CourseHistory> CoursesHistory { get; set; }
+        public DbSet<StudentsCoursesHistory> StudentsCoursesHistories { get; set; }
+        public DbSet<UnassignCoursesCount> UnassignCoursesCounts { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -202,6 +205,27 @@ namespace Data_Access_Layer
                 entity.Property(x => x.CourseCode).IsRequired();
                 entity.HasOne(x => x.Course).WithMany(x => x.AllocateClassrooms).HasForeignKey(x => x.CourseCode).HasPrincipalKey(x => x.Code);
             });
+
+            /// Table : CoursesHistory
+
+            builder.Entity<CourseHistory>(entity =>
+            {
+                entity.HasKey(x => new { x.Code, x.DepartmentId });
+            });
+
+
+            /// Table : StudentsCourses
+
+            builder.Entity<StudentsCoursesHistory>(entity =>
+            {
+                entity.HasKey(x => new { x.DepartmentId, x.CourseCode, x.StudentId });
+                entity.Property(x => x.CourseCode).IsRequired();
+                entity.Property(x => x.Grade).IsRequired(false);
+                entity.HasOne(x => x.Student).WithMany(x => x.StudentsCoursesHistories).HasForeignKey(x => x.StudentId);
+                entity.HasOne(x => x.Course).WithMany(x => x.StudentsCoursesHistories).HasForeignKey(x => new { x.CourseCode, x.DepartmentId });
+            });
+
+
         }
     }
 }

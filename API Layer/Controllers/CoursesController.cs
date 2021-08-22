@@ -134,5 +134,14 @@ namespace API_Layer.Controllers
             if (response.Success == false) return BadRequest(response);
             return Ok(response);
         }
+
+        [HttpDelete("UnassignAll")]
+        public async Task<ActionResult> UnassignAllCourses()
+        {
+            var unassignCourses = await _service.UnassignAllCourses();
+            if (unassignCourses.Success == false) return BadRequest(unassignCourses);
+
+            return Ok(unassignCourses);
+        }
     }
 }
