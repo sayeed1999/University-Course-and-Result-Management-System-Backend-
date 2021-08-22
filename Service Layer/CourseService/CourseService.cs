@@ -171,11 +171,27 @@ namespace Service_Layer.CourseService
                 int unassignId = temp.Id;
 
                 List<Course> courses = await _dbContext.Courses.ToListAsync();
-                foreach (var course in courses)
+                foreach (Course course in courses)
                 {
                     CourseHistory courseHistory = new CourseHistory { Code = course.Code, DepartmentId = course.DepartmentId, SemisterId = course.SemisterId, TeacherId = course?.TeacherId, UnassignCoursesCountId = unassignId };
                     serviceResponse.Data.Add(courseHistory);
                     _dbContext.CoursesHistory.Add(courseHistory);
+                    if(course.TeacherId != null)
+                    {
+                        try
+                        {
+                            Teacher teacher = await _dbContext.Teachers.FindAsync(course.TeacherId);
+                            teacher.RemainingCredit = teacher.CreditToBeTaken;
+                            _dbContext.Teachers.Update(teacher);
+                        }
+                        catch (Exception ex)
+                        {
+                            serviceResponse.Message = "Fatal Error! Execution stopped at the middle";
+                            serviceResponse.Success = false;
+                            return serviceResponse;
+                        }
+                    }
+
                     course.TeacherId = null;
                     _dbContext.Courses.Update(course);
                 }

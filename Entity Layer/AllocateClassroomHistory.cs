@@ -8,7 +8,7 @@ namespace Entity_Layer
 {
     public class AllocateClassroomHistory
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public Room? Room { get; set; }
         public string RoomId { get; set; }
         public Department? Department { get; set; }

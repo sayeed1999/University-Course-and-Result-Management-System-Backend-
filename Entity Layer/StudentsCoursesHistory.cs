@@ -9,6 +9,7 @@ namespace Entity_Layer
 {
     public class StudentsCoursesHistory
     {
+        public long Id { get; set; }
         public int DepartmentId { get; set; }
         public string CourseCode { get; set; }
         public long StudentId { get; set; }

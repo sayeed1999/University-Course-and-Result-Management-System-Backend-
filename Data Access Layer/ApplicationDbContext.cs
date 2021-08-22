@@ -210,17 +210,12 @@ namespace Data_Access_Layer
 
             /// Table : CoursesHistory
 
-            builder.Entity<CourseHistory>(entity =>
-            {
-                entity.HasKey(x => new { x.Code, x.DepartmentId });
-            });
 
 
             /// Table : StudentsCourses
 
             builder.Entity<StudentsCoursesHistory>(entity =>
             {
-                entity.HasKey(x => new { x.DepartmentId, x.CourseCode, x.StudentId });
                 entity.Property(x => x.CourseCode).IsRequired();
                 entity.Property(x => x.Grade).IsRequired(false);
                 entity.HasOne(x => x.Student).WithMany(x => x.StudentsCoursesHistories).HasForeignKey(x => x.StudentId);
