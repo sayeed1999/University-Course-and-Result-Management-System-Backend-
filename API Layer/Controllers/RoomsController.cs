@@ -44,5 +44,13 @@ namespace API_Layer.Controllers
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }
+
+        [HttpDelete("UnallocateAll")]
+        public async Task<ActionResult<ServiceResponse<List<AllocateClassroomHistory>>>> UnallocateClassrooms()
+        {
+            var serviceResponse = await service.UnallocateAllClassrooms();
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
     }
 }
