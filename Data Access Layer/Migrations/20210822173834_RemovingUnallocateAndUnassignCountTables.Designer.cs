@@ -4,14 +4,16 @@ using Data_Access_Layer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210822173834_RemovingUnallocateAndUnassignCountTables")]
+    partial class RemovingUnallocateAndUnassignCountTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,9 +89,6 @@ namespace Data_Access_Layer.Migrations
                     b.Property<DateTime>("From")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("NthHistory")
-                        .HasColumnType("int");
-
                     b.Property<string>("RoomId")
                         .IsRequired()
                         .HasColumnType("nvarchar(10)");
@@ -162,9 +161,6 @@ namespace Data_Access_Layer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NthHistory")
                         .HasColumnType("int");
 
                     b.Property<byte>("SemisterId")
@@ -631,9 +627,6 @@ namespace Data_Access_Layer.Migrations
 
                     b.Property<string>("Grade")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("NthHistory")
-                        .HasColumnType("int");
 
                     b.Property<long>("StudentId")
                         .HasColumnType("bigint");

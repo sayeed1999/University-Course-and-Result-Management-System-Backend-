@@ -19,7 +19,6 @@ namespace Entity_Layer
         public GradeLetter? GradeLetter { get; set; }
         public Student? Student { get; set; }
         public Course? Course { get; set; }
-        public UnassignCoursesCount UnassignCoursesCount { get; set; }
-        public int UnassignCoursesCountId { get; set; }
+        public int NthHistory {  get; set; }
     }
 }

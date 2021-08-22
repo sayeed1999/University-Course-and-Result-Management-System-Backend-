@@ -19,8 +19,6 @@ namespace Entity_Layer
         public string DayId { get; set; }
         public DateTime From { get; set; }
         public DateTime To { get; set; }
-        public UnallocatingRoomsCount UnallocatingRoomsCount { get; set; }
-        public int UnallocatingRoomsCountId { get; set; }
-
+        public int NthHistory { get; set; }
     }
 }

@@ -79,17 +79,14 @@ namespace Service_Layer.RoomService
             serviceResponse.Data = new List<AllocateClassroomHistory>();
             try
             {
-                _dbContext.UnallocatingRoomsCounts.Add(new UnallocatingRoomsCount());
-                await _dbContext.SaveChangesAsync();
-
-                var temp = await _dbContext.UnallocatingRoomsCounts.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
-
-                int unallocateId = temp.Id;
+                var temp = await _dbContext.AllocateClassroomHistories.OrderByDescending(x => x.Id)
+                                .FirstOrDefaultAsync();
+                int nthUnallocating = temp.NthHistory + 1; // this is the nth time you are unallocating classrooms...
 
                 List<AllocateClassroom> allocatedRooms = await _dbContext.AllocateClassrooms.ToListAsync();
                 foreach (var room in allocatedRooms)
                 {
-                    AllocateClassroomHistory roomHistory = new AllocateClassroomHistory { CourseCode = room.CourseCode, DayId = room.DayId, DepartmentId = room.DepartmentId, From = room.From, To = room.To, RoomId = room.RoomId, UnallocatingRoomsCountId = unallocateId };
+                    AllocateClassroomHistory roomHistory = new AllocateClassroomHistory { CourseCode = room.CourseCode, DayId = room.DayId, DepartmentId = room.DepartmentId, From = room.From, To = room.To, RoomId = room.RoomId, NthHistory = nthUnallocating };
                     serviceResponse.Data.Add(roomHistory);
                     _dbContext.AllocateClassroomHistories.Add(roomHistory);
                     _dbContext.AllocateClassrooms.Remove(room);

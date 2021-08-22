@@ -24,8 +24,6 @@ namespace Data_Access_Layer
         public DbSet<AllocateClassroom> AllocateClassrooms { get; set; }
         public DbSet<CourseHistory> CoursesHistory { get; set; }
         public DbSet<StudentsCoursesHistory> StudentsCoursesHistories { get; set; }
-        public DbSet<UnassignCoursesCount> UnassignCoursesCounts { get; set; }
-        public DbSet<UnallocatingRoomsCount> UnallocatingRoomsCounts { get; set; }
         public DbSet<AllocateClassroomHistory> AllocateClassroomHistories { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
