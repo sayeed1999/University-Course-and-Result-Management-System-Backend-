@@ -19,12 +19,16 @@ namespace Service_Layer.StudentService
             _departmentService = departmentService;
         }
 
+        // The GetAll() inside students has everything
         public override async Task<ServiceResponse<IEnumerable<Student>>> GetAll()
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Student>>();
             try
             {
-                serviceResponse.Data = await _dbContext.Students.Include(x => x.Department).ToListAsync();
+                serviceResponse.Data = await _dbContext.Students
+                    .Include(x => x.Department)
+                    .Include(x => x.StudentsCourses)
+                    .ToListAsync();
                 serviceResponse.Message = "Data fetched successfully from the database";
             }
             catch (Exception ex)
