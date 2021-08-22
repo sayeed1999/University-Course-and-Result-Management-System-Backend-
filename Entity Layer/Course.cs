@@ -26,5 +26,6 @@ namespace Entity_Layer
         public int? TeacherId {  get; set; }
         public ICollection<StudentCourse> StudentsCourses { get; set; }
         public ICollection<AllocateClassroom> AllocateClassrooms { get; set; }
+        public ICollection<StudentsCoursesHistory> StudentsCoursesHistories { get; set; }
     }
 }

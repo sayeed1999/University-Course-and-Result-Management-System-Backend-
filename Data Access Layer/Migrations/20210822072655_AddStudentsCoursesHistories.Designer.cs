@@ -4,14 +4,16 @@ using Data_Access_Layer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210822072655_AddStudentsCoursesHistories")]
+    partial class AddStudentsCoursesHistories
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -114,9 +116,6 @@ namespace Data_Access_Layer.Migrations
                     b.Property<int?>("TeacherId")
                         .HasColumnType("int");
 
-                    b.Property<int>("UnassignCoursesCountId")
-                        .HasColumnType("int");
-
                     b.HasKey("Code", "DepartmentId");
 
                     b.HasIndex("DepartmentId");
@@ -124,8 +123,6 @@ namespace Data_Access_Layer.Migrations
                     b.HasIndex("SemisterId");
 
                     b.HasIndex("TeacherId");
-
-                    b.HasIndex("UnassignCoursesCountId");
 
                     b.ToTable("CoursesHistory");
                 });
@@ -554,31 +551,32 @@ namespace Data_Access_Layer.Migrations
 
             modelBuilder.Entity("Entity_Layer.StudentsCoursesHistory", b =>
                 {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CourseCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
-                    b.Property<string>("CourseCode")
+                    b.Property<string>("Grade")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<long>("StudentId")
                         .HasColumnType("bigint");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Grade")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("UnassignCoursesCountId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DepartmentId", "CourseCode", "StudentId");
+                    b.HasKey("Id");
 
                     b.HasIndex("Grade");
 
                     b.HasIndex("StudentId");
-
-                    b.HasIndex("UnassignCoursesCountId");
 
                     b.HasIndex("CourseCode", "DepartmentId");
 
@@ -637,18 +635,6 @@ namespace Data_Access_Layer.Migrations
                     b.HasCheckConstraint("CHK_CreditToBeTakenByTeacher", "CreditToBeTaken !< 0");
 
                     b.HasCheckConstraint("CHK_RemainingCreditOfTeacher", "RemainingCredit BETWEEN 0 AND CreditToBeTaken");
-                });
-
-            modelBuilder.Entity("Entity_Layer.UnassignCoursesCount", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UnassignCoursesCounts");
                 });
 
             modelBuilder.Entity("Entity_Layer.AllocateClassroom", b =>
@@ -730,19 +716,11 @@ namespace Data_Access_Layer.Migrations
                         .WithMany()
                         .HasForeignKey("TeacherId");
 
-                    b.HasOne("Entity_Layer.UnassignCoursesCount", "UnassignCoursesCount")
-                        .WithMany()
-                        .HasForeignKey("UnassignCoursesCountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Department");
 
                     b.Navigation("Semister");
 
                     b.Navigation("Teacher");
-
-                    b.Navigation("UnassignCoursesCount");
                 });
 
             modelBuilder.Entity("Entity_Layer.Student", b =>
@@ -788,14 +766,8 @@ namespace Data_Access_Layer.Migrations
                         .HasForeignKey("Grade");
 
                     b.HasOne("Entity_Layer.Student", "Student")
-                        .WithMany("StudentsCoursesHistories")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entity_Layer.UnassignCoursesCount", "UnassignCoursesCount")
                         .WithMany()
-                        .HasForeignKey("UnassignCoursesCountId")
+                        .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -810,8 +782,6 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("GradeLetter");
 
                     b.Navigation("Student");
-
-                    b.Navigation("UnassignCoursesCount");
                 });
 
             modelBuilder.Entity("Entity_Layer.Teacher", b =>
@@ -867,8 +837,6 @@ namespace Data_Access_Layer.Migrations
             modelBuilder.Entity("Entity_Layer.Student", b =>
                 {
                     b.Navigation("StudentsCourses");
-
-                    b.Navigation("StudentsCoursesHistories");
                 });
 
             modelBuilder.Entity("Entity_Layer.Teacher", b =>

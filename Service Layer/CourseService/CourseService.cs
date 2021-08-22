@@ -156,5 +156,44 @@ namespace Service_Layer.CourseService
             }
             return serviceResponse;
         }
+
+        public async Task<ServiceResponse<ICollection<CourseHistory>>> UnassignAllCourses()
+        {
+            var serviceResponse = new ServiceResponse<ICollection<CourseHistory>>();
+            try
+            {
+                _dbContext.UnassignCoursesCounts.Add(new UnassignCoursesCount());
+                await _dbContext.SaveChangesAsync();
+                int unassignId = (await _dbContext.UnassignCoursesCounts.LastOrDefaultAsync()).Id;
+
+                var courses = await _dbContext.Courses.ToListAsync();
+                foreach (var course in courses)
+                {
+                    var courseHistory = new CourseHistory { Code = course.Code, DepartmentId = course.DepartmentId, SemisterId = course.SemisterId, TeacherId = course?.TeacherId, UnassignCoursesCountId = unassignId };
+                    serviceResponse.Data.Add(courseHistory);
+                    _dbContext.CoursesHistory.Add(courseHistory);
+                    course.TeacherId = null;
+                    _dbContext.Courses.Update(course);
+                }
+                await _dbContext.SaveChangesAsync();
+
+                var studentsCourses = await _dbContext.StudentsCourses.ToListAsync();
+                foreach(var studentCourse in studentsCourses)
+                {
+                    var newStudentCourse = new StudentsCoursesHistory { DepartmentId = studentCourse.DepartmentId, CourseCode = studentCourse.CourseCode, Date = studentCourse.Date, StudentId = studentCourse.StudentId, UnassignCoursesCountId = unassignId };
+                    _dbContext.StudentsCoursesHistories.Add(newStudentCourse);
+                    _dbContext.StudentsCourses.Remove(studentCourse);
+                }
+
+                serviceResponse.Message = "Courses & Students History successfully saved!";
+                await _dbContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Fatal error! Course saving failed. May be you need to clear data manually in the db";
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
     }
 }

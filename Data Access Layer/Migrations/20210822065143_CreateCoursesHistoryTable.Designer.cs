@@ -4,14 +4,16 @@ using Data_Access_Layer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Data_Access_Layer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210822065143_CreateCoursesHistoryTable")]
+    partial class CreateCoursesHistoryTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -108,13 +110,21 @@ namespace Data_Access_Layer.Migrations
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
 
+                    b.Property<float>("Credit")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<byte>("SemisterId")
                         .HasColumnType("tinyint");
 
                     b.Property<int?>("TeacherId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UnassignCoursesCountId")
                         .HasColumnType("int");
 
                     b.HasKey("Code", "DepartmentId");
@@ -124,8 +134,6 @@ namespace Data_Access_Layer.Migrations
                     b.HasIndex("SemisterId");
 
                     b.HasIndex("TeacherId");
-
-                    b.HasIndex("UnassignCoursesCountId");
 
                     b.ToTable("CoursesHistory");
                 });
@@ -552,39 +560,6 @@ namespace Data_Access_Layer.Migrations
                     b.ToTable("StudentsCourses");
                 });
 
-            modelBuilder.Entity("Entity_Layer.StudentsCoursesHistory", b =>
-                {
-                    b.Property<int>("DepartmentId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CourseCode")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<long>("StudentId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Grade")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("UnassignCoursesCountId")
-                        .HasColumnType("int");
-
-                    b.HasKey("DepartmentId", "CourseCode", "StudentId");
-
-                    b.HasIndex("Grade");
-
-                    b.HasIndex("StudentId");
-
-                    b.HasIndex("UnassignCoursesCountId");
-
-                    b.HasIndex("CourseCode", "DepartmentId");
-
-                    b.ToTable("StudentsCoursesHistories");
-                });
-
             modelBuilder.Entity("Entity_Layer.Teacher", b =>
                 {
                     b.Property<int>("Id")
@@ -637,18 +612,6 @@ namespace Data_Access_Layer.Migrations
                     b.HasCheckConstraint("CHK_CreditToBeTakenByTeacher", "CreditToBeTaken !< 0");
 
                     b.HasCheckConstraint("CHK_RemainingCreditOfTeacher", "RemainingCredit BETWEEN 0 AND CreditToBeTaken");
-                });
-
-            modelBuilder.Entity("Entity_Layer.UnassignCoursesCount", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UnassignCoursesCounts");
                 });
 
             modelBuilder.Entity("Entity_Layer.AllocateClassroom", b =>
@@ -730,19 +693,11 @@ namespace Data_Access_Layer.Migrations
                         .WithMany()
                         .HasForeignKey("TeacherId");
 
-                    b.HasOne("Entity_Layer.UnassignCoursesCount", "UnassignCoursesCount")
-                        .WithMany()
-                        .HasForeignKey("UnassignCoursesCountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Department");
 
                     b.Navigation("Semister");
 
                     b.Navigation("Teacher");
-
-                    b.Navigation("UnassignCoursesCount");
                 });
 
             modelBuilder.Entity("Entity_Layer.Student", b =>
@@ -781,39 +736,6 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("Student");
                 });
 
-            modelBuilder.Entity("Entity_Layer.StudentsCoursesHistory", b =>
-                {
-                    b.HasOne("Entity_Layer.GradeLetter", "GradeLetter")
-                        .WithMany()
-                        .HasForeignKey("Grade");
-
-                    b.HasOne("Entity_Layer.Student", "Student")
-                        .WithMany("StudentsCoursesHistories")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entity_Layer.UnassignCoursesCount", "UnassignCoursesCount")
-                        .WithMany()
-                        .HasForeignKey("UnassignCoursesCountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Entity_Layer.Course", "Course")
-                        .WithMany("StudentsCoursesHistories")
-                        .HasForeignKey("CourseCode", "DepartmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Course");
-
-                    b.Navigation("GradeLetter");
-
-                    b.Navigation("Student");
-
-                    b.Navigation("UnassignCoursesCount");
-                });
-
             modelBuilder.Entity("Entity_Layer.Teacher", b =>
                 {
                     b.HasOne("Entity_Layer.Department", "Department")
@@ -838,8 +760,6 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("AllocateClassrooms");
 
                     b.Navigation("StudentsCourses");
-
-                    b.Navigation("StudentsCoursesHistories");
                 });
 
             modelBuilder.Entity("Entity_Layer.Day", b =>
@@ -867,8 +787,6 @@ namespace Data_Access_Layer.Migrations
             modelBuilder.Entity("Entity_Layer.Student", b =>
                 {
                     b.Navigation("StudentsCourses");
-
-                    b.Navigation("StudentsCoursesHistories");
                 });
 
             modelBuilder.Entity("Entity_Layer.Teacher", b =>

@@ -18,5 +18,6 @@ namespace Entity_Layer
         public int DepartmentId { get; set; }
         public string RegistrationNumber { get; init; }
         public ICollection<StudentCourse> StudentsCourses {  get; set; }
+        public ICollection<StudentsCoursesHistory> StudentsCoursesHistories { get; set; }
     }
 }
