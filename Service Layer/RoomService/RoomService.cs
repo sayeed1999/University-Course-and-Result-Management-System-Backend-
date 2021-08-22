@@ -95,7 +95,7 @@ namespace Service_Layer.RoomService
                     _dbContext.AllocateClassrooms.Remove(room);
                 }
                 await _dbContext.SaveChangesAsync();
-                serviceResponse.Message = "Courses & Students History successfully saved!";
+                serviceResponse.Message = "Allocated Rooms History successfully saved!";
             }
             catch (Exception ex)
             {
