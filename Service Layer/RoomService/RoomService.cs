@@ -72,5 +72,38 @@ namespace Service_Layer.RoomService
             return serviceResponse;
 
         }
+
+        public async Task<ServiceResponse<List<AllocateClassroomHistory>>> UnallocateAllClassrooms()
+        {
+            var serviceResponse = new ServiceResponse<List<AllocateClassroomHistory>>();
+            serviceResponse.Data = new List<AllocateClassroomHistory>();
+            try
+            {
+                _dbContext.UnallocatingRoomsCounts.Add(new UnallocatingRoomsCount());
+                await _dbContext.SaveChangesAsync();
+
+                var temp = await _dbContext.UnallocatingRoomsCounts.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+
+                int unallocateId = temp.Id;
+
+                List<AllocateClassroom> allocatedRooms = await _dbContext.AllocateClassrooms.ToListAsync();
+                foreach (var room in allocatedRooms)
+                {
+                    AllocateClassroomHistory roomHistory = new AllocateClassroomHistory { CourseCode = room.CourseCode, DayId = room.DayId, DepartmentId = room.DepartmentId, From = room.From, To = room.To, RoomId = room.RoomId, UnallocatingRoomsCountId = unallocateId };
+                    serviceResponse.Data.Add(roomHistory);
+                    _dbContext.AllocateClassroomHistories.Add(roomHistory);
+                    _dbContext.AllocateClassrooms.Remove(room);
+                }
+                await _dbContext.SaveChangesAsync();
+                serviceResponse.Message = "Courses & Students History successfully saved!";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Fatal error! Course saving failed. May be you need to clear data manually in the db";
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+
+        }
     }
 }
