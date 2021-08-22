@@ -163,10 +163,19 @@ namespace Service_Layer.CourseService
             serviceResponse.Data = new List<CourseHistory>();
             try
             {
-                var temp = await _dbContext.StudentsCoursesHistories.OrderByDescending(x => x.Id)
-                                        .FirstOrDefaultAsync();
-
-                int unassignId = temp.NthHistory + 1;
+                var count = await _dbContext.StudentsCoursesHistories.CountAsync();
+                int unassignId = 0;
+                if(count == 0)
+                {
+                    unassignId = 1;
+                }
+                else
+                {
+                    var temp = await _dbContext.StudentsCoursesHistories
+                                            .OrderByDescending(x => x.Id)
+                                            .FirstOrDefaultAsync();
+                    unassignId = temp.NthHistory + 1;
+                }
 
                 List<Course> courses = await _dbContext.Courses.ToListAsync();
                 foreach (Course course in courses)
@@ -193,8 +202,7 @@ namespace Service_Layer.CourseService
                     course.TeacherId = null;
                     _dbContext.Courses.Update(course);
                 }
-                await _dbContext.SaveChangesAsync();
-                
+                // await _dbContext.SaveChangesAsync();
 
                 var studentsCourses = await _dbContext.StudentsCourses.ToListAsync();
                 foreach(var studentCourse in studentsCourses)

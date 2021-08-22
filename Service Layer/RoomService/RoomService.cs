@@ -79,9 +79,17 @@ namespace Service_Layer.RoomService
             serviceResponse.Data = new List<AllocateClassroomHistory>();
             try
             {
-                var temp = await _dbContext.AllocateClassroomHistories.OrderByDescending(x => x.Id)
-                                .FirstOrDefaultAsync();
-                int nthUnallocating = temp.NthHistory + 1; // this is the nth time you are unallocating classrooms...
+                int nthUnallocating = 0;
+                if(await _dbContext.AllocateClassroomHistories.CountAsync() == 0)
+                {
+                    nthUnallocating = 1;
+                }
+                else
+                {
+                    var temp = await _dbContext.AllocateClassroomHistories.OrderByDescending(x => x.Id)
+                                    .FirstOrDefaultAsync();
+                    nthUnallocating = temp.NthHistory + 1; // this is the nth time you are unallocating classrooms...
+                }
 
                 List<AllocateClassroom> allocatedRooms = await _dbContext.AllocateClassrooms.ToListAsync();
                 foreach (var room in allocatedRooms)
