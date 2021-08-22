@@ -16,6 +16,6 @@ namespace Service_Layer.CourseService
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(int departmentId);
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(string departmentCode);
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(int departmentId);
-        public Task<ServiceResponse<ICollection<CourseHistory>>> UnassignAllCourses();
+        public Task<ServiceResponse<List<CourseHistory>>> UnassignAllCourses();
     }
 }

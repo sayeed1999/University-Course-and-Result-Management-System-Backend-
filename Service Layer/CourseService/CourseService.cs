@@ -157,30 +157,35 @@ namespace Service_Layer.CourseService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<ICollection<CourseHistory>>> UnassignAllCourses()
+        public async Task<ServiceResponse<List<CourseHistory>>> UnassignAllCourses()
         {
-            var serviceResponse = new ServiceResponse<ICollection<CourseHistory>>();
+            var serviceResponse = new ServiceResponse<List<CourseHistory>>();
+            serviceResponse.Data = new List<CourseHistory>();
             try
             {
                 _dbContext.UnassignCoursesCounts.Add(new UnassignCoursesCount());
                 await _dbContext.SaveChangesAsync();
-                int unassignId = (await _dbContext.UnassignCoursesCounts.LastOrDefaultAsync()).Id;
 
-                var courses = await _dbContext.Courses.ToListAsync();
+                var temp = await _dbContext.UnassignCoursesCounts.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+
+                int unassignId = temp.Id;
+
+                List<Course> courses = await _dbContext.Courses.ToListAsync();
                 foreach (var course in courses)
                 {
-                    var courseHistory = new CourseHistory { Code = course.Code, DepartmentId = course.DepartmentId, SemisterId = course.SemisterId, TeacherId = course?.TeacherId, UnassignCoursesCountId = unassignId };
+                    CourseHistory courseHistory = new CourseHistory { Code = course.Code, DepartmentId = course.DepartmentId, SemisterId = course.SemisterId, TeacherId = course?.TeacherId, UnassignCoursesCountId = unassignId };
                     serviceResponse.Data.Add(courseHistory);
                     _dbContext.CoursesHistory.Add(courseHistory);
                     course.TeacherId = null;
                     _dbContext.Courses.Update(course);
                 }
                 await _dbContext.SaveChangesAsync();
+                
 
                 var studentsCourses = await _dbContext.StudentsCourses.ToListAsync();
                 foreach(var studentCourse in studentsCourses)
                 {
-                    var newStudentCourse = new StudentsCoursesHistory { DepartmentId = studentCourse.DepartmentId, CourseCode = studentCourse.CourseCode, Date = studentCourse.Date, StudentId = studentCourse.StudentId, UnassignCoursesCountId = unassignId };
+                    var newStudentCourse = new StudentsCoursesHistory { DepartmentId = studentCourse.DepartmentId, CourseCode = studentCourse.CourseCode, Date = studentCourse.Date, StudentId = studentCourse.StudentId, Grade = studentCourse.Grade, UnassignCoursesCountId = unassignId };
                     _dbContext.StudentsCoursesHistories.Add(newStudentCourse);
                     _dbContext.StudentsCourses.Remove(studentCourse);
                 }
