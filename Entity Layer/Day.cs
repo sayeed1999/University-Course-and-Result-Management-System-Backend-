@@ -10,5 +10,6 @@ namespace Entity_Layer
     {
         public string Name {  get; set; }
         public ICollection<AllocateClassroom> AllocateClassrooms {  get; set; }
+        public ICollection<AllocateClassroomHistory> AllocateClassroomHistories { get; set; }
     }
 }

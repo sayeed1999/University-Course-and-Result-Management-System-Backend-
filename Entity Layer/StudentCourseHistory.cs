@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Entity_Layer
 {
-    public class StudentsCoursesHistory
+    public class StudentCourseHistory
     {
         public long Id { get; set; }
         public int DepartmentId { get; set; }
@@ -15,7 +15,6 @@ namespace Entity_Layer
         public long StudentId { get; set; }
         public DateTime Date { get; set; }
         public string? Grade { get; set; }
-        [ForeignKey("Grade")]
         public GradeLetter? GradeLetter { get; set; }
         public Student? Student { get; set; }
         public Course? Course { get; set; }

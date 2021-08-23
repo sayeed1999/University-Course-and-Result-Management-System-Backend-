@@ -22,8 +22,8 @@ namespace Data_Access_Layer
         public DbSet<Day> Days { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<AllocateClassroom> AllocateClassrooms { get; set; }
-        public DbSet<CourseHistory> CoursesHistory { get; set; }
-        public DbSet<StudentsCoursesHistory> StudentsCoursesHistories { get; set; }
+        public DbSet<CourseHistory> CoursesHistories { get; set; }
+        public DbSet<StudentCourseHistory> StudentCourseHistories { get; set; }
         public DbSet<AllocateClassroomHistory> AllocateClassroomHistories { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -46,7 +46,9 @@ namespace Data_Access_Layer
             builder.ApplyConfiguration(new DayEntityConfiguration());
             builder.ApplyConfiguration(new RoomEntityConfiguration());
             builder.ApplyConfiguration(new AllocateClassroomEntityConfiguration());
-            
+            builder.ApplyConfiguration(new AllocateClassroomHistoryEntityConfiguration());
+            builder.ApplyConfiguration(new CourseHistoryEntityConfiguration());
+            builder.ApplyConfiguration(new StudentCourseHistoryEntityConfiguration());
         }
     }
 }
