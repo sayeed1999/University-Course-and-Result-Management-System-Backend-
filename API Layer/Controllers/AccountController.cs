@@ -1,4 +1,5 @@
-﻿using Entity_Layer;
+﻿using Data_Access_Layer;
+using Entity_Layer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -13,8 +14,8 @@ namespace API_Layer.Controllers
     public class AccountController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<IdentityUser> signInManager)
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -36,7 +37,7 @@ namespace API_Layer.Controllers
                 var result = await _userManager.CreateAsync(user, "AAAA12");
                 if (result.Succeeded)
                 {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    //await _signInManager.SignInAsync(user, isPersistent: false);
                     return Ok("Registered User");
                 }
             }

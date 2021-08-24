@@ -61,7 +61,9 @@ namespace API_Layer
             services.AddScoped<IRoomService, RoomService>();
             services.AddScoped<IDayService, DayService>();
 
-            services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                    .AddRoles<IdentityRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.Configure<IdentityOptions>(options =>
             {
