@@ -17,14 +17,14 @@ namespace API_Layer.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ApplicationDbContext _context;
+        //private readonly ApplicationDbContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
-            _context = context;
+            //_context = context;
         }
         
         [HttpPost("Register")]
@@ -65,7 +65,7 @@ namespace API_Layer.Controllers
         }
 
         [HttpPost("Roles")]
-        public async Task<ServiceResponse<RoleDto>> CreateRoles(RoleDto newRole)
+        public async Task<ServiceResponse<RoleDto>> CreateRoles([FromBody] RoleDto newRole)
         {
             var serviceResponse = new ServiceResponse<RoleDto>();
             serviceResponse.Data = newRole;
