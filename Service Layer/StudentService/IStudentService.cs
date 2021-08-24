@@ -11,6 +11,8 @@ namespace Service_Layer.StudentService
     public interface IStudentService : IRepository<Student>
     {
         public Task<ServiceResponse<IEnumerable<Student>>> GetStudentsResults();
+        public Task<ServiceResponse<Student>> GetStudentResultById(long id);
+        public Task<ServiceResponse<Student>> GetStudentResultByRegNo(String reg);
         public Task<ServiceResponse<Student>> RegisterStudent(StudentRegistration student);
         public Task<ServiceResponse<StudentCourse>> EnrollStudentInCourse(StudentCourse data);
         public Task<ServiceResponse<StudentCourse>> SaveResult(StudentCourse data);
