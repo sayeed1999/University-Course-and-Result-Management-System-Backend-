@@ -1,5 +1,6 @@
 ﻿using Data_Access_Layer.EntityConfigurations;
 using Entity_Layer;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -9,8 +10,13 @@ using System.Threading.Tasks;
 
 namespace Data_Access_Layer
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext
     {
+        private readonly DbContextOptions _options;
+        public ApplicationDbContext(DbContextOptions options) : base(options)
+        {
+            _options = options;
+        }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Course> Courses { get; set; } // it references Semister, so even if i dont create Semisters table here, it will auto create in the db!
         public DbSet<Semister> Semisters { get; set; }
