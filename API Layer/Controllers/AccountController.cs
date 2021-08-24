@@ -32,6 +32,7 @@ namespace API_Layer.Controllers
         {
             var serviceResponse = new ServiceResponse<RegisterDto>();
             serviceResponse.Data = model;
+            serviceResponse.Data.Roles = new HashSet<string>();
 
             if (ModelState.IsValid)
             {
@@ -48,7 +49,24 @@ namespace API_Layer.Controllers
                 if (result.Succeeded)
                 {
                     //await _signInManager.SignInAsync(user, isPersistent: false);
-                    serviceResponse.Message = "User registered successfully";
+                    serviceResponse.Message = "User registered successfully.";
+                    ApplicationUser registeredUser = await _userManager.FindByEmailAsync(user.Email);
+
+                    //await _userManager.AddToRolesAsync(registeredUser, model.Roles);
+
+                    foreach(string roleName in model.Roles)
+                    {
+                        string temp = roleName.Trim().ToLower();
+                        if (string.IsNullOrEmpty(temp)) continue;
+                        if (await _roleManager.RoleExistsAsync(roleName) == false) continue;
+
+                        if(await _userManager.IsInRoleAsync(registeredUser, roleName))
+                        {
+                            await _userManager.AddToRoleAsync(registeredUser, temp);
+                            serviceResponse.Data.Roles.Add(temp);
+                        }
+                        serviceResponse.Message += " And user is added to the returned roles.";
+                    }
                 }
                 else
                 {
