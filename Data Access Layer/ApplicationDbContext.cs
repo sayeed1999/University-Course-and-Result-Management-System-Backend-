@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Data_Access_Layer
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         private readonly DbContextOptions _options;
         public ApplicationDbContext(DbContextOptions options) : base(options)
