@@ -1,7 +1,9 @@
 ﻿using Data_Access_Layer;
 using Entity_Layer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Repository_Layer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +17,22 @@ namespace API_Layer.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        private readonly ApplicationDbContext _context;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
+            _context = context;
         }
         
-        [HttpPost]
-        public async Task<IActionResult> Register(Register model)
+        [HttpPost("Register")]
+        public async Task<ServiceResponse<RegisterDto>> Register(RegisterDto model)
         {
+            var serviceResponse = new ServiceResponse<RegisterDto>();
+            serviceResponse.Data = model;
+
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
@@ -35,13 +44,45 @@ namespace API_Layer.Controllers
                 };
                 // both password & confirmPassword  = "AAAA12";
                 var result = await _userManager.CreateAsync(user, "AAAA12");
+
                 if (result.Succeeded)
                 {
                     //await _signInManager.SignInAsync(user, isPersistent: false);
-                    return Ok("Registered User");
+                    serviceResponse.Message = "User registered successfully";
+                }
+                else
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = result.Errors.ToList().ToString();
                 }
             }
-            return BadRequest("Failed");
+            else
+            {
+                serviceResponse.Message = "Model State is not valid.";
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+
+        [HttpPost("Roles")]
+        public async Task<ServiceResponse<RoleDto>> CreateRoles(RoleDto newRole)
+        {
+            var serviceResponse = new ServiceResponse<RoleDto>();
+            serviceResponse.Data = newRole;
+            try
+            {
+                //_context.Roles.Add(new IdentityRole() { Name = newRole.Name });
+                //await _context.SaveChangesAsync();
+
+                await _roleManager.CreateAsync(new IdentityRole() { Name = newRole.Name });
+                serviceResponse.Message = "New role created!";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
+            return serviceResponse;
         }
     }
 }

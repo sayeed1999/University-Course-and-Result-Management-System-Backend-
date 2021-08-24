@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Entity_Layer
 {
-    public class Register
+    public class RegisterDto
     {
         public string FirstName {  get; set; }
         public string LastName { get; set; }
