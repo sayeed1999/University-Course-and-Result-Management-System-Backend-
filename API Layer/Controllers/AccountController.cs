@@ -134,5 +134,37 @@ namespace API_Layer.Controllers
             return BadRequest(serviceResponse);
         }
 
+        [HttpGet("AllUsers")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<RegisterDto>>>> GetAllUsers()
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<RegisterDto>>();
+            var users = new List<RegisterDto>();
+            List<IdentityRole> dbRoles = await _roleManager.Roles.ToListAsync();
+
+            foreach(var user in _userManager.Users)
+            {
+                String roles = "";
+                foreach(var role in dbRoles)
+                {
+                    if(await _userManager.IsInRoleAsync(user, role.Name))
+                    {
+                        if (!string.IsNullOrEmpty(roles)) roles += ",";
+                        roles += role.Name;
+                    }
+                }
+
+                users.Add(
+                    new RegisterDto() {
+                        FirstName = user.FirstName,
+                        LastName = user.LastName,
+                        Email = user.Email,
+                        Roles = roles
+                    }
+                );
+            }
+            serviceResponse.Data = users;
+            return Ok(users);
+        }
+
     }
 }

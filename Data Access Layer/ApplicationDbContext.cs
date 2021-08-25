@@ -34,7 +34,7 @@ namespace Data_Access_Layer
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=sayeeds-coding-\sqlexpress;Database=UniversityCourseAndResultManagementSystem;trusted_connection=SSPI");
+            optionsBuilder.UseSqlServer(@"Server=sayeeds-coding-\sqlexpress; Database=UniversityCourseAndResultManagementSystem; trusted_connection=SSPI; MultipleActiveResultSets=True");
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
