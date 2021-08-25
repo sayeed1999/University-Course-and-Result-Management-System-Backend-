@@ -244,5 +244,36 @@ namespace API_Layer.Controllers
             if (serviceResponse.Success) return Ok(serviceResponse);
             return BadRequest(serviceResponse);
         }
+
+        [HttpGet("{email}")]
+        public async Task<ActionResult<ServiceResponse<RegisterDto>>> GetUserByEmail([FromRoute] string email)
+        {
+            var serviceResponse = new ServiceResponse<RegisterDto>();
+
+            List<IdentityRole> dbRoles = await _roleManager.Roles.ToListAsync();
+
+            ApplicationUser user = await _userManager.FindByEmailAsync(email);
+
+            String roles = "";
+            foreach (var role in dbRoles)
+            {
+                if (await _userManager.IsInRoleAsync(user, role.Name))
+                {
+                    if (!string.IsNullOrEmpty(roles)) roles += ",";
+                    roles += role.Name;
+                }
+            }
+
+            RegisterDto ret = new RegisterDto() {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                Roles = roles,
+                UserName = user.UserName
+            };
+
+            serviceResponse.Data = ret;
+            return Ok(serviceResponse);
+        }
     }
 }
