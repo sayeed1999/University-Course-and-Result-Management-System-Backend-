@@ -3,6 +3,7 @@ using Entity_Layer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Repository_Layer;
 using System;
 using System.Collections.Generic;
@@ -17,14 +18,14 @@ namespace API_Layer.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        //private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
         public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
-            //_context = context;
+            _context = context;
         }
         
         [HttpPost("Register")]
@@ -32,7 +33,7 @@ namespace API_Layer.Controllers
         {
             var serviceResponse = new ServiceResponse<RegisterDto>();
             serviceResponse.Data = model;
-            serviceResponse.Data.Roles = new HashSet<string>();
+            serviceResponse.Data.Roles = new List<string>();
 
             if (ModelState.IsValid)
             {
@@ -60,7 +61,7 @@ namespace API_Layer.Controllers
                         if (string.IsNullOrEmpty(temp)) continue;
                         if (await _roleManager.RoleExistsAsync(roleName) == false) continue;
 
-                        if(await _userManager.IsInRoleAsync(registeredUser, roleName))
+                        if(!(await _userManager.IsInRoleAsync(registeredUser, roleName)))
                         {
                             await _userManager.AddToRoleAsync(registeredUser, temp);
                             serviceResponse.Data.Roles.Add(temp);
@@ -92,7 +93,7 @@ namespace API_Layer.Controllers
                 //_context.Roles.Add(new IdentityRole() { Name = newRole.Name });
                 //await _context.SaveChangesAsync();
 
-                await _roleManager.CreateAsync(new IdentityRole() { Name = newRole.Name });
+                await _roleManager.CreateAsync(new IdentityRole() { Name = newRole.Name.Trim().ToLower() });
                 serviceResponse.Message = "New role created!";
             }
             catch (Exception ex)
@@ -102,5 +103,28 @@ namespace API_Layer.Controllers
             }
             return serviceResponse;
         }
+
+        [HttpGet("Roles")]
+        public async Task<ServiceResponse<IEnumerable<string>>> GetAllRoles()
+        {
+            ServiceResponse<IEnumerable<string>> serviceResponse = new ServiceResponse<IEnumerable<string>>();
+            var temp = new List<string>();
+            try
+            {
+                foreach (var role in _context.Roles)
+                {
+                    temp.Add(role.Name);
+                }
+                if (temp.Count == 0) serviceResponse.Message = "No roles found. Try inserting roles.";
+            }
+            catch(Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = ex.Message;
+            }
+            serviceResponse.Data = temp;
+            return serviceResponse;
+        }
+
     }
 }
