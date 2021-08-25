@@ -205,6 +205,7 @@ namespace API_Layer.Controllers
                     {
                         serviceResponse.Success = false;
                         serviceResponse.Message = "User data updating not successful";
+                        return BadRequest(serviceResponse);
                     }
 
                     try
@@ -222,10 +223,13 @@ namespace API_Layer.Controllers
                             }
                         }
 
-                        roles = (string[])await _userManager.GetRolesAsync(user);
-                        foreach (var role in roles)
+                        var roles2 = await _userManager.GetRolesAsync(user);
+                        foreach (var role in roles2)
                         {
-                            await _userManager.RemoveFromRoleAsync(user, role);
+                            if(roles.Count(x => x == role) == 0)
+                            {
+                                await _userManager.RemoveFromRoleAsync(user, role);
+                            }
                         }
                     }
                     catch (Exception ex)
