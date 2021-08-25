@@ -29,17 +29,16 @@ namespace API_Layer.Controllers
         }
         
         [HttpPost("Register")]
-        public async Task<ServiceResponse<RegisterDto>> Register(RegisterDto model)
+        public async Task<ActionResult<ServiceResponse<RegisterDto>>> Register(RegisterDto model)
         {
             var serviceResponse = new ServiceResponse<RegisterDto>();
             serviceResponse.Data = model;
-            serviceResponse.Data.Roles = new List<string>();
 
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser
                 {
-                    UserName = model.FirstName + model.LastName,
+                    UserName = model.Email,
                     Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName
@@ -54,37 +53,44 @@ namespace API_Layer.Controllers
                     ApplicationUser registeredUser = await _userManager.FindByEmailAsync(user.Email);
 
                     //await _userManager.AddToRolesAsync(registeredUser, model.Roles);
+                    var roles = model.Roles.Split(',', ' ');
 
-                    foreach(string roleName in model.Roles)
+                    foreach(string roleName in roles)
                     {
                         string temp = roleName.Trim().ToLower();
                         if (string.IsNullOrEmpty(temp)) continue;
-                        if (await _roleManager.RoleExistsAsync(roleName) == false) continue;
+                        if (!(await _roleManager.RoleExistsAsync(roleName))) continue;
 
                         if(!(await _userManager.IsInRoleAsync(registeredUser, roleName)))
                         {
                             await _userManager.AddToRoleAsync(registeredUser, temp);
-                            serviceResponse.Data.Roles.Add(temp);
+                            serviceResponse.Data.Roles += roleName + ", ";
                         }
-                        serviceResponse.Message += " And user is added to the returned roles.";
                     }
+                    serviceResponse.Message += " User is added to the respective roles.";
+
                 }
                 else
                 {
+                    serviceResponse.Message = "Errors occured:-\n";
+                    foreach(var error in result.Errors)
+                    {
+                        serviceResponse.Message += error.Description + "\n";
+                    }
                     serviceResponse.Success = false;
-                    serviceResponse.Message = result.Errors.ToList().ToString();
                 }
             }
             else
             {
-                serviceResponse.Message = "Model State is not valid.";
+                serviceResponse.Message = "Model State is not valid. Send proper data";
                 serviceResponse.Success = false;
             }
-            return serviceResponse;
+            if (serviceResponse.Success) return Ok(serviceResponse);
+            return BadRequest(serviceResponse);
         }
 
         [HttpPost("Roles")]
-        public async Task<ServiceResponse<RoleDto>> CreateRoles([FromBody] RoleDto newRole)
+        public async Task<ActionResult<ServiceResponse<RoleDto>>> CreateRoles([FromBody] RoleDto newRole)
         {
             var serviceResponse = new ServiceResponse<RoleDto>();
             serviceResponse.Data = newRole;
@@ -101,11 +107,12 @@ namespace API_Layer.Controllers
                 serviceResponse.Success = false;
                 serviceResponse.Message = ex.Message;
             }
-            return serviceResponse;
+            if (serviceResponse.Success) return Ok(serviceResponse);
+            return BadRequest(serviceResponse);
         }
 
         [HttpGet("Roles")]
-        public async Task<ServiceResponse<IEnumerable<string>>> GetAllRoles()
+        public async Task<ActionResult<ServiceResponse<IEnumerable<string>>>> GetAllRoles()
         {
             ServiceResponse<IEnumerable<string>> serviceResponse = new ServiceResponse<IEnumerable<string>>();
             var temp = new List<string>();
@@ -123,7 +130,8 @@ namespace API_Layer.Controllers
                 serviceResponse.Message = ex.Message;
             }
             serviceResponse.Data = temp;
-            return serviceResponse;
+            if (serviceResponse.Success) return Ok(serviceResponse);
+            return BadRequest(serviceResponse);
         }
 
     }

@@ -13,6 +13,6 @@ namespace Entity_Layer
         public string Email {  get; set; }
 
         // password, confirm password, username...
-        public ICollection<string> Roles {  get; set; } = new List<string>();
+        public string Roles { get; set; } //public List<string> Roles {  get; set; }
     }
 }
