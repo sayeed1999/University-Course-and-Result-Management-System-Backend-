@@ -194,7 +194,7 @@ namespace API_Layer.Controllers
                 {
                     if (user.FirstName != model.FirstName) user.FirstName = model.FirstName;
                     if (user.LastName != model.LastName) user.LastName = model.LastName;
-                    if (user.UserName != model.UserName) user.UserName = model.UserName;
+                    //if (user.UserName != model.UserName) user.UserName = model.Email;
                     if (user.Email != model.Email) user.Email = model.Email;
 
                     try
@@ -253,6 +253,13 @@ namespace API_Layer.Controllers
             List<IdentityRole> dbRoles = await _roleManager.Roles.ToListAsync();
 
             ApplicationUser user = await _userManager.FindByEmailAsync(email);
+
+            if(user == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "No user found.";
+                return BadRequest(serviceResponse);
+            }
 
             String roles = "";
             foreach (var role in dbRoles)
