@@ -158,12 +158,13 @@ namespace API_Layer.Controllers
                         FirstName = user.FirstName,
                         LastName = user.LastName,
                         Email = user.Email,
-                        Roles = roles
+                        Roles = roles,
+                        UserName = user.UserName
                     }
                 );
             }
             serviceResponse.Data = users;
-            return Ok(users);
+            return Ok(serviceResponse);
         }
 
     }
