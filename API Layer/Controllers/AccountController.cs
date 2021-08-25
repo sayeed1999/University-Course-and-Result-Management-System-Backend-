@@ -1,5 +1,6 @@
 ﻿using Data_Access_Layer;
 using Entity_Layer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +28,7 @@ namespace API_Layer.Controllers
             _roleManager = roleManager;
             _context = context;
         }
-        
+
         [HttpPost("Register")]
         public async Task<ActionResult<ServiceResponse<RegisterDto>>> Register(RegisterDto model)
         {
@@ -55,13 +56,13 @@ namespace API_Layer.Controllers
                     //await _userManager.AddToRolesAsync(registeredUser, model.Roles);
                     var roles = model.Roles.Split(',', ' ');
 
-                    foreach(string roleName in roles)
+                    foreach (string roleName in roles)
                     {
                         string temp = roleName.Trim().ToLower();
                         if (string.IsNullOrEmpty(temp)) continue;
                         if (!(await _roleManager.RoleExistsAsync(roleName))) continue;
 
-                        if(!(await _userManager.IsInRoleAsync(registeredUser, roleName)))
+                        if (!(await _userManager.IsInRoleAsync(registeredUser, roleName)))
                         {
                             await _userManager.AddToRoleAsync(registeredUser, temp);
                             serviceResponse.Data.Roles += roleName + ", ";
@@ -73,7 +74,7 @@ namespace API_Layer.Controllers
                 else
                 {
                     serviceResponse.Message = "Errors occured:-\n";
-                    foreach(var error in result.Errors)
+                    foreach (var error in result.Errors)
                     {
                         serviceResponse.Message += error.Description + "\n";
                     }
@@ -124,7 +125,7 @@ namespace API_Layer.Controllers
                 }
                 if (temp.Count == 0) serviceResponse.Message = "No roles found. Try inserting roles.";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = ex.Message;
@@ -141,12 +142,12 @@ namespace API_Layer.Controllers
             var users = new List<RegisterDto>();
             List<IdentityRole> dbRoles = await _roleManager.Roles.ToListAsync();
 
-            foreach(var user in _userManager.Users)
+            foreach (var user in _userManager.Users)
             {
                 String roles = "";
-                foreach(var role in dbRoles)
+                foreach (var role in dbRoles)
                 {
-                    if(await _userManager.IsInRoleAsync(user, role.Name))
+                    if (await _userManager.IsInRoleAsync(user, role.Name))
                     {
                         if (!string.IsNullOrEmpty(roles)) roles += ",";
                         roles += role.Name;
@@ -154,7 +155,8 @@ namespace API_Layer.Controllers
                 }
 
                 users.Add(
-                    new RegisterDto() {
+                    new RegisterDto()
+                    {
                         FirstName = user.FirstName,
                         LastName = user.LastName,
                         Email = user.Email,
@@ -167,5 +169,80 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
+        [HttpPut("{email}/Update")]
+        public async Task<ActionResult<ServiceResponse<RegisterDto>>> Update(RegisterDto model, [FromRoute] string email)
+        {
+            var serviceResponse = new ServiceResponse<RegisterDto>();
+            serviceResponse.Data = model;
+
+            if(email != model.Email)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Email in the route and email in the form body don't match";
+                return serviceResponse;
+            }
+
+            if (ModelState.IsValid)
+            {
+                ApplicationUser user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Model invalid. No user found";
+                }
+                else
+                {
+                    if (user.FirstName != model.FirstName) user.FirstName = model.FirstName;
+                    if (user.LastName != model.LastName) user.LastName = model.LastName;
+                    if (user.UserName != model.UserName) user.UserName = model.UserName;
+                    if (user.Email != model.Email) user.Email = model.Email;
+
+                    try
+                    {
+                        await _userManager.UpdateAsync(user);
+                    }
+                    catch (Exception ex)
+                    {
+                        serviceResponse.Success = false;
+                        serviceResponse.Message = "User data updating not successful";
+                    }
+
+                    try
+                    {
+                        var roles = model.Roles.Split(',', ' ');
+                        foreach (string roleName in roles)
+                        {
+                            string temp = roleName.Trim().ToLower();
+                            if (string.IsNullOrEmpty(temp)) continue;
+                            if (!(await _roleManager.RoleExistsAsync(roleName))) continue;
+                            if (!(await _userManager.IsInRoleAsync(user, roleName)))
+                            {
+                                await _userManager.AddToRoleAsync(user, temp);
+                                serviceResponse.Data.Roles += roleName + ", ";
+                            }
+                        }
+
+                        roles = (string[])await _userManager.GetRolesAsync(user);
+                        foreach (var role in roles)
+                        {
+                            await _userManager.RemoveFromRoleAsync(user, role);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        serviceResponse.Success = false;
+                        serviceResponse.Message = "User updated without the roles for some error";
+                    }
+                }
+            }
+            else
+            {
+                serviceResponse.Message = "Model you provided is not valid.";
+                serviceResponse.Success = false;
+            }
+
+            if (serviceResponse.Success) return Ok(serviceResponse);
+            return BadRequest(serviceResponse);
+        }
     }
 }
