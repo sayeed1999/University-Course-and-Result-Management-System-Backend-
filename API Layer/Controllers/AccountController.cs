@@ -54,9 +54,9 @@ namespace API_Layer.Controllers
                     ApplicationUser registeredUser = await _userManager.FindByEmailAsync(user.Email);
 
                     //await _userManager.AddToRolesAsync(registeredUser, model.Roles);
-                    var roles = model.Roles.Split(',', ' ');
+                    //var roles = model.Roles.Split(',', ' ');
 
-                    foreach (string roleName in roles)
+                    foreach (string roleName in model.Roles)
                     {
                         string temp = roleName.Trim().ToLower();
                         if (string.IsNullOrEmpty(temp)) continue;
@@ -65,7 +65,6 @@ namespace API_Layer.Controllers
                         if (!(await _userManager.IsInRoleAsync(registeredUser, roleName)))
                         {
                             await _userManager.AddToRoleAsync(registeredUser, temp);
-                            serviceResponse.Data.Roles += roleName + ", ";
                         }
                     }
                     serviceResponse.Message += " User is added to the respective roles.";
@@ -144,13 +143,12 @@ namespace API_Layer.Controllers
 
             foreach (var user in _userManager.Users)
             {
-                String roles = "";
+                List<string> roles = new List<string>();
                 foreach (var role in dbRoles)
                 {
                     if (await _userManager.IsInRoleAsync(user, role.Name))
                     {
-                        if (!string.IsNullOrEmpty(roles)) roles += ",";
-                        roles += role.Name;
+                        roles.Add(role.Name);
                     }
                 }
 
@@ -210,8 +208,7 @@ namespace API_Layer.Controllers
 
                     try
                     {
-                        var roles = model.Roles.Split(',', ' ');
-                        foreach (string roleName in roles)
+                        foreach (string roleName in model.Roles)
                         {
                             string temp = roleName.Trim().ToLower();
                             if (string.IsNullOrEmpty(temp)) continue;
@@ -219,14 +216,13 @@ namespace API_Layer.Controllers
                             if (!(await _userManager.IsInRoleAsync(user, roleName)))
                             {
                                 await _userManager.AddToRoleAsync(user, temp);
-                                serviceResponse.Data.Roles += roleName + ", ";
                             }
                         }
 
                         var roles2 = await _userManager.GetRolesAsync(user);
                         foreach (var role in roles2)
                         {
-                            if(roles.Count(x => x == role) == 0)
+                            if(model.Roles.Count(x => x == role) == 0)
                             {
                                 await _userManager.RemoveFromRoleAsync(user, role);
                             }
@@ -265,13 +261,12 @@ namespace API_Layer.Controllers
                 return BadRequest(serviceResponse);
             }
 
-            String roles = "";
+            List<string> roles = new List<string>();
             foreach (var role in dbRoles)
             {
                 if (await _userManager.IsInRoleAsync(user, role.Name))
                 {
-                    if (!string.IsNullOrEmpty(roles)) roles += ",";
-                    roles += role.Name;
+                    roles.Add(role.Name);
                 }
             }
 

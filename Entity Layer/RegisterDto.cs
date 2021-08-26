@@ -14,6 +14,6 @@ namespace Entity_Layer
         public string? UserName { get; set; }
 
         // password, confirm password, username...
-        public string Roles { get; set; } //public List<string> Roles {  get; set; }
+        public List<string> Roles { get; set; } = new List<string>();
     }
 }
