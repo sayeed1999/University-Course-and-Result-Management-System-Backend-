@@ -45,6 +45,14 @@ namespace API_Layer.Controllers
         }
 
         [HttpPut]
+        public async Task<ActionResult<ServiceResponse<Menu>>> UpdateMenu([FromBody] Menu menu)
+        {
+            ServiceResponse<Menu> response = await _service.Update(menu);
+            if (response.Success) return Ok(response);
+            return BadRequest(response);
+        }
+
+        [HttpPut]
         [Route("{id:int}")]
         public async Task<ActionResult<ServiceResponse<Menu>>> UpdateMenu([FromBody]Menu menu, [FromRoute]int id)
         {
