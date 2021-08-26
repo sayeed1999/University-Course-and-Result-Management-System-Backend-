@@ -19,6 +19,7 @@ using Service_Layer.StudentService;
 using Service_Layer.GradeService;
 using Service_Layer.RoomService;
 using Service_Layer.DayService;
+using Service_Layer.MenuService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -60,6 +61,7 @@ namespace API_Layer
             services.AddScoped<IGradeService, GradeService>();
             services.AddScoped<IRoomService, RoomService>();
             services.AddScoped<IDayService, DayService>();
+            services.AddScoped<IMenuService, MenuService>();
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddRoles<IdentityRole>()
