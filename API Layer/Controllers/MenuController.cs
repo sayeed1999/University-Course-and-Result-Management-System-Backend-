@@ -28,6 +28,14 @@ namespace API_Layer.Controllers
             return BadRequest(response);
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<ServiceResponse<Menu>>> GetMenuById(int id)
+        {
+            ServiceResponse<Menu> response = await _service.GetById(id);
+            if (response.Success) return Ok(response);
+            return BadRequest(response);
+        }
+
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<Menu>>> CreateMenu(Menu menu)
         {
