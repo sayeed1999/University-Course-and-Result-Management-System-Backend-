@@ -29,7 +29,6 @@ namespace API_Layer.Controllers
         }
 
         [HttpPost]
-        [Route("Add")]
         public async Task<ActionResult<ServiceResponse<Menu>>> CreateMenu(Menu menu)
         {
             ServiceResponse<Menu> response = await _service.Add(menu);
@@ -38,7 +37,7 @@ namespace API_Layer.Controllers
         }
 
         [HttpPut]
-        [Route("Update/{id:int}")]
+        [Route("{id:int}")]
         public async Task<ActionResult<ServiceResponse<Menu>>> UpdateMenu([FromBody]Menu menu, [FromRoute]int id)
         {
             ServiceResponse<Menu> response = await _service.Update(id, menu);
@@ -47,10 +46,10 @@ namespace API_Layer.Controllers
         }
 
         [HttpDelete]
-        [Route("Delete")]
-        public async Task<ActionResult<ServiceResponse<Menu>>> DeleteMenu([FromBody] Menu menu)
+        [Route("{id:int}")]
+        public async Task<ActionResult<ServiceResponse<Menu>>> DeleteMenuById(int id)
         {
-            ServiceResponse<Menu> response = await _service.Delete(menu);
+            ServiceResponse<Menu> response = await _service.DeleteById(id);
             if (response.Success) return Ok(response);
             return BadRequest(response);
         }
