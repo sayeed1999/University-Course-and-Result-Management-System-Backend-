@@ -28,6 +28,15 @@ namespace API_Layer.Controllers
             return BadRequest(response);
         }
 
+        [HttpGet]
+        [Route("Root")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Menu>>>> GetAllRootMenus()
+        {
+            ServiceResponse<IEnumerable<Menu>> response = await _service.GetAllRootMenus();
+            if (response.Success) return Ok(response);
+            return BadRequest(response);
+        }
+
         [HttpGet("{id:int}")]
         public async Task<ActionResult<ServiceResponse<Menu>>> GetMenuById(int id)
         {
