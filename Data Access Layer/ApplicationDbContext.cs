@@ -31,12 +31,14 @@ namespace Data_Access_Layer
         public DbSet<CourseHistory> CoursesHistories { get; set; }
         public DbSet<StudentCourseHistory> StudentCourseHistories { get; set; }
         public DbSet<AllocateClassroomHistory> AllocateClassroomHistories { get; set; }
+        public DbSet<Menu> Menus { get; set; }
+
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(@"Server=sayeeds-coding-\sqlexpress; Database=UniversityCourseAndResultManagementSystem; trusted_connection=SSPI; MultipleActiveResultSets=True");
         }
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
