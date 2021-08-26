@@ -9,12 +9,11 @@ namespace Entity_Layer
 {
     public class StudentCourse
     {
-        public int DepartmentId { get; set; }
-        public string CourseCode { get; set; }
-        public long StudentId { get; set; }
+        public int DepartmentId { get; set; } // three
+        public string CourseCode { get; set; } // combines
+        public long StudentId { get; set; } // the PK
         public DateTime Date {  get; set; }
         public string? Grade {  get; set; }
-        [ForeignKey("Grade")]
         public GradeLetter? GradeLetter { get; set; }
         public Student? Student {  get; set; }
         public Course? Course {  get; set; }

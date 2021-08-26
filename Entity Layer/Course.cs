@@ -11,7 +11,9 @@ namespace Entity_Layer
         public Course()
         {
             this.AllocateClassrooms = new HashSet<AllocateClassroom>();
+            this.AllocateClassroomHistories = new HashSet<AllocateClassroomHistory>();
             this.StudentsCourses = new HashSet<StudentCourse>();
+            this.StudentCourseHistories = new HashSet<StudentCourseHistory>();
         }
         // Code + DepartmentId combinely forms the Composite Key which is the PK for thist table. This table has no single row PK.
         public string Code { get; set; }
@@ -26,5 +28,7 @@ namespace Entity_Layer
         public int? TeacherId {  get; set; }
         public ICollection<StudentCourse> StudentsCourses { get; set; }
         public ICollection<AllocateClassroom> AllocateClassrooms { get; set; }
+        public ICollection<AllocateClassroomHistory> AllocateClassroomHistories { get; set; }
+        public ICollection<StudentCourseHistory> StudentCourseHistories { get; set; }
     }
 }

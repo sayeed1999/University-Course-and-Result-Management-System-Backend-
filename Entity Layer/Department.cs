@@ -12,7 +12,7 @@ namespace Entity_Layer
         {
             this.Courses = new HashSet<Course>();
             this.Teachers = new HashSet<Teacher>();
-            //this.Students = new HashSet<Student>();
+            this.CourseHistories = new HashSet<CourseHistory>();
         }
 
         public int Id { get; set; }
@@ -20,6 +20,6 @@ namespace Entity_Layer
         public string Name { get; set; }
         public ICollection<Course> Courses { get; set; }
         public ICollection<Teacher> Teachers { get; set; }
-        //public ICollection<Student> Students { get; set; }
+        public ICollection<CourseHistory> CourseHistories { get; set; }
     }
 }

@@ -20,10 +20,18 @@ namespace Service_Layer.RoomService
         {
             var response = new ServiceResponse<AllocateClassroom>();
             response.Data = data;
+            
+            if(data.From >= data.To)
+            {
+                response.Message = "Class duration cannot be less than one minute!";
+                response.Success = false;
+                return response;
+            }
+
             var count = await _dbContext.AllocateClassrooms.CountAsync(
                                                             x => x.RoomId == data.RoomId
                                                         && x.DayId == data.DayId
-                                                        && ((x.From <= data.To && x.To >= data.To) || (data.From <= x.To && data.To >= x.To))
+                                                        && (x.From < data.To && x.To > data.From)
                                                       );
             if ( count > 0)
             {
@@ -59,6 +67,44 @@ namespace Service_Layer.RoomService
             catch (Exception ex)
             {
                 serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+
+        }
+
+        public async Task<ServiceResponse<List<AllocateClassroomHistory>>> UnallocateAllClassrooms()
+        {
+            var serviceResponse = new ServiceResponse<List<AllocateClassroomHistory>>();
+            serviceResponse.Data = new List<AllocateClassroomHistory>();
+            try
+            {
+                int nthUnallocating = 0;
+                if(await _dbContext.AllocateClassroomHistories.CountAsync() == 0)
+                {
+                    nthUnallocating = 1;
+                }
+                else
+                {
+                    var temp = await _dbContext.AllocateClassroomHistories.OrderByDescending(x => x.Id)
+                                    .FirstOrDefaultAsync();
+                    nthUnallocating = temp.NthHistory + 1; // this is the nth time you are unallocating classrooms...
+                }
+
+                List<AllocateClassroom> allocatedRooms = await _dbContext.AllocateClassrooms.ToListAsync();
+                foreach (var room in allocatedRooms)
+                {
+                    AllocateClassroomHistory roomHistory = new AllocateClassroomHistory { CourseCode = room.CourseCode, DayId = room.DayId, DepartmentId = room.DepartmentId, From = room.From, To = room.To, RoomId = room.RoomId, NthHistory = nthUnallocating };
+                    serviceResponse.Data.Add(roomHistory);
+                    _dbContext.AllocateClassroomHistories.Add(roomHistory);
+                    _dbContext.AllocateClassrooms.Remove(room);
+                }
+                await _dbContext.SaveChangesAsync();
+                serviceResponse.Message = "Allocated Rooms History successfully saved!";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Fatal error! Course saving failed. May be you need to clear data manually in the db";
                 serviceResponse.Success = false;
             }
             return serviceResponse;

@@ -19,12 +19,16 @@ namespace Service_Layer.StudentService
             _departmentService = departmentService;
         }
 
+        // The GetAll() inside students has everything
         public override async Task<ServiceResponse<IEnumerable<Student>>> GetAll()
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Student>>();
             try
             {
-                serviceResponse.Data = await _dbContext.Students.Include(x => x.Department).ToListAsync();
+                serviceResponse.Data = await _dbContext.Students
+                    .Include(x => x.Department)
+                    .Include(x => x.StudentsCourses)
+                    .ToListAsync();
                 serviceResponse.Message = "Data fetched successfully from the database";
             }
             catch (Exception ex)
@@ -125,6 +129,48 @@ namespace Service_Layer.StudentService
             catch (Exception ex)
             {
                 serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<Student>> GetStudentResultById(long id)
+        {
+            var serviceResponse = new ServiceResponse<Student>();
+            try
+            {
+                serviceResponse.Data = await _dbContext.Students
+                                    .Include(x => x.Department)
+                                    .Include(x => x.StudentsCourses)
+                                        .ThenInclude(z => z.Course)
+                                    .SingleOrDefaultAsync(x => x.Id == id);
+
+                serviceResponse.Message = "Data fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<Student>> GetStudentResultByRegNo(string reg)
+        {
+            var serviceResponse = new ServiceResponse<Student>();
+            try
+            {
+                serviceResponse.Data = await _dbContext.Students
+                                    .Include(x => x.Department)
+                                    .Include(x => x.StudentsCourses)
+                                        .ThenInclude(z => z.Course)
+                                    .SingleOrDefaultAsync(x => x.RegistrationNumber == reg);
+
+                serviceResponse.Message = "Data fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = ex.Message;
                 serviceResponse.Success = false;
             }
             return serviceResponse;

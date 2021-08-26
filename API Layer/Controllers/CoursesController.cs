@@ -42,10 +42,19 @@ namespace API_Layer.Controllers
         }
 
         // GET: Courses
-        [HttpGet("Department/{departmentId:int}")]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(int departmentId)
+        [HttpGet("Department/{id:int}")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(int id)
         {
-            var serviceResponse = await _service.GetCoursesByDepartment(departmentId);
+            var serviceResponse = await _service.GetCoursesByDepartment(id);
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
+        // GET: Courses
+        [HttpGet("Department/{code}")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(string code)
+        {
+            var serviceResponse = await _service.GetCoursesByDepartment(code);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }
@@ -116,6 +125,23 @@ namespace API_Layer.Controllers
 
             response.Message = $"Course successfully assigned to respective teacher.";
             return Ok(response);
+        }
+
+        [HttpGet("Department/{departmentId:int}/AllocatedRooms")]
+        public async Task<ActionResult<IEnumerable<ServiceResponse<Course>>>> GetCoursesWithAllocatedRoomsByDepartment(int departmentId)
+        {
+            var response = await _service.GetCoursesWithAllocatedRoomsByDepartment(departmentId);
+            if (response.Success == false) return BadRequest(response);
+            return Ok(response);
+        }
+
+        [HttpDelete("UnassignAll")]
+        public async Task<ActionResult> UnassignAllCourses()
+        {
+            var unassignCourses = await _service.UnassignAllCourses();
+            if (unassignCourses.Success == false) return BadRequest(unassignCourses);
+
+            return Ok(unassignCourses);
         }
     }
 }

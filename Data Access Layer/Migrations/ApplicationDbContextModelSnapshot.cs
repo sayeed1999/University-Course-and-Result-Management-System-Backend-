@@ -60,6 +60,123 @@ namespace Data_Access_Layer.Migrations
                     b.ToTable("AllocateClassrooms");
                 });
 
+            modelBuilder.Entity("Entity_Layer.AllocateClassroomHistory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CourseCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("DayId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("From")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("NthHistory")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RoomId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<DateTime>("To")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseCode");
+
+                    b.HasIndex("DayId");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("RoomId");
+
+                    b.ToTable("AllocateClassroomHistories");
+                });
+
+            modelBuilder.Entity("Entity_Layer.ApplicationUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
+                });
+
             modelBuilder.Entity("Entity_Layer.Course", b =>
                 {
                     b.Property<string>("Code")
@@ -98,6 +215,42 @@ namespace Data_Access_Layer.Migrations
                     b.HasCheckConstraint("CHK_LengthOfCodeOfCourse", "LEN(Code) >= 5");
 
                     b.HasCheckConstraint("CHK_CreditRangeOfCourse", "Credit BETWEEN 0.5 AND 5.0");
+                });
+
+            modelBuilder.Entity("Entity_Layer.CourseHistory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NthHistory")
+                        .HasColumnType("int");
+
+                    b.Property<byte>("SemisterId")
+                        .HasColumnType("tinyint");
+
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DepartmentId");
+
+                    b.HasIndex("SemisterId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.HasIndex("Code", "DepartmentId");
+
+                    b.ToTable("CoursesHistories");
                 });
 
             modelBuilder.Entity("Entity_Layer.Day", b =>
@@ -522,6 +675,43 @@ namespace Data_Access_Layer.Migrations
                     b.ToTable("StudentsCourses");
                 });
 
+            modelBuilder.Entity("Entity_Layer.StudentCourseHistory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CourseCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("DepartmentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Grade")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("NthHistory")
+                        .HasColumnType("int");
+
+                    b.Property<long>("StudentId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Grade");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("CourseCode", "DepartmentId");
+
+                    b.ToTable("StudentCourseHistories");
+                });
+
             modelBuilder.Entity("Entity_Layer.Teacher", b =>
                 {
                     b.Property<int>("Id")
@@ -576,6 +766,137 @@ namespace Data_Access_Layer.Migrations
                     b.HasCheckConstraint("CHK_RemainingCreditOfTeacher", "RemainingCredit BETWEEN 0 AND CreditToBeTaken");
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens");
+                });
+
             modelBuilder.Entity("Entity_Layer.AllocateClassroom", b =>
                 {
                     b.HasOne("Entity_Layer.Course", "Course")
@@ -599,6 +920,42 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasOne("Entity_Layer.Room", "Room")
                         .WithMany("AllocateClassrooms")
+                        .HasForeignKey("RoomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("Day");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Room");
+                });
+
+            modelBuilder.Entity("Entity_Layer.AllocateClassroomHistory", b =>
+                {
+                    b.HasOne("Entity_Layer.Course", "Course")
+                        .WithMany("AllocateClassroomHistories")
+                        .HasForeignKey("CourseCode")
+                        .HasPrincipalKey("Code")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Entity_Layer.Day", "Day")
+                        .WithMany("AllocateClassroomHistories")
+                        .HasForeignKey("DayId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Entity_Layer.Department", "Department")
+                        .WithMany()
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Entity_Layer.Room", "Room")
+                        .WithMany("AllocateClassroomHistories")
                         .HasForeignKey("RoomId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -637,6 +994,31 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("Teacher");
                 });
 
+            modelBuilder.Entity("Entity_Layer.CourseHistory", b =>
+                {
+                    b.HasOne("Entity_Layer.Department", "Department")
+                        .WithMany("CourseHistories")
+                        .HasForeignKey("DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Entity_Layer.Semister", "Semister")
+                        .WithMany()
+                        .HasForeignKey("SemisterId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Entity_Layer.Teacher", "Teacher")
+                        .WithMany()
+                        .HasForeignKey("TeacherId");
+
+                    b.Navigation("Department");
+
+                    b.Navigation("Semister");
+
+                    b.Navigation("Teacher");
+                });
+
             modelBuilder.Entity("Entity_Layer.Student", b =>
                 {
                     b.HasOne("Entity_Layer.Department", "Department")
@@ -651,7 +1033,7 @@ namespace Data_Access_Layer.Migrations
             modelBuilder.Entity("Entity_Layer.StudentCourse", b =>
                 {
                     b.HasOne("Entity_Layer.GradeLetter", "GradeLetter")
-                        .WithMany()
+                        .WithMany("StudentsCourses")
                         .HasForeignKey("Grade");
 
                     b.HasOne("Entity_Layer.Student", "Student")
@@ -662,6 +1044,31 @@ namespace Data_Access_Layer.Migrations
 
                     b.HasOne("Entity_Layer.Course", "Course")
                         .WithMany("StudentsCourses")
+                        .HasForeignKey("CourseCode", "DepartmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("GradeLetter");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("Entity_Layer.StudentCourseHistory", b =>
+                {
+                    b.HasOne("Entity_Layer.GradeLetter", "GradeLetter")
+                        .WithMany("StudentCourseHistories")
+                        .HasForeignKey("Grade");
+
+                    b.HasOne("Entity_Layer.Student", "Student")
+                        .WithMany("StudentCourseHistories")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Entity_Layer.Course", "Course")
+                        .WithMany("StudentCourseHistories")
                         .HasForeignKey("CourseCode", "DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -692,20 +1099,79 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("Designation");
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
+                {
+                    b.HasOne("Entity_Layer.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
+                {
+                    b.HasOne("Entity_Layer.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Entity_Layer.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
+                {
+                    b.HasOne("Entity_Layer.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Entity_Layer.Course", b =>
                 {
+                    b.Navigation("AllocateClassroomHistories");
+
                     b.Navigation("AllocateClassrooms");
+
+                    b.Navigation("StudentCourseHistories");
 
                     b.Navigation("StudentsCourses");
                 });
 
             modelBuilder.Entity("Entity_Layer.Day", b =>
                 {
+                    b.Navigation("AllocateClassroomHistories");
+
                     b.Navigation("AllocateClassrooms");
                 });
 
             modelBuilder.Entity("Entity_Layer.Department", b =>
                 {
+                    b.Navigation("CourseHistories");
+
                     b.Navigation("Courses");
 
                     b.Navigation("Teachers");
@@ -716,13 +1182,24 @@ namespace Data_Access_Layer.Migrations
                     b.Navigation("Teachers");
                 });
 
+            modelBuilder.Entity("Entity_Layer.GradeLetter", b =>
+                {
+                    b.Navigation("StudentCourseHistories");
+
+                    b.Navigation("StudentsCourses");
+                });
+
             modelBuilder.Entity("Entity_Layer.Room", b =>
                 {
+                    b.Navigation("AllocateClassroomHistories");
+
                     b.Navigation("AllocateClassrooms");
                 });
 
             modelBuilder.Entity("Entity_Layer.Student", b =>
                 {
+                    b.Navigation("StudentCourseHistories");
+
                     b.Navigation("StudentsCourses");
                 });
 
@@ -730,6 +1207,7 @@ namespace Data_Access_Layer.Migrations
                 {
                     b.Navigation("Courses");
                 });
+#pragma warning restore 612, 618
         }
     }
 }

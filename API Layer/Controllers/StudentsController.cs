@@ -39,6 +39,27 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
+        // GET: Students/Results/1
+        [HttpGet]
+        [Route("Results/{id:long}")]
+        public async Task<ActionResult<ServiceResponse<Student>>> GetStudentResultById(long id)
+        {
+            var serviceResponse = await _service.GetStudentResultById(id);
+            if (serviceResponse.Success == false) return NotFound(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
+        // GET: Students/Results/MTE-2021-003
+        [HttpGet]
+        [Route("Results/{reg:alpha}")]
+        public async Task<ActionResult<ServiceResponse<Student>>> GetStudentResultByRegistrationNumber(String reg)
+        {
+            var serviceResponse = await _service.GetStudentResultByRegNo(reg);
+            if (serviceResponse.Success == false) return NotFound(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
+
         // POST: Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
