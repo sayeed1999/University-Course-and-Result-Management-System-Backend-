@@ -22,15 +22,15 @@ namespace Service_Layer.MenuService
             serviceResponse.Message = "";
 
             Menu temp = await _dbContext.Menus.SingleOrDefaultAsync(x => x.Name == item.Name);
-            if (temp.Id > 0) serviceResponse.Message += "Duplicate Menu Name found.\n";
+            if (temp != null) serviceResponse.Message += "Duplicate Menu Name found.\n";
 
             temp = await _dbContext.Menus.SingleOrDefaultAsync(x => x.Url == item.Url);
-            if (temp.Id > 0) serviceResponse.Message += "Duplicate URL found.\n";
+            if (temp != null) serviceResponse.Message += "Duplicate URL found.\n";
 
             if(item.ParentId != null)
             {
                 temp = await _dbContext.Menus.FindAsync(item.ParentId);
-                if (temp.ParentId != null) serviceResponse.Message += "Route cannot be a child to a non-root route for this app!\n";
+                if (temp != null && temp.ParentId != null) serviceResponse.Message += "Route cannot be a child to a non-root route for this app!\n";
             }
 
             if(serviceResponse.Message.Length > 0)
