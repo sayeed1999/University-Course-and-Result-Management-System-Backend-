@@ -1,5 +1,6 @@
 ﻿using Data_Access_Layer;
 using Entity_Layer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Repository_Layer;
 using System;
@@ -12,8 +13,11 @@ namespace Service_Layer.MenuService
 {
     public class MenuService : Repository<Menu>, IMenuService
     {
-        public MenuService(ApplicationDbContext dbContext) : base(dbContext)
+
+        private readonly RoleManager<IdentityRole> _roleManager;
+        public MenuService(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager) : base(dbContext)
         {
+            _roleManager = roleManager;
         }
 
         public override async Task<ServiceResponse<Menu>> Add(Menu item)
@@ -56,7 +60,34 @@ namespace Service_Layer.MenuService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<IEnumerable<Menu>>> GetAllRootMenus()
+        public async Task<ServiceResponse<IEnumerable<Menu>>> GetAllMenusByRole(string roleName)
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<Menu>>();
+            try
+            {
+                var _role = await _roleManager.FindByNameAsync(roleName);
+                var menuRoles = await _dbContext.MenuWiseRolePermissions
+                                                .Include(x => x.Menu)
+                                                .Where(x => x.RoleId == _role.Id).ToListAsync();
+                
+                HashSet<Menu> menus = new HashSet<Menu>();
+                foreach (var item in menuRoles)
+                {
+                    menus.Add(item.Menu);
+                }
+
+                serviceResponse.Data = menus;
+                serviceResponse.Message = "Menus fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Some error occurred while fetching data. " + ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+
+    public async Task<ServiceResponse<IEnumerable<Menu>>> GetAllRootMenus()
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Menu>>();
             try
