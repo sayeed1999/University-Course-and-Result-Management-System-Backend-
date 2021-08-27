@@ -32,8 +32,7 @@ namespace Data_Access_Layer
         public DbSet<StudentCourseHistory> StudentCourseHistories { get; set; }
         public DbSet<AllocateClassroomHistory> AllocateClassroomHistories { get; set; }
         public DbSet<Menu> Menus { get; set; }
-
-
+        public DbSet<MenuRole> MenuWiseRolePermissions { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
