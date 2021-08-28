@@ -281,5 +281,52 @@ namespace API_Layer.Controllers
             serviceResponse.Data = ret;
             return Ok(serviceResponse);
         }
+
+        [HttpPost("role/{roleName:alpha}/permission")]
+        public async Task<ActionResult<ServiceResponse<MenuRole>>> RoleWiseMenuPermission(List<int> menuIds, String roleName)
+        {
+            var serviceResponse = new ServiceResponse<MenuRole>();
+
+            var role = await _roleManager.FindByNameAsync(roleName);
+            if (role == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Role not found";
+                return serviceResponse;
+            }
+
+            try
+            {
+                // adding 
+                foreach (var menuId in menuIds)
+                {
+                    if ((await _context.MenuWiseRolePermissions.SingleOrDefaultAsync(x => x.RoleId == role.Id && x.MenuId == menuId)) == null)
+                    {
+                        var newMenuRole = new MenuRole() { Id = 0, MenuId = menuId, RoleId = role.Id };
+                        _context.MenuWiseRolePermissions.Add(newMenuRole);
+                    }
+                }
+                // removing 
+                var allMenus = await _context.MenuWiseRolePermissions.Where(x => x.RoleId == role.Id).ToListAsync();
+                foreach(var menu in allMenus)
+                {
+                    if(!menuIds.Contains(menu.MenuId))
+                    {
+                        _context.MenuWiseRolePermissions.Remove(menu);
+                    }
+                }
+                // all updates tracked till now.. so saving!
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
+            }
+
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
     }
 }
