@@ -5,10 +5,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Repository_Layer;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace API_Layer.Controllers
@@ -21,12 +26,14 @@ namespace API_Layer.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _context;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context)
+        private readonly AppSettings _appSettings;
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context, IOptions<AppSettings> appSettings)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _context = context;
+            _appSettings = appSettings.Value;
         }
 
         [HttpPost("Register")]
@@ -326,6 +333,41 @@ namespace API_Layer.Controllers
             }
 
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> LoginUser(Login model)
+        {
+            var serviceResponse = new ServiceResponse<String>(); // for the token!
+
+            ApplicationUser user = await _userManager.FindByEmailAsync(model.Email);
+            bool isValidPassword = await _userManager.CheckPasswordAsync(user, model.Password);
+
+            if (user == null || !isValidPassword)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "The email or pasword is incorrect!";
+                return BadRequest(serviceResponse);
+            }
+
+            // Email & Password correct!
+            var tokenDescription = new SecurityTokenDescriptor
+            { 
+                Subject = new ClaimsIdentity(new Claim[]
+                { 
+                    new Claim("UserID", user.Id.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(3),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JWT_Secret_Key)), SecurityAlgorithms.HmacSha256)
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = tokenHandler.CreateToken(tokenDescription);
+            var token = tokenHandler.WriteToken(securityToken);
+            
+            serviceResponse.Data = token;
+            serviceResponse.Message = "token generated successfully!";
             return Ok(serviceResponse);
         }
     }
