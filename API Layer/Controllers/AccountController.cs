@@ -37,6 +37,7 @@ namespace API_Layer.Controllers
             _appSettings = appSettings.Value;
         }
 
+        [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<ActionResult<ServiceResponse<RegisterDto>>> Register(RegisterDto model)
         {
@@ -341,6 +342,7 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
+        [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<IActionResult> LoginUser(Login model)
         {

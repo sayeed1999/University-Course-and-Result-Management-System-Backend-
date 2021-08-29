@@ -28,6 +28,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace API_Layer
 {
@@ -45,6 +48,15 @@ namespace API_Layer
         {
             // Inject AppSettings
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+
+            /*var policy = new AuthorizationPolicyBuilder()
+                            .RequireAuthenticatedUser()
+                            .RequireRole(new[] { "admin", "manager", "guest" })
+                            .Build();*/
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new AuthorizeFilter());
+            });
 
             services.AddControllers().AddNewtonsoftJson(options => {
                 options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -68,7 +80,8 @@ namespace API_Layer
             services.AddScoped<IRoomService, RoomService>();
             services.AddScoped<IDayService, DayService>();
             services.AddScoped<IMenuService, MenuService>();
-
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            
             // Identity Core
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -109,7 +122,7 @@ namespace API_Layer
             .AddJwtBearer(x => 
             {
                 x.RequireHttpsMetadata = false;
-                x.SaveToken = false;
+                x.SaveToken = true;
                 x.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,

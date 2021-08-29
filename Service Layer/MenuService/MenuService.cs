@@ -1,11 +1,13 @@
 ﻿using Data_Access_Layer;
 using Entity_Layer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Repository_Layer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,11 +15,14 @@ namespace Service_Layer.MenuService
 {
     public class MenuService : Repository<Menu>, IMenuService
     {
-
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public MenuService(ApplicationDbContext dbContext, RoleManager<IdentityRole> roleManager) : base(dbContext)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public MenuService(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IHttpContextAccessor httpContextAccessor) : base(dbContext)
         {
+            _userManager = userManager;
             _roleManager = roleManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public override async Task<ServiceResponse<Menu>> Add(Menu item)
@@ -105,21 +110,42 @@ namespace Service_Layer.MenuService
 
         public async Task<ServiceResponse<IEnumerable<Menu>>> GetMenusInOrder()
         {
-            var serviceResponse = new ServiceResponse<IEnumerable<Menu>>();
-            try
+            string userId = _httpContextAccessor.HttpContext.User.Claims.First(x => x.Type == "UserID").Value;
+            ApplicationUser user = await _userManager.FindByIdAsync(userId);
+            var roleNames = await _userManager.GetRolesAsync(user);
+
+            var availableMenuIds = new HashSet<int>();
+            foreach(var role in roleNames)
             {
-                serviceResponse.Data = await _dbContext.Menus
-                                                       .Include(x => x.ChildMenus)
-                                                       .Where(x => x.ParentId == null)
-                                                       .ToListAsync();
-                serviceResponse.Message = "Menus in order fetched successfully from the database";
+                var temp = await _dbContext.MenuWiseRolePermissions.Where(x => x.Role.Name == role).ToListAsync();
+                foreach(var menurole in temp)
+                {
+                    availableMenuIds.Add(menurole.MenuId);
+                }
             }
-            catch (Exception ex)
+
+
+            var response = new ServiceResponse<IEnumerable<Menu>>();
+            var listOfMenus = new List<Menu>();
+
+            var menus = await _dbContext.Menus.Include(x => x.ChildMenus).Where(x => x.ParentId == null).ToListAsync();
+            foreach(var menu in menus)
             {
-                serviceResponse.Message = "Error occurred while fetching data. " + ex.Message;
-                serviceResponse.Success = false;
+                var temp = new List<Menu>();
+                foreach(var child in menu.ChildMenus)
+                {
+                    if (availableMenuIds.Contains(child.Id))
+                    {
+                        temp.Add(child);
+                    }
+                }
+                var menuInList = menu;
+                menuInList.ChildMenus = temp;
+                listOfMenus.Add(menuInList);
             }
-            return serviceResponse;
+
+            response.Data = listOfMenus;
+            return response;
         }
     }
 }

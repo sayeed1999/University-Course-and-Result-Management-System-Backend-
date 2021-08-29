@@ -23,6 +23,7 @@ namespace API_Layer.Controllers
         }
 
         [HttpGet("InOrder")]
+        //[AllowAnonymous]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Menu>>>> GetMenusInOrder()
         {
             ServiceResponse<IEnumerable<Menu>> response = await _service.GetMenusInOrder();
