@@ -363,7 +363,7 @@ namespace API_Layer.Controllers
                 { 
                     new Claim("UserID", user.Id.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(3),
+                Expires = DateTime.UtcNow.AddDays(1), //DateTime.UtcNow.AddMinutes(3),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JWT_Secret_Key)), SecurityAlgorithms.HmacSha256)
             };
 

@@ -1,10 +1,12 @@
 ﻿using Entity_Layer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
 using Service_Layer.DayService;
 using Service_Layer.RoomService;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -35,9 +37,10 @@ namespace API_Layer.Controllers
             var serviceResponse = await service.GetAllocatedRoomsByDepartment(departmentId);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
-        }
+}
 
         [HttpPost("allocate-classroom")]
+        [Authorize(Roles = "admin, manager")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Room>>>> AllocateClassroom(AllocateClassroom data)
         {
             data.From = new DateTime(2021, 01, 01, data.From.Hour, data.From.Minute, 00);
@@ -49,6 +52,7 @@ namespace API_Layer.Controllers
         }
 
         [HttpDelete("UnallocateAll")]
+        [Authorize(Roles = "admin, manager")]
         public async Task<ActionResult<ServiceResponse<List<AllocateClassroomHistory>>>> UnallocateClassrooms()
         {
             var serviceResponse = await service.UnallocateAllClassrooms();

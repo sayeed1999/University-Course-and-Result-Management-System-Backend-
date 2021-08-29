@@ -1,9 +1,11 @@
 ﻿using Entity_Layer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
 using Service_Layer.StudentService;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -18,10 +20,11 @@ namespace API_Layer.Controllers
         public StudentsController(IStudentService service)
         {
             this._service = service;
-        }
+}
 
         // GET: Students
         [HttpGet]
+        [Authorize(Roles = "admin, manager, guest")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Student>>>> GetStudents()
         {
             var serviceResponse = await _service.GetAll();
@@ -32,6 +35,7 @@ namespace API_Layer.Controllers
         // GET: Students/Results
         [HttpGet]
         [Route("Results")]
+        [Authorize(Roles = "admin, manager, guest")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Student>>>> GetStudentsResults()
         {
             var serviceResponse = await _service.GetStudentsResults();
@@ -42,6 +46,7 @@ namespace API_Layer.Controllers
         // GET: Students/Results/1
         [HttpGet]
         [Route("Results/{id:long}")]
+        [Authorize(Roles = "admin, manager, guest")]
         public async Task<ActionResult<ServiceResponse<Student>>> GetStudentResultById(long id)
         {
             var serviceResponse = await _service.GetStudentResultById(id);
@@ -52,6 +57,7 @@ namespace API_Layer.Controllers
         // GET: Students/Results/MTE-2021-003
         [HttpGet]
         [Route("Results/{reg:alpha}")]
+        [Authorize(Roles = "admin, manager, guest")]
         public async Task<ActionResult<ServiceResponse<Student>>> GetStudentResultByRegistrationNumber(String reg)
         {
             var serviceResponse = await _service.GetStudentResultByRegNo(reg);
@@ -71,6 +77,7 @@ namespace API_Layer.Controllers
         }
 
         [HttpPost("enroll-in-course")]
+        [Authorize(Roles = "admin, manager")]
         public async Task<ActionResult<ServiceResponse<StudentCourse>>> EnrollStudentInCourse([FromBody] StudentCourse data)
         {
             var serviceResponse = await _service.EnrollStudentInCourse(data);
@@ -80,6 +87,7 @@ namespace API_Layer.Controllers
 
         [HttpPost]
         [Route("save-result")]
+        [Authorize(Roles = "admin, manager")]
         public async Task<ActionResult<ServiceResponse<StudentCourse>>> SaveResult([FromBody] StudentCourse data)
         {
             var serviceResponse = await _service.SaveResult(data);

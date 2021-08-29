@@ -1,9 +1,11 @@
 ﻿using Entity_Layer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
 using Service_Layer.MenuService;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -51,9 +53,10 @@ namespace API_Layer.Controllers
             ServiceResponse<Menu> response = await _service.GetById(id);
             if (response.Success) return Ok(response);
             return BadRequest(response);
-        }
+}
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<ServiceResponse<Menu>>> CreateMenu(Menu menu)
         {
             ServiceResponse<Menu> response = await _service.Add(menu);
@@ -62,6 +65,7 @@ namespace API_Layer.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<ServiceResponse<Menu>>> UpdateMenu([FromBody] Menu menu)
         {
             ServiceResponse<Menu> response = await _service.Update(menu);
@@ -71,6 +75,7 @@ namespace API_Layer.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<ServiceResponse<Menu>>> UpdateMenu([FromBody]Menu menu, [FromRoute]int id)
         {
             ServiceResponse<Menu> response = await _service.Update(id, menu);
@@ -80,6 +85,7 @@ namespace API_Layer.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<ServiceResponse<Menu>>> DeleteMenuById(int id)
         {
             ServiceResponse<Menu> response = await _service.DeleteById(id);
