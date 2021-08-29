@@ -20,6 +20,14 @@ namespace API_Layer.Controllers
             _service = service;
         }
 
+        [HttpGet("InOrder")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Menu>>>> GetMenusInOrder()
+        {
+            ServiceResponse<IEnumerable<Menu>> response = await _service.GetMenusInOrder();
+            if (response.Success) return Ok(response);
+            return BadRequest(response);
+        }
+
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Menu>>>> GetAllMenus()
         {

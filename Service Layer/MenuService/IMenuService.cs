@@ -10,6 +10,7 @@ namespace Service_Layer.MenuService
 {
     public interface IMenuService : IRepository<Menu>
     {
+        public Task<ServiceResponse<IEnumerable<Menu>>> GetMenusInOrder();
         public Task<ServiceResponse<IEnumerable<Menu>>> GetAllRootMenus();
         public Task<ServiceResponse<IEnumerable<Menu>>> GetAllMenusByRole(String roleName);
     }

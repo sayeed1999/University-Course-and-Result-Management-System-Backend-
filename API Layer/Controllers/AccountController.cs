@@ -1,5 +1,6 @@
 ﻿using Data_Access_Layer;
 using Entity_Layer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -97,6 +98,7 @@ namespace API_Layer.Controllers
         }
 
         [HttpPost("Roles")]
+        [Authorize]
         public async Task<ActionResult<ServiceResponse<RoleDto>>> CreateRoles([FromBody] RoleDto newRole)
         {
             var serviceResponse = new ServiceResponse<RoleDto>();
@@ -119,6 +121,7 @@ namespace API_Layer.Controllers
         }
 
         [HttpGet("Roles")]
+        [Authorize]
         public async Task<ActionResult<ServiceResponse<IEnumerable<string>>>> GetAllRoles()
         {
             ServiceResponse<IEnumerable<string>> serviceResponse = new ServiceResponse<IEnumerable<string>>();
@@ -142,6 +145,7 @@ namespace API_Layer.Controllers
         }
 
         [HttpGet("AllUsers")]
+        [Authorize]
         public async Task<ActionResult<ServiceResponse<IEnumerable<RegisterDto>>>> GetAllUsers()
         {
             var serviceResponse = new ServiceResponse<IEnumerable<RegisterDto>>();
@@ -289,6 +293,7 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
+        [Authorize]
         [HttpPost("role/{roleName:alpha}/permission")]
         public async Task<ActionResult<ServiceResponse<MenuRole>>> RoleWiseMenuPermission(List<int> menuIds, String roleName)
         {

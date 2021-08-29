@@ -87,7 +87,7 @@ namespace Service_Layer.MenuService
             return serviceResponse;
         }
 
-    public async Task<ServiceResponse<IEnumerable<Menu>>> GetAllRootMenus()
+        public async Task<ServiceResponse<IEnumerable<Menu>>> GetAllRootMenus()
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Menu>>();
             try
@@ -98,6 +98,25 @@ namespace Service_Layer.MenuService
             catch (Exception ex)
             {
                 serviceResponse.Message = "Some error occurred while fetching data. " + ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<Menu>>> GetMenusInOrder()
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<Menu>>();
+            try
+            {
+                serviceResponse.Data = await _dbContext.Menus
+                                                       .Include(x => x.ChildMenus)
+                                                       .Where(x => x.ParentId == null)
+                                                       .ToListAsync();
+                serviceResponse.Message = "Menus in order fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Error occurred while fetching data. " + ex.Message;
                 serviceResponse.Success = false;
             }
             return serviceResponse;

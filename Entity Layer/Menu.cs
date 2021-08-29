@@ -18,6 +18,7 @@ namespace Entity_Layer
         public Status StatusId { get; set; } = Status.Inactive;
         public Menu? Parent {  get; set; }
         public int? ParentId { get; set; } = null;
+        public List<Menu> ChildMenus { get; set; } = new List<Menu>();
     }
 
     public enum Status
