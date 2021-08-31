@@ -110,7 +110,15 @@ namespace Service_Layer.MenuService
 
         public async Task<ServiceResponse<IEnumerable<Menu>>> GetMenusInOrder()
         {
-            string userId = _httpContextAccessor.HttpContext.User.Claims.First(x => x.Type == "UserID").Value;
+            var response = new ServiceResponse<IEnumerable<Menu>>();
+            var listOfMenus = new List<Menu>();
+            response.Data = listOfMenus;
+
+            string userId = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "UserID")?.Value;
+            if(String.IsNullOrEmpty(userId))
+            {
+                return response;
+            }
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
             var roleNames = await _userManager.GetRolesAsync(user);
 
@@ -125,8 +133,6 @@ namespace Service_Layer.MenuService
             }
 
 
-            var response = new ServiceResponse<IEnumerable<Menu>>();
-            var listOfMenus = new List<Menu>();
 
             var menus = await _dbContext.Menus.Include(x => x.ChildMenus).Where(x => x.ParentId == null).ToListAsync();
             foreach(var menu in menus)
@@ -144,7 +150,6 @@ namespace Service_Layer.MenuService
                 listOfMenus.Add(menuInList);
             }
 
-            response.Data = listOfMenus;
             return response;
         }
     }

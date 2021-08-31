@@ -22,6 +22,7 @@ namespace API_Layer.Controllers
             _service = service;
         }
 
+        [AllowAnonymous] // responsible for displaying menus in the frontend
         [HttpGet("InOrder")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Menu>>>> GetMenusInOrder()
         {
