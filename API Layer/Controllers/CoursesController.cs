@@ -63,7 +63,6 @@ namespace API_Layer.Controllers
         // POST: Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Roles = "admin")]
         public async Task<ActionResult<ServiceResponse<Course>>> PostCourse(Course course)
         {
             var serviceResponse = await _service.Add(course);
@@ -72,7 +71,6 @@ namespace API_Layer.Controllers
         }
 
         [HttpPost("CourseAssignToTeacher")]
-        [Authorize(Roles = "admin, manager")]
         public async Task<ActionResult<ServiceResponse<Course>>> CourseAssignToTeacher([FromBody]CourseAssignToTeacher body)
         {
             var response = await _service.GetCourseByCompositeKeyIncludingTeacher(body.DepartmentId, body.CourseCode);
@@ -139,7 +137,6 @@ namespace API_Layer.Controllers
         }
 
         [HttpDelete("UnassignAll")]
-        [Authorize(Roles = "admin, manager")]
         public async Task<ActionResult> UnassignAllCourses()
         {
             var unassignCourses = await _service.UnassignAllCourses();

@@ -23,7 +23,6 @@ namespace API_Layer.Controllers
         }
 
         [HttpGet("InOrder")]
-        //[AllowAnonymous]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Menu>>>> GetMenusInOrder()
         {
             ServiceResponse<IEnumerable<Menu>> response = await _service.GetMenusInOrder();
@@ -57,7 +56,6 @@ namespace API_Layer.Controllers
 }
 
         [HttpPost]
-        [Authorize(Roles = "admin")]
         public async Task<ActionResult<ServiceResponse<Menu>>> CreateMenu(Menu menu)
         {
             ServiceResponse<Menu> response = await _service.Add(menu);
@@ -66,7 +64,6 @@ namespace API_Layer.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "admin")]
         public async Task<ActionResult<ServiceResponse<Menu>>> UpdateMenu([FromBody] Menu menu)
         {
             ServiceResponse<Menu> response = await _service.Update(menu);
@@ -76,7 +73,6 @@ namespace API_Layer.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
-        [Authorize(Roles = "admin")]
         public async Task<ActionResult<ServiceResponse<Menu>>> UpdateMenu([FromBody]Menu menu, [FromRoute]int id)
         {
             ServiceResponse<Menu> response = await _service.Update(id, menu);
@@ -86,7 +82,6 @@ namespace API_Layer.Controllers
 
         [HttpDelete]
         [Route("{id:int}")]
-        [Authorize(Roles = "admin")]
         public async Task<ActionResult<ServiceResponse<Menu>>> DeleteMenuById(int id)
         {
             ServiceResponse<Menu> response = await _service.DeleteById(id);

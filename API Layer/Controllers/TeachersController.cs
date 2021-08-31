@@ -33,7 +33,6 @@ namespace API_Layer.Controllers
         // POST: Teachers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Roles = "admin")]
         public async Task<ActionResult<ServiceResponse<Teacher>>> PostTeacher(Teacher teacher)
         {
             teacher.RemainingCredit = teacher.CreditToBeTaken;

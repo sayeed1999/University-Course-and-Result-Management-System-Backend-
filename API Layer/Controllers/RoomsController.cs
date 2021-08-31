@@ -40,7 +40,6 @@ namespace API_Layer.Controllers
 }
 
         [HttpPost("allocate-classroom")]
-        [Authorize(Roles = "admin, manager")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Room>>>> AllocateClassroom(AllocateClassroom data)
         {
             data.From = new DateTime(2021, 01, 01, data.From.Hour, data.From.Minute, 00);
@@ -52,7 +51,6 @@ namespace API_Layer.Controllers
         }
 
         [HttpDelete("UnallocateAll")]
-        [Authorize(Roles = "admin, manager")]
         public async Task<ActionResult<ServiceResponse<List<AllocateClassroomHistory>>>> UnallocateClassrooms()
         {
             var serviceResponse = await service.UnallocateAllClassrooms();
