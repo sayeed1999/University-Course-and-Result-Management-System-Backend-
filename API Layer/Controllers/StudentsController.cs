@@ -64,6 +64,7 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
+        [AllowAnonymous] //fronyend dev can't parse pdf without it
         [HttpGet]
         [Route("Result-Sheet/{reg}")]
         public async Task<IActionResult> PrintStudentResultByRegistrationNumber(string reg)
@@ -71,6 +72,7 @@ namespace API_Layer.Controllers
             var serviceResponse = await _service.GetStudentResultByRegNo(reg);
             if (serviceResponse.Success == false) return NotFound(serviceResponse);
             return await _generatePDF.GetPdf("Views/ResultSheet.cshtml", serviceResponse.Data);
+            //return await _generatePDF.GetByteArray("Views/ResultSheet.cshtml", serviceResponse.Data);
         }
 
 

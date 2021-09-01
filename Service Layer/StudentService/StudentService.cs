@@ -152,6 +152,11 @@ namespace Service_Layer.StudentService
                 serviceResponse.Message = ex.Message;
                 serviceResponse.Success = false;
             }
+            if (serviceResponse.Data == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Data not found";
+            }
             return serviceResponse;
         }
 
@@ -172,6 +177,11 @@ namespace Service_Layer.StudentService
             {
                 serviceResponse.Message = ex.Message;
                 serviceResponse.Success = false;
+            }
+            if(serviceResponse.Data == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Data not found";
             }
             return serviceResponse;
         }
