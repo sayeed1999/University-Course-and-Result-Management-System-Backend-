@@ -52,7 +52,6 @@ namespace API_Layer.Controllers
         // POST: Departments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        [Authorize(Roles = "admin")]
         public async Task<ActionResult<ServiceResponse<Department>>> PostDepartment(Department department)
         {
             var serviceResponse = await _service.Add(department);

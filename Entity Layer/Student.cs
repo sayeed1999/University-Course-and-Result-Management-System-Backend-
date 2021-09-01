@@ -17,7 +17,7 @@ namespace Entity_Layer
         public Department? Department{ get; set; }
         public int DepartmentId { get; set; }
         public string RegistrationNumber { get; init; }
-        public ICollection<StudentCourse> StudentsCourses {  get; set; } = new HashSet<StudentCourse>();
+        public List<StudentCourse> StudentsCourses {  get; set; } = new List<StudentCourse>();
         public ICollection<StudentCourseHistory> StudentCourseHistories { get; set; } = new HashSet<StudentCourseHistory>();
     }
 }

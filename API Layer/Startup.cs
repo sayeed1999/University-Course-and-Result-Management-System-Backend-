@@ -31,6 +31,9 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using FastReport.Web;
+using System.Data;
+using Wkhtmltopdf.NetCore;
 
 namespace API_Layer
 {
@@ -63,6 +66,7 @@ namespace API_Layer
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
             services.AddControllers();
+            services.AddWkhtmltopdf("wkhtmltopdf"); // Wkhtmltopdf;
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API_Layer", Version = "v1" });

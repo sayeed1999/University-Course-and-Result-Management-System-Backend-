@@ -90,8 +90,8 @@ namespace API_Layer.Controllers
             return BadRequest(response);
         }
 
-        [HttpGet("{roleName:alpha}")] // alpha stands for string here
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Menu>>>> GetAllMenusByRole(String roleName)
+        [HttpGet("{roleName}")] // alpha stands for string here
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Menu>>>> GetAllMenusByRole(string roleName)
         {
             ServiceResponse<IEnumerable<Menu>> response = await _service.GetAllMenusByRole(roleName);
             if (response.Success) return Ok(response);

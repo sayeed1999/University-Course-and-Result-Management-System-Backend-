@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Wkhtmltopdf.NetCore;
 
 namespace API_Layer.Controllers
 {
@@ -16,11 +17,13 @@ namespace API_Layer.Controllers
     public class StudentsController : ControllerBase
     {
         private readonly IStudentService _service;
+        private readonly IGeneratePdf _generatePDF;
 
-        public StudentsController(IStudentService service)
+        public StudentsController(IStudentService service, IGeneratePdf generatePDF)
         {
             this._service = service;
-}
+            this._generatePDF = generatePDF;
+        }
 
         // GET: Students
         [HttpGet]
@@ -53,12 +56,21 @@ namespace API_Layer.Controllers
 
         // GET: Students/Results/MTE-2021-003
         [HttpGet]
-        [Route("Results/{reg:alpha}")]
-        public async Task<ActionResult<ServiceResponse<Student>>> GetStudentResultByRegistrationNumber(String reg)
+        [Route("Results/{reg}")]
+        public async Task<ActionResult<ServiceResponse<Student>>> GetStudentResultByRegistrationNumber(string reg)
         {
             var serviceResponse = await _service.GetStudentResultByRegNo(reg);
             if (serviceResponse.Success == false) return NotFound(serviceResponse);
             return Ok(serviceResponse);
+        }
+
+        [HttpGet]
+        [Route("Result-Sheet/{reg}")]
+        public async Task<IActionResult> PrintStudentResultByRegistrationNumber(string reg)
+        {
+            var serviceResponse = await _service.GetStudentResultByRegNo(reg);
+            if (serviceResponse.Success == false) return NotFound(serviceResponse);
+            return await _generatePDF.GetPdf("Views/ResultSheet.cshtml", serviceResponse.Data);
         }
 
 
