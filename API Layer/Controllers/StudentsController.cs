@@ -26,10 +26,11 @@ namespace API_Layer.Controllers
         }
 
         // GET: Students
+        [AllowAnonymous]
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Student>>>> GetStudents()
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Student>>>> GetStudents([FromQuery] string regNum = "")
         {
-            var serviceResponse = await _service.GetAll();
+            var serviceResponse = await _service.GetAll(regNum);
             if (serviceResponse.Success == false) return NotFound(serviceResponse);
             return Ok(serviceResponse);
         }
