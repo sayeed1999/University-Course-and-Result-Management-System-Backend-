@@ -24,28 +24,13 @@ namespace Service_Layer.StudentService
             var serviceResponse = new ServiceResponse<IEnumerable<Student>>();
             try
             {
-                /*serviceResponse.Data = await _dbContext.Students
+                serviceResponse.Data = await _dbContext.Students
                     .Include(x => x.Department)
                     .Include(x => x.StudentsCourses)
-                    .ToListAsync();*/
-
-                serviceResponse.Data = (from student in _dbContext.Students
-                                       where student.RegistrationNumber.Contains(regNum)
-                                       select new Student
-                                       {
-                                           Address = student.Address,
-                                           Contact = student.Contact,
-                                           Date = student.Date,
-                                           Department = student.Department,
-                                           DepartmentId = student.DepartmentId,
-                                           Email = student.Email,
-                                           Id = student.Id,
-                                           Name = student.Name,
-                                           RegistrationNumber = student.RegistrationNumber,
-                                           StudentsCourses = student.StudentsCourses
-                                       })
-                                       .Take(10); // top 10 entries!
-
+                        .ThenInclude(y => y.Course)
+                    .Where(x => x.RegistrationNumber.Contains(regNum))
+                    .Take(10)
+                    .ToListAsync();                
 
                 serviceResponse.Message = "Data fetched successfully from the database";
             }
