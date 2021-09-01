@@ -26,7 +26,6 @@ namespace API_Layer.Controllers
         }
 
         // GET: Students
-        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Student>>>> GetStudents([FromQuery] string regNum = "")
         {
