@@ -1,12 +1,9 @@
 using Data_Access_Layer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 using Repository_Layer;
@@ -21,18 +18,12 @@ using Service_Layer.RoomService;
 using Service_Layer.DayService;
 using Service_Layer.MenuService;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using FastReport.Web;
-using System.Data;
 using Wkhtmltopdf.NetCore;
 
 namespace API_Layer
@@ -49,13 +40,10 @@ namespace API_Layer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            FastReport.Utils.RegisteredObjects.AddConnection(typeof(FastReport.Data.MsSqlDataConnection));
             // Inject AppSettings
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
 
-            /*var policy = new AuthorizationPolicyBuilder()
-                            .RequireAuthenticatedUser()
-                            .RequireRole(new[] { "admin", "manager", "guest" })
-                            .Build();*/
             services.AddMvc(options =>
             {
                 options.Filters.Add(new AuthorizeFilter());
@@ -149,6 +137,8 @@ namespace API_Layer
             }
 
             app.UseHttpsRedirection();
+
+            app.UseFastReport();
 
             app.UseRouting();
 

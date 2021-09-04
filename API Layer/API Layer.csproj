@@ -10,6 +10,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="FastReport.Compat" Version="2021.3.0" />
+    <PackageReference Include="FastReport.OpenSource" Version="2021.3.30" />
+    <PackageReference Include="FastReport.OpenSource.Data.MsSql" Version="2021.3.0" />
+    <PackageReference Include="FastReport.OpenSource.Export.PdfSimple" Version="2021.3.15" />
     <PackageReference Include="FastReport.OpenSource.Web" Version="2021.3.30" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.9" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
@@ -24,12 +28,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Service Layer\Service Layer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="wkhtmltopdf\Windows\wkhtmltopdf.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

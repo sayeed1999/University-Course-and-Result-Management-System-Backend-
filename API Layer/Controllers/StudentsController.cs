@@ -1,28 +1,30 @@
-﻿using Entity_Layer;
+﻿using Data_Access_Layer;
+using Entity_Layer;
+using FastReport;
+using FastReport.Data;
+using FastReport.Export.Image;
+using FastReport.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
 using Service_Layer.StudentService;
-using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
-using Wkhtmltopdf.NetCore;
+
 
 namespace API_Layer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class StudentsController : ControllerBase
+    public class StudentsController : Controller
     {
         private readonly IStudentService _service;
-        private readonly IGeneratePdf _generatePDF;
+        private readonly ApplicationDbContext _dbContext;
 
-        public StudentsController(IStudentService service, IGeneratePdf generatePDF)
+        public StudentsController(IStudentService service, ApplicationDbContext dbContext)
         {
             this._service = service;
-            this._generatePDF = generatePDF;
+            this._dbContext = dbContext;
         }
 
         // GET: Students
@@ -64,15 +66,29 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
-        [AllowAnonymous] //fronyend dev can't parse pdf without it
-        [HttpGet]
-        [Route("Result-Sheet/{reg}")]
+        [AllowAnonymous]
+        [HttpGet("Result-Sheet/{reg}")]
         public async Task<IActionResult> PrintStudentResultByRegistrationNumber(string reg)
         {
             var serviceResponse = await _service.GetStudentResultByRegNo(reg);
-            if (serviceResponse.Success == false) return NotFound(serviceResponse);
-            return await _generatePDF.GetPdf("Views/ResultSheet.cshtml", serviceResponse.Data);
-            //return await _generatePDF.GetByteArray("Views/ResultSheet.cshtml", serviceResponse.Data);
+
+            if(serviceResponse.Success)
+            {
+                var webReport = new WebReport();
+                var msSqlDataConnection = new MsSqlDataConnection();
+                msSqlDataConnection.ConnectionString = @"Server=sayeeds-coding-\sqlexpress; Database=UniversityCourseAndResultManagementSystem; trusted_connection=SSPI; MultipleActiveResultSets=True";
+                webReport.Report.Dictionary.Connections.Add(msSqlDataConnection);
+                webReport.Report.Load("report.frx");
+                webReport.Report.SetParameterValue("reg", reg);
+                webReport.Report.Prepare();
+                ImageExport image = new ImageExport();
+                image.JpegQuality = 90;
+                image.Resolution = 72;
+                image.SeparateFiles = false;
+                webReport.Report.Export(image, "report.jpg");
+            }
+
+            return NotFound(serviceResponse);
         }
 
 
