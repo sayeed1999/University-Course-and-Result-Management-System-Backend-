@@ -1,6 +1,6 @@
 ﻿using Data_Access_Layer;
 using Entity_Layer;
-using FastReport;
+using FastReport.Export.PdfSimple;
 using FastReport.Data;
 using FastReport.Export.Image;
 using FastReport.Web;
@@ -10,7 +10,7 @@ using Repository_Layer;
 using Service_Layer.StudentService;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-
+using Microsoft.Extensions.Options;
 
 namespace API_Layer.Controllers
 {
@@ -19,12 +19,11 @@ namespace API_Layer.Controllers
     public class StudentsController : Controller
     {
         private readonly IStudentService _service;
-        private readonly ApplicationDbContext _dbContext;
-
-        public StudentsController(IStudentService service, ApplicationDbContext dbContext)
+        private readonly AppSettings _appSettings;
+        public StudentsController(IStudentService service, IOptions<AppSettings> appSettings)
         {
             this._service = service;
-            this._dbContext = dbContext;
+            this._appSettings = appSettings.Value;
         }
 
         // GET: Students
@@ -76,16 +75,13 @@ namespace API_Layer.Controllers
             {
                 var webReport = new WebReport();
                 var msSqlDataConnection = new MsSqlDataConnection();
-                msSqlDataConnection.ConnectionString = @"Server=sayeeds-coding-\sqlexpress; Database=UniversityCourseAndResultManagementSystem; trusted_connection=SSPI; MultipleActiveResultSets=True";
+                msSqlDataConnection.ConnectionString = _appSettings.ConnectionString;
                 webReport.Report.Dictionary.Connections.Add(msSqlDataConnection);
                 webReport.Report.Load("report.frx");
                 webReport.Report.SetParameterValue("reg", reg);
                 webReport.Report.Prepare();
-                ImageExport image = new ImageExport();
-                image.JpegQuality = 90;
-                image.Resolution = 72;
-                image.SeparateFiles = false;
-                webReport.Report.Export(image, "report.jpg");
+                PDFSimpleExport pdf = new PDFSimpleExport();
+                webReport.Report.Export(pdf, "report.pdf");
             }
 
             return NotFound(serviceResponse);
