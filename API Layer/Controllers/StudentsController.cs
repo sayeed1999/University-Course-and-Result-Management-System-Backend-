@@ -65,7 +65,6 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
-        [AllowAnonymous]
         [HttpGet("Result-Sheet/{reg}")]
         public async Task<IActionResult> PrintStudentResultByRegistrationNumber(string reg)
         {
@@ -79,11 +78,11 @@ namespace API_Layer.Controllers
                 webReport.Report.Dictionary.Connections.Add(msSqlDataConnection);
                 webReport.Report.Load("report.frx");
                 webReport.Report.SetParameterValue("reg", reg);
-                webReport.Report.Prepare();
+                webReport.Report.Prepare(false);
                 PDFSimpleExport pdf = new PDFSimpleExport();
-                webReport.Report.Export(pdf, "report.pdf");
+                //webReport.Report.Export(pdf, "report.pdf");
+                return webReport.PrintHtml();
             }
-
             return NotFound(serviceResponse);
         }
 
