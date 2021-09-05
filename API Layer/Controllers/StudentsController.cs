@@ -11,6 +11,7 @@ using Service_Layer.StudentService;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using System.IO;
 
 namespace API_Layer.Controllers
 {
@@ -80,8 +81,9 @@ namespace API_Layer.Controllers
                 webReport.Report.SetParameterValue("reg", reg);
                 webReport.Report.Prepare(false);
                 PDFSimpleExport pdf = new PDFSimpleExport();
-                //webReport.Report.Export(pdf, "report.pdf");
-                return webReport.PrintHtml();
+                webReport.Report.Export(pdf, "report.pdf");
+                var stream = new FileStream("report.pdf", FileMode.Open);
+                return new FileStreamResult(stream, "application/pdf");
             }
             return NotFound(serviceResponse);
         }
