@@ -14,6 +14,6 @@ namespace Entity_Layer
         public DateTime Date { get; set; }
         public string Address { get; set; }
         public int DepartmentId { get; set; }
-        public Department? Department { get; set; }
+        public Department Department { get; set; }
     }
 }

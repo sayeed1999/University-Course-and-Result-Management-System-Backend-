@@ -9,7 +9,7 @@ namespace Entity_Layer
     public class GradeLetter
     {
         public string Grade {  get; set; }
-        public ICollection<StudentCourse> StudentsCourses { get; set; } = new HashSet<StudentCourse>();
-        public ICollection<StudentCourseHistory> StudentCourseHistories { get; set; } = new HashSet<StudentCourseHistory>();
+        public ICollection<StudentCourse> StudentsCourses { get; set; }
+        public ICollection<StudentCourseHistory> StudentCourseHistories { get; set; }
     }
 }

@@ -24,7 +24,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Wkhtmltopdf.NetCore;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API_Layer
 {
@@ -54,7 +54,6 @@ namespace API_Layer
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
             services.AddControllers();
-            services.AddWkhtmltopdf("wkhtmltopdf"); // Wkhtmltopdf;
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API_Layer", Version = "v1" });
@@ -73,7 +72,16 @@ namespace API_Layer
             services.AddScoped<IDayService, DayService>();
             services.AddScoped<IMenuService, MenuService>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            
+
+            // Disable automatic 400 response
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                //options.SuppressConsumesConstraintForFormFileParameters = true;
+                //options.SuppressInferBindingSourcesForParameters = true;
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
+
             // Identity Core
 
             services.AddIdentity<ApplicationUser, IdentityRole>()

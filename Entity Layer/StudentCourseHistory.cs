@@ -16,8 +16,8 @@ namespace Entity_Layer
         public DateTime Date { get; set; }
         public string? Grade { get; set; }
         public GradeLetter? GradeLetter { get; set; }
-        public Student? Student { get; set; }
-        public Course? Course { get; set; }
+        public Student Student { get; set; }
+        public Course Course { get; set; }
         public int NthHistory {  get; set; }
     }
 }
