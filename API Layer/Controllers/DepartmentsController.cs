@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
-using Service_Layer.DepartmentService;
+using Repository_Layer.Child_Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,9 +16,9 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class DepartmentsController : ControllerBase
     {
-        private readonly IDepartmentService _service;
+        private readonly IDepartmentRepository _service;
 
-        public DepartmentsController(IDepartmentService service)
+        public DepartmentsController(IDepartmentRepository service)
         {
             _service = service;
         }

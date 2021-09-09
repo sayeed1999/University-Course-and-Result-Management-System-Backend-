@@ -1,7 +1,7 @@
 ﻿using Entity_Layer;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
-using Service_Layer.DayService;
+using Repository_Layer.Child_Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +13,9 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class DaysController : ControllerBase
     {
-        private readonly IDayService service;
+        private readonly IDayRepository service;
 
-        public DaysController(IDayService service)
+        public DaysController(IDayRepository service)
         {
             this.service = service;
         }

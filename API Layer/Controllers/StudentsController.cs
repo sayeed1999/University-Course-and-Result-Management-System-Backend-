@@ -7,11 +7,11 @@ using FastReport.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
-using Service_Layer.StudentService;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using System.IO;
+using Repository_Layer.Child_Repositories;
 
 namespace API_Layer.Controllers
 {
@@ -19,9 +19,9 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class StudentsController : Controller
     {
-        private readonly IStudentService _service;
+        private readonly IStudentRepository _service;
         private readonly AppSettings _appSettings;
-        public StudentsController(IStudentService service, IOptions<AppSettings> appSettings)
+        public StudentsController(IStudentRepository service, IOptions<AppSettings> appSettings)
         {
             this._service = service;
             this._appSettings = appSettings.Value;

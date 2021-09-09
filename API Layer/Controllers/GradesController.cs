@@ -1,7 +1,7 @@
 ﻿using Entity_Layer;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
-using Service_Layer.GradeService;
+using Repository_Layer.Child_Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +13,9 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class GradesController : ControllerBase
     {
-        private readonly IGradeService service;
+        private readonly IGradeRepository service;
 
-        public GradesController(IGradeService service)
+        public GradesController(IGradeRepository service)
         {
             this.service = service;
         }

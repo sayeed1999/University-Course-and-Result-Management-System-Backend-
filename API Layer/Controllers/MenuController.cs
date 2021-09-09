@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
-using Service_Layer.MenuService;
+using Repository_Layer.Child_Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,9 +15,9 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class MenuController : ControllerBase
     {
-        private readonly IMenuService _service;
+        private readonly IMenuRepository _service;
 
-        public MenuController(IMenuService service)
+        public MenuController(IMenuRepository service)
         {
             _service = service;
         }

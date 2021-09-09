@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
-using Service_Layer.DayService;
-using Service_Layer.RoomService;
+using Repository_Layer.Child_Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,9 +15,9 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class RoomsController : ControllerBase
     {
-        private readonly IRoomService service;
+        private readonly IRoomRepository service;
 
-        public RoomsController(IRoomService service)
+        public RoomsController(IRoomRepository service)
         {
             this.service = service;
         }
