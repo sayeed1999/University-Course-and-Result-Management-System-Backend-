@@ -1,4 +1,6 @@
-﻿using Entity_Layer;
+﻿using Data_Access_Layer.EntityConfigurations;
+using Entity_Layer;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,40 +10,52 @@ using System.Threading.Tasks;
 
 namespace Data_Access_Layer
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        private readonly DbContextOptions _options;
+        public ApplicationDbContext(DbContextOptions options) : base(options)
+        {
+            _options = options;
+        }
         public DbSet<Department> Departments { get; set; }
-        
+        public DbSet<Course> Courses { get; set; } // it references Semister, so even if i dont create Semisters table here, it will auto create in the db!
+        public DbSet<Semister> Semisters { get; set; }
+        public DbSet<Teacher> Teachers { get; set; }
+        public DbSet<Designation> Designations { get; set; }
+        public DbSet<Student> Students { get; set; }
+        public DbSet<StudentCourse> StudentsCourses { get; set; }
+        public DbSet<GradeLetter> GradeLetters { get; set; }
+        public DbSet<Day> Days { get; set; }
+        public DbSet<Room> Rooms { get; set; }
+        public DbSet<AllocateClassroom> AllocateClassrooms { get; set; }
+        public DbSet<CourseHistory> CoursesHistories { get; set; }
+        public DbSet<StudentCourseHistory> StudentCourseHistories { get; set; }
+        public DbSet<AllocateClassroomHistory> AllocateClassroomHistories { get; set; }
+        public DbSet<Menu> Menus { get; set; }
+        public DbSet<MenuRole> MenuWiseRolePermissions { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=sayeeds-coding-\sqlexpress;Database=UniversityCourseAndResultManagementSystem;trusted_connection=SSPI");
+            optionsBuilder.UseSqlServer(@"Server=sayeeds-coding-\sqlexpress; Database=UniversityCourseAndResultManagementSystem; trusted_connection=SSPI; MultipleActiveResultSets=True");
         }
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            /// Table: Departments
-
-            builder.Entity<Department>(entity =>
-            {
-                entity.HasKey(x => x.Id);
-                entity.Property(x => x.Code).IsRequired().HasMaxLength(7);
-                entity.HasIndex(x => x.Code).IsUnique();
-                entity.HasCheckConstraint("CHK_LengthOfCode", "len(code) >= 2 and len(code) <= 7");
-                entity.Property(x => x.Name).IsRequired().HasMaxLength(255);
-                entity.HasIndex(x => x.Name).IsUnique();
-                entity.HasCheckConstraint("CHK_LengthOfDeptName", "len(name) >= 3");
-                entity.HasData(
-                    new Department { Id = 1, Code = "EEE", Name = "Electronics & Electrical Engineering" },
-                    new Department { Id = 2, Code = "CSE", Name = "Computer Science & Engineering" },
-                    new Department { Id = 3, Code = "CE", Name = "Civil Engineering" },
-                    new Department { Id = 4, Code = "ME", Name = "Mechanical Engineering" },
-                    new Department { Id = 5, Code = "MTE", Name = "Mechatronics Engineering" },
-                    new Department { Id = 6, Code = "IPE", Name = "Industrial Production & Engineering" }
-                );
-            });
-
+            builder.ApplyConfiguration(new DepartmentEntityConfiguration());
+            builder.ApplyConfiguration(new SemisterEntityConfiguration());
+            builder.ApplyConfiguration(new CourseEntityConfiguration());
+            builder.ApplyConfiguration(new DesignationEntityConfiguration());
+            builder.ApplyConfiguration(new TeacherEntityConfiguration());
+            builder.ApplyConfiguration(new StudentEntityConfiguration());
+            builder.ApplyConfiguration(new StudentCourseEntityConfiguration());
+            builder.ApplyConfiguration(new GradeLetterEntityConfiguration());
+            builder.ApplyConfiguration(new DayEntityConfiguration());
+            builder.ApplyConfiguration(new RoomEntityConfiguration());
+            builder.ApplyConfiguration(new AllocateClassroomEntityConfiguration());
+            builder.ApplyConfiguration(new AllocateClassroomHistoryEntityConfiguration());
+            builder.ApplyConfiguration(new CourseHistoryEntityConfiguration());
+            builder.ApplyConfiguration(new StudentCourseHistoryEntityConfiguration());
         }
     }
 }
