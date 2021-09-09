@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+/*
 namespace Repository_Layer.Child_Repositories
 {
     public class CourseRepository : Repository<Course>, ICourseRepository
@@ -158,7 +158,7 @@ namespace Repository_Layer.Child_Repositories
             return serviceResponse;
         }
 
-        /*public async Task<ServiceResponse<List<CourseHistory>>> UnassignAllCourses()
+        public async Task<ServiceResponse<List<CourseHistory>>> UnassignAllCourses()
         {
             var serviceResponse = new ServiceResponse<List<CourseHistory>>();
             serviceResponse.Data = new List<CourseHistory>();
@@ -222,6 +222,7 @@ namespace Repository_Layer.Child_Repositories
                 serviceResponse.Success = false;
             }
             return serviceResponse;
-        }*/
+        }
     }
 }
+*/

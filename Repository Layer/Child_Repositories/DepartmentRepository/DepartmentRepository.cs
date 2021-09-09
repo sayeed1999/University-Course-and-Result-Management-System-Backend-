@@ -3,6 +3,7 @@ using Entity_Layer;
 using Microsoft.EntityFrameworkCore;
 using Repository_Layer;
 using Repository_Layer.Repository;
+using Repository_Layer.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,34 @@ namespace Repository_Layer.Child_Repositories
 {
     public class DepartmentRepository : Repository<Department>, IDepartmentRepository
     {
-        public DepartmentRepository(ApplicationDbContext dbContext) : base(dbContext) { }
+        public DepartmentRepository(IUnitOfWork<ApplicationDbContext> unitOfWork) : base(unitOfWork)
+        {
+
+        }
+
+        public async Task<ServiceResponse<Department>> GetDepartmentByCode(string code)
+        {
+            var serviceResponse = new ServiceResponse<Department>();
+            serviceResponse.Data = await _dbContext.Departments.FirstOrDefaultAsync(x => x.Code == code);
+            if(serviceResponse.Data.Id != 0)
+            {
+                serviceResponse.Message = "Duplicate department code found in the database.";
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<Department>> GetDepartmentByName(string name)
+        {
+            var serviceResponse = new ServiceResponse<Department>();
+            serviceResponse.Data = await _dbContext.Departments.FirstOrDefaultAsync(x => x.Name == name);
+            if (serviceResponse.Data.Id != 0)
+            {
+                serviceResponse.Message = "Duplicate department code found in the database.";
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
 
         public virtual async Task<ServiceResponse<IEnumerable<Department>>> GetAllIncludingTeachersAndCourses()
         {
@@ -51,6 +79,5 @@ namespace Repository_Layer.Child_Repositories
             }
             return serviceResponse;
         }
-
     }
 }

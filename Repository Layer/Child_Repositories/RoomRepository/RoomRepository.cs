@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+/*
 namespace Repository_Layer.Child_Repositories
 {
     public class RoomRepository : Repository<Room>, IRoomRepository
@@ -74,7 +74,7 @@ namespace Repository_Layer.Child_Repositories
 
         }
 
-        /*public async Task<ServiceResponse<List<AllocateClassroomHistory>>> UnallocateAllClassrooms()
+        public async Task<ServiceResponse<List<AllocateClassroomHistory>>> UnallocateAllClassrooms()
         {
             var serviceResponse = new ServiceResponse<List<AllocateClassroomHistory>>();
             serviceResponse.Data = new List<AllocateClassroomHistory>();
@@ -110,6 +110,7 @@ namespace Repository_Layer.Child_Repositories
             }
             return serviceResponse;
 
-        }*/
+        }
     }
 }
+*/

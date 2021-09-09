@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+/*
 namespace Repository_Layer.Child_Repositories
 {
     public class StudentRepository : Repository<Student>, IStudentRepository
@@ -19,7 +19,7 @@ namespace Repository_Layer.Child_Repositories
             _departmentService = departmentService;
         }
 
-        /*public async Task<ServiceResponse<IEnumerable<Student>>> GetAll(string regNum)
+        public async Task<ServiceResponse<IEnumerable<Student>>> GetAll(string regNum)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Student>>();
             try
@@ -187,6 +187,7 @@ namespace Repository_Layer.Child_Repositories
                 serviceResponse.Message = "Data not found";
             }
             return serviceResponse;
-        }*/
+        }
     }
 }
+*/

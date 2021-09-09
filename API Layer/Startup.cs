@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer.Child_Repositories;
+using Repository_Layer.UnitOfWork;
 
 namespace API_Layer
 {
@@ -50,10 +51,11 @@ namespace API_Layer
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API_Layer", Version = "v1" });
             });
             services.AddDbContext<ApplicationDbContext>();
-            services.AddScoped<ApplicationDbContext>();
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            services.AddScoped<ICourseRepository, CourseRepository>();
+            //services.AddScoped<ApplicationDbContext>();
+            //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            //services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+            //services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            /*services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<ISemisterRepository, SemisterRepository>();
             services.AddScoped<IDesignationRepository, DesignationRepository>();
             services.AddScoped<ITeacherRepository, TeacherRepository>();
@@ -63,7 +65,7 @@ namespace API_Layer
             services.AddScoped<IDayRepository, DayRepository>();
             services.AddScoped<IMenuRepository, MenuRepository>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
+            */
             // Disable automatic 400 response
             services.Configure<ApiBehaviorOptions>(options =>
             {

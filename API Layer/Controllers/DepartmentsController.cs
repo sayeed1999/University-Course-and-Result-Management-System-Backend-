@@ -1,8 +1,10 @@
-﻿using Entity_Layer;
+﻿using Data_Access_Layer;
+using Entity_Layer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
 using Repository_Layer.Child_Repositories;
+using Repository_Layer.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -17,10 +19,11 @@ namespace API_Layer.Controllers
     public class DepartmentsController : ControllerBase
     {
         private readonly IDepartmentRepository _service;
+        private readonly IUnitOfWork<ApplicationDbContext> unitOfWork = new UnitOfWork<ApplicationDbContext>();
 
-        public DepartmentsController(IDepartmentRepository service)
+        public DepartmentsController()
         {
-            _service = service;
+            _service = new DepartmentRepository(unitOfWork);
         }
 
         // GET: Departments

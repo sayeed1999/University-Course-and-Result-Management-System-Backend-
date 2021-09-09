@@ -11,7 +11,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-
+/*
 namespace Repository_Layer.Child_Repositories
 {
     public class MenuRepository : Repository<Menu>, IMenuRepository
@@ -155,3 +155,4 @@ namespace Repository_Layer.Child_Repositories
         }
     }
 }
+*/

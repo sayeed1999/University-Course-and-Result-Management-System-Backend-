@@ -1,5 +1,6 @@
 ﻿using Data_Access_Layer;
 using Microsoft.EntityFrameworkCore;
+using Repository_Layer.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +12,10 @@ namespace Repository_Layer.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        /// <summary>
-        /// I made it 'protected', because child services will use it!
-        /// </summary>
         protected readonly ApplicationDbContext _dbContext;
-        public Repository(ApplicationDbContext dbContext)
+        public Repository(IUnitOfWork<ApplicationDbContext> unitOfWork)
         {
-            _dbContext = dbContext;
+            _dbContext = unitOfWork.Context;
         }
 
         public virtual async Task<ServiceResponse<IEnumerable<T>>> GetAll()
