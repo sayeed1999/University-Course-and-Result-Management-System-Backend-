@@ -10,14 +10,14 @@ namespace Entity_Layer
     public class StudentCourseHistory
     {
         public long Id { get; set; }
-        public int DepartmentId { get; set; }
-        public string CourseCode { get; set; }
-        public long StudentId { get; set; }
-        public DateTime Date { get; set; }
-        public string? Grade { get; set; }
-        public GradeLetter? GradeLetter { get; set; }
-        public Student Student { get; set; }
+        public long DepartmentId { get; set; }
+        public long CourseId { get; set; }
         public Course Course { get; set; }
-        public int NthHistory {  get; set; }
+        public long StudentId { get; set; }
+        public Student Student { get; set; }
+        public DateTime Date { get; set; }
+        public long? GradeId { get; set; }
+        public Grade? Grade { get; set; }
+        public long NthHistory {  get; set; }
     }
 }

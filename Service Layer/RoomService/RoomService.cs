@@ -73,13 +73,13 @@ namespace Service_Layer.RoomService
 
         }
 
-        public async Task<ServiceResponse<List<AllocateClassroomHistory>>> UnallocateAllClassrooms()
+        /*public async Task<ServiceResponse<List<AllocateClassroomHistory>>> UnallocateAllClassrooms()
         {
             var serviceResponse = new ServiceResponse<List<AllocateClassroomHistory>>();
             serviceResponse.Data = new List<AllocateClassroomHistory>();
             try
             {
-                int nthUnallocating = 0;
+                long nthUnallocating = 0;
                 if(await _dbContext.AllocateClassroomHistories.CountAsync() == 0)
                 {
                     nthUnallocating = 1;
@@ -109,6 +109,6 @@ namespace Service_Layer.RoomService
             }
             return serviceResponse;
 
-        }
+        }*/
     }
 }

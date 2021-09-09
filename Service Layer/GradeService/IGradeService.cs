@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Service_Layer.GradeService
 {
-    public interface IGradeService : IRepository<GradeLetter>
+    public interface IGradeService : IRepository<Grade>
     {
     }
 }

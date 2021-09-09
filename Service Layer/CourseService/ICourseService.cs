@@ -10,12 +10,12 @@ namespace Service_Layer.CourseService
 {
     public interface ICourseService : IRepository<Course>
     {
-        public Task<ServiceResponse<Course>> GetCourseByCompositeKeyIncludingTeacher(int departmentId, string courseCode);
-        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(int departmentId);
-        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachers(int departmentId);
-        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(int departmentId);
-        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(string departmentCode);
-        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(int departmentId);
-        public Task<ServiceResponse<List<CourseHistory>>> UnassignAllCourses();
+        //public Task<ServiceResponse<Course>> GetCourseByCompositeKeyIncludingTeacher(long departmentId, string courseCode);
+        //public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(long departmentId);
+        //public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachers(long departmentId);
+        //public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId);
+        //public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(string departmentCode);
+        //public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(long departmentId);
+        //public Task<ServiceResponse<List<CourseHistory>>> UnassignAllCourses();
     }
 }

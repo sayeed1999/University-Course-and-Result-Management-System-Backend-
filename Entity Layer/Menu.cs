@@ -9,7 +9,7 @@ namespace Entity_Layer
 {
     public class Menu
     {
-        public int Id {  get; set; }
+        public long Id {  get; set; }
         [Required]
         public string Name { get; set; }
         [Required]
@@ -17,7 +17,7 @@ namespace Entity_Layer
         [Required]
         public Status StatusId { get; set; } = Status.Inactive;
         public Menu? Parent {  get; set; }
-        public int? ParentId { get; set; } = null;
+        public long? ParentId { get; set; } = null;
         public List<Menu> ChildMenus { get; set; }
     }
 
