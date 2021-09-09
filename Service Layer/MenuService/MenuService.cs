@@ -122,7 +122,7 @@ namespace Service_Layer.MenuService
             ApplicationUser user = await _userManager.FindByIdAsync(userId);
             var roleNames = await _userManager.GetRolesAsync(user);
 
-            var availableMenuIds = new HashSet<int>();
+            var availableMenuIds = new HashSet<long>();
             foreach(var role in roleNames)
             {
                 var temp = await _dbContext.MenuWiseRolePermissions.Where(x => x.Role.Name == role).ToListAsync();

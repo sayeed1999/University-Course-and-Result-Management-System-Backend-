@@ -19,7 +19,7 @@ namespace Service_Layer.StudentService
             _departmentService = departmentService;
         }
 
-        public async Task<ServiceResponse<IEnumerable<Student>>> GetAll(string regNum)
+        /*public async Task<ServiceResponse<IEnumerable<Student>>> GetAll(string regNum)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Student>>();
             try
@@ -187,6 +187,6 @@ namespace Service_Layer.StudentService
                 serviceResponse.Message = "Data not found";
             }
             return serviceResponse;
-        }
+        }*/
     }
 }

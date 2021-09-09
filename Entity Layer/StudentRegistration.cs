@@ -13,7 +13,7 @@ namespace Entity_Layer
         public long Contact { get; set; }
         public DateTime Date { get; set; }
         public string Address { get; set; }
-        public int DepartmentId { get; set; }
+        public long DepartmentId { get; set; }
         public Department Department { get; set; }
     }
 }

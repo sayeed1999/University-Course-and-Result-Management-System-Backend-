@@ -291,7 +291,7 @@ namespace API_Layer.Controllers
         }
 
         [HttpPost("role/{roleName}/permission")]
-        public async Task<ActionResult<ServiceResponse<MenuRole>>> RoleWiseMenuPermission(List<int> menuIds, String roleName)
+        public async Task<ActionResult<ServiceResponse<MenuRole>>> RoleWiseMenuPermission(List<long> menuIds, String roleName)
         {
             var serviceResponse = new ServiceResponse<MenuRole>();
 

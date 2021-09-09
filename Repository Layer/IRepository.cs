@@ -9,11 +9,11 @@ namespace Repository_Layer
     public interface IRepository<T> where T : class
     {
         public Task<ServiceResponse<IEnumerable<T>>> GetAll();
-        public Task<ServiceResponse<T>> GetById(int id);
+        public Task<ServiceResponse<T>> GetById(long id);
         public Task<ServiceResponse<T>> Add(T item);
         public Task<ServiceResponse<T>> Update(T item);
-        public Task<ServiceResponse<T>> Update(int id, T item);
+        public Task<ServiceResponse<T>> Update(long id, T item);
         public Task<ServiceResponse<T>> Delete(T item);
-        public Task<ServiceResponse<T>> DeleteById(int id);
+        public Task<ServiceResponse<T>> DeleteById(long id);
     }
 }

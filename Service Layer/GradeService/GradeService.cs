@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Service_Layer.GradeService
 {
-    public class GradeService : Repository<GradeLetter>, IGradeService
+    public class GradeService : Repository<Grade>, IGradeService
     {
         public GradeService(ApplicationDbContext dbContext) : base(dbContext)
         {

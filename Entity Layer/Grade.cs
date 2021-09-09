@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace Entity_Layer
 {
-    public class GradeLetter
+    public class Grade
     {
-        public string Grade {  get; set; }
+        public long Id { get; set; }
+        public string Name {  get; set; }
         public ICollection<StudentCourse> StudentsCourses { get; set; }
         public ICollection<StudentCourseHistory> StudentCourseHistories { get; set; }
     }

@@ -42,7 +42,7 @@ namespace Service_Layer.CourseService
             return serviceResponse;
         }
 
-        public virtual async Task<ServiceResponse<Course>> GetCourseByCompositeKeyIncludingTeacher(int departmentId, string courseCode)
+        public virtual async Task<ServiceResponse<Course>> GetCourseByCompositeKeyIncludingTeacher(long departmentId, string courseCode)
         {
             var serviceResponse = new ServiceResponse<Course>();
             try
@@ -65,7 +65,7 @@ namespace Service_Layer.CourseService
             }
             return serviceResponse;
         }
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(int departmentId)
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(long departmentId)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
             try
@@ -86,7 +86,7 @@ namespace Service_Layer.CourseService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachers(int departmentId)
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachers(long departmentId)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
             try
@@ -106,7 +106,7 @@ namespace Service_Layer.CourseService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(int departmentId)
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
             try
@@ -157,7 +157,7 @@ namespace Service_Layer.CourseService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<List<CourseHistory>>> UnassignAllCourses()
+        /*public async Task<ServiceResponse<List<CourseHistory>>> UnassignAllCourses()
         {
             var serviceResponse = new ServiceResponse<List<CourseHistory>>();
             serviceResponse.Data = new List<CourseHistory>();
@@ -221,6 +221,6 @@ namespace Service_Layer.CourseService
                 serviceResponse.Success = false;
             }
             return serviceResponse;
-        }
+        }*/
     }
 }

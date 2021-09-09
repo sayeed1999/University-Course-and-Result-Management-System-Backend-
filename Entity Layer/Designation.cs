@@ -8,7 +8,7 @@ namespace Entity_Layer
 {
     public class Designation
     {
-        public byte Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
         public ICollection<Teacher> Teachers { get; set; }
     }

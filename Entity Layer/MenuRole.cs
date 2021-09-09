@@ -10,10 +10,10 @@ namespace Entity_Layer
 {
     public class MenuRole // the table for establishing many-to-many relationship between menu & identityrole
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         [ForeignKey("MenuId")]
         public Menu Menu {  get; set; }
-        public int MenuId {  get; set; }
+        public long MenuId {  get; set; }
         [ForeignKey("RoleId")]
         public IdentityRole Role { get; set; }
         public string RoleId { get; set; }
