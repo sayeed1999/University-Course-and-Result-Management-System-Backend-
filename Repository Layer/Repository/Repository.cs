@@ -13,9 +13,11 @@ namespace Repository_Layer.Repository
     public class Repository<T> : IRepository<T> where T : class
     {
         protected readonly ApplicationDbContext _dbContext;
-        public Repository(IUnitOfWork<ApplicationDbContext> unitOfWork)
+        internal DbSet<T> _dbSet;
+        public Repository(ApplicationDbContext dbContext)
         {
-            _dbContext = unitOfWork.Context;
+            _dbContext = dbContext;
+            _dbSet = dbContext.Set<T>();
         }
 
         public virtual async Task<ServiceResponse<IEnumerable<T>>> GetAll()
@@ -23,7 +25,7 @@ namespace Repository_Layer.Repository
             var serviceResponse = new ServiceResponse<IEnumerable<T>>();
             try
             {
-                serviceResponse.Data = await _dbContext.Set<T>().ToListAsync();
+                serviceResponse.Data = await _dbSet.ToListAsync();
                 serviceResponse.Message = "Data fetched successfully from the database";
             }
             catch (Exception ex)
@@ -39,7 +41,7 @@ namespace Repository_Layer.Repository
             var serviceResponse = new ServiceResponse<T>();
             try
             {
-                serviceResponse.Data = await _dbContext.Set<T>().FindAsync(id);
+                serviceResponse.Data = await _dbSet.FindAsync(id);
                 if (serviceResponse.Data == null)
                 {
                     serviceResponse.Message = "Data not found with the given constraint.";
@@ -61,8 +63,8 @@ namespace Repository_Layer.Repository
             try
             {
                 item.GetType().GetProperty("Id")?.SetValue(item, 0); // setting the PK of the row as 0 when the PK is Id int
-                await _dbContext.Set<T>().AddAsync(item);
-                await _dbContext.SaveChangesAsync();
+                await _dbSet.AddAsync(item);
+                // SaveChangesAsync will be called from UnitOfWork!
                 serviceResponse.Data = item;
                 serviceResponse.Message = "Item stored successfully to the database.";
             }
@@ -99,9 +101,9 @@ namespace Repository_Layer.Repository
             serviceResponse.Data = item;
             try
             {
-                _dbContext.Set<T>().Update(item);
+                _dbSet.Update(item);
                 //_dbContext.Entry<T>(serviceResponse.Data).CurrentValues.SetValues(item);
-                await _dbContext.SaveChangesAsync();
+                // SaveChangesAsync will be called from UnitOfWork!
                 serviceResponse.Message = "Data was updated successfully in the database.";
             }
             catch (Exception ex)
@@ -126,8 +128,8 @@ namespace Repository_Layer.Repository
 
             try
             {
-                _dbContext.Set<T>().Remove(item);
-                await _dbContext.SaveChangesAsync();
+                _dbSet.Remove(item);
+                // SaveChangesAsync will be called from UnitOfWork!
                 serviceResponse.Message = "Item deleted successfully from the database";
             }
             catch (Exception ex)
@@ -140,7 +142,7 @@ namespace Repository_Layer.Repository
 
         public virtual async Task<ServiceResponse<T>> DeleteById(long id) // this method is only applicable when the PK is an int Id
         {
-            var itemToBeDeleted = await _dbContext.Set<T>().FindAsync(id);
+            var itemToBeDeleted = await _dbSet.FindAsync(id);
             return await Delete(itemToBeDeleted);
         }
 

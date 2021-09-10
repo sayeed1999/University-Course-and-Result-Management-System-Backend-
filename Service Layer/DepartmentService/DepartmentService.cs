@@ -15,13 +15,11 @@ namespace Service_Layer.DepartmentService
 {
     public class DepartmentService : IDepartmentService
     {
-        private readonly IDepartmentRepository service;
-        private readonly IUnitOfWork<ApplicationDbContext> unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DepartmentService()
+        public DepartmentService(IUnitOfWork unitOfWork)
         {
-            this.unitOfWork = new UnitOfWork<ApplicationDbContext>();
-            this.service = new DepartmentRepository(unitOfWork);
+            _unitOfWork = unitOfWork;
         }
 
         // Story 01
@@ -43,12 +41,12 @@ namespace Service_Layer.DepartmentService
                 {
                     error += "Code must be between 2-7 characters.\n";
                 }
-                var tempResponse = await service.GetDepartmentByCode(department.Code);
+                var tempResponse = await _unitOfWork.Departments.GetDepartmentByCode(department.Code);
                 if(tempResponse.Data != null)
                 {
                     error += "Code is duplicate.\n";
                 }
-                tempResponse = await service.GetDepartmentByName(department.Name);
+                tempResponse = await _unitOfWork.Departments.GetDepartmentByName(department.Name);
                 if(tempResponse.Data != null)
                 {
                     error += "Name is duplicate.\n";
@@ -57,16 +55,14 @@ namespace Service_Layer.DepartmentService
                 {
                     throw new Exception(error);
                 }
-                serviceResponse = await service.Add(department);
+                serviceResponse = await _unitOfWork.Departments.Add(department);
                 // operations end
-                //unitOfWork.Save();
-                //unitOfWork.Commit();
+                await _unitOfWork.CompleteAsync(); // if it fails in the middle, it should automatically rollback...
             }
             catch (Exception ex)
             {
                 serviceResponse.Message = ex.Message;
                 serviceResponse.Success = false;
-                //unitOfWork.Rollback();
             }
             return serviceResponse;
         }
@@ -74,7 +70,7 @@ namespace Service_Layer.DepartmentService
         // Story 02
         public async Task<ServiceResponse<IEnumerable<Department>>> GetDepartments()
         {
-            return await service.GetAll();      
+            return await _unitOfWork.Departments.GetAll();      
         }
 
     }

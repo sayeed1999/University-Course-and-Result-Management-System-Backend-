@@ -14,7 +14,7 @@ namespace Repository_Layer.Child_Repositories
 {
     public class DepartmentRepository : Repository<Department>, IDepartmentRepository
     {
-        public DepartmentRepository(IUnitOfWork<ApplicationDbContext> unitOfWork) : base(unitOfWork)
+        public DepartmentRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
 
         }
@@ -22,14 +22,14 @@ namespace Repository_Layer.Child_Repositories
         public async Task<ServiceResponse<Department>> GetDepartmentByCode(string code)
         {
             var serviceResponse = new ServiceResponse<Department>();
-            serviceResponse.Data = await _dbContext.Departments.SingleOrDefaultAsync(x => x.Code == code);
+            serviceResponse.Data = await _dbSet.SingleOrDefaultAsync(x => x.Code == code);
             return serviceResponse;
         }
 
         public async Task<ServiceResponse<Department>> GetDepartmentByName(string name)
         {
             var serviceResponse = new ServiceResponse<Department>();
-            serviceResponse.Data = await _dbContext.Departments.SingleOrDefaultAsync(x => x.Name == name);
+            serviceResponse.Data = await _dbSet.SingleOrDefaultAsync(x => x.Name == name);
             return serviceResponse;
         }
 
@@ -38,7 +38,7 @@ namespace Repository_Layer.Child_Repositories
             var serviceResponse = new ServiceResponse<IEnumerable<Department>>();
             try
             {
-                serviceResponse.Data = await _dbContext.Departments
+                serviceResponse.Data = await _dbSet
                         .Include(x => x.Teachers)
                         .Include(x => x.Courses).ThenInclude(x => x.Semister)
                         .ToListAsync();
@@ -57,7 +57,7 @@ namespace Repository_Layer.Child_Repositories
             var serviceResponse = new ServiceResponse<IEnumerable<Department>>();
             try
             {
-                serviceResponse.Data = await _dbContext.Departments
+                serviceResponse.Data = await _dbSet
                         .Include(x => x.Courses)
                         .ToListAsync();
                 serviceResponse.Message = "Data fetched successfully from the database";
