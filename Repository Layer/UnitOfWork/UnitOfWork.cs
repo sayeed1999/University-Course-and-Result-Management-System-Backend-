@@ -69,10 +69,10 @@ namespace Repository_Layer.UnitOfWork
         }
         protected virtual void Dispose(bool disposing)
         {
-            if (!_disposed)
-                if (disposing)
-                    _context.Dispose();
-            _disposed = true;
+            //if (!_disposed)
+            //    if (disposing)
+            //        _context.Dispose();
+            //_disposed = true;
         }
 
         public Repository<T> GenericRepository<T>() where T : class

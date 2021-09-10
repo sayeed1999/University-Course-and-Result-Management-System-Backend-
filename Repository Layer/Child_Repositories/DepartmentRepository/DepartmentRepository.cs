@@ -22,24 +22,14 @@ namespace Repository_Layer.Child_Repositories
         public async Task<ServiceResponse<Department>> GetDepartmentByCode(string code)
         {
             var serviceResponse = new ServiceResponse<Department>();
-            serviceResponse.Data = await _dbContext.Departments.FirstOrDefaultAsync(x => x.Code == code);
-            if(serviceResponse.Data != null)
-            {
-                serviceResponse.Message = "Duplicate department code found in the database.";
-                serviceResponse.Success = false;
-            }
+            serviceResponse.Data = await _dbContext.Departments.SingleOrDefaultAsync(x => x.Code == code);
             return serviceResponse;
         }
 
         public async Task<ServiceResponse<Department>> GetDepartmentByName(string name)
         {
             var serviceResponse = new ServiceResponse<Department>();
-            serviceResponse.Data = await _dbContext.Departments.FirstOrDefaultAsync(x => x.Name == name);
-            if (serviceResponse.Data != null)
-            {
-                serviceResponse.Message = "Duplicate department code found in the database.";
-                serviceResponse.Success = false;
-            }
+            serviceResponse.Data = await _dbContext.Departments.SingleOrDefaultAsync(x => x.Name == name);
             return serviceResponse;
         }
 

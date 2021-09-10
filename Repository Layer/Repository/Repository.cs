@@ -62,7 +62,7 @@ namespace Repository_Layer.Repository
             {
                 item.GetType().GetProperty("Id")?.SetValue(item, 0); // setting the PK of the row as 0 when the PK is Id int
                 await _dbContext.Set<T>().AddAsync(item);
-                //await _dbContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
                 serviceResponse.Data = item;
                 serviceResponse.Message = "Item stored successfully to the database.";
             }
