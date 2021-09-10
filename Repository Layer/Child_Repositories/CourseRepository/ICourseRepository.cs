@@ -15,9 +15,9 @@ namespace Repository_Layer.Child_Repositories
         // to check duplicates!
         public Task<ServiceResponse<Course>> GetCourseByName(string name);
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId);
+        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentWithTeacher(long departmentId);
 
         //public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(long departmentId);
-        //public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachers(long departmentId);
         //public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(string departmentCode);
         //public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(long departmentId);
         //public Task<ServiceResponse<List<CourseHistory>>> UnassignAllCourses();

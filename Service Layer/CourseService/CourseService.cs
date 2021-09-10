@@ -75,11 +75,6 @@ namespace Service_Layer.CourseService
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId)
-        {
-            return await _unitOfWork.Courses.GetCoursesByDepartment(departmentId);
-        }
-
         public async Task<ServiceResponse<Course>> UpdateCourse(Course course)
         {
             var serviceResponse = new ServiceResponse<Course>();
@@ -99,6 +94,16 @@ namespace Service_Layer.CourseService
         public async Task<ServiceResponse<Course>> GetCourseById(long courseId)
         {
             return await _unitOfWork.Courses.GetById(courseId);
+        }
+
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId)
+        {
+            return await _unitOfWork.Courses.GetCoursesByDepartment(departmentId);
+        }
+
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentWithTeacher(long departmentId)
+        {
+            return await _unitOfWork.Courses.GetCoursesByDepartmentWithTeacher(departmentId);
         }
     }
 }

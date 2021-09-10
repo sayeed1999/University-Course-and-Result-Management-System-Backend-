@@ -31,15 +31,6 @@ namespace API_Layer.Controllers
         }
 
         // GET: Courses
-        [HttpGet("IncludeTeachers/Department/{departmentId:int}")]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartmentIncludingTeachers(int departmentId)
-        {
-            var serviceResponse = await _service.GetCoursesByDepartmentIncludingTeachers(departmentId);
-            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
-            return Ok(serviceResponse);
-        }
-
-        // GET: Courses
         [HttpGet("Department/{code}")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(string code)
         {
@@ -66,7 +57,16 @@ namespace API_Layer.Controllers
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }
-        
+
+        // GET: Courses
+        [HttpGet("IncludeTeachers/Department/{departmentId}")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartmentIncludingTeachers(long departmentId)
+        {
+            var serviceResponse = await _service.GetCoursesByDepartmentWithTeacher(departmentId);
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
         [HttpPost("CourseAssignToTeacher")]
         public async Task<ActionResult<ServiceResponse<Course>>> CourseAssignToTeacher([FromBody]CourseAssignToTeacher body)
         {
@@ -103,6 +103,7 @@ namespace API_Layer.Controllers
             response.Message = $"Course successfully assigned to respective teacher.";
             return Ok(response);
         }
+
         /*
         [HttpGet("Department/{departmentId:int}/AllocatedRooms")]
         public async Task<ActionResult<IEnumerable<ServiceResponse<Course>>>> GetCoursesWithAllocatedRoomsByDepartment(int departmentId)

@@ -49,18 +49,14 @@ namespace Repository_Layer.Child_Repositories
             return serviceResponse;
         }
 
-
-        /*
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(long departmentId)
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentWithTeacher(long departmentId)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
             try
             {
-                serviceResponse.Data = await _dbContext.Courses
-                    .Include(x => x.Teacher)
-                    .Include(x => x.Semister)
-                    .Where(x => x.DepartmentId == departmentId)
-                    .ToListAsync();
+                serviceResponse.Data = await _dbSet.Where(x => x.DepartmentId == departmentId)
+                                                   .Include(x => x.Teacher)
+                                                   .ToListAsync();
 
                 serviceResponse.Message = "Data fetched successfully from the database";
             }
@@ -72,13 +68,15 @@ namespace Repository_Layer.Child_Repositories
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachers(long departmentId)
+        /*
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(long departmentId)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
             try
             {
                 serviceResponse.Data = await _dbContext.Courses
                     .Include(x => x.Teacher)
+                    .Include(x => x.Semister)
                     .Where(x => x.DepartmentId == departmentId)
                     .ToListAsync();
 
