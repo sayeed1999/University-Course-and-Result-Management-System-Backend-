@@ -3,15 +3,20 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31521.260
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API Layer", "API Layer\API Layer.csproj", "{4991173D-BC1F-40F4-AB05-F78DA5B7DE1A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API Layer", "API Layer\API Layer.csproj", "{4991173D-BC1F-40F4-AB05-F78DA5B7DE1A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service Layer", "Service Layer\Service Layer.csproj", "{E9AF2902-A16A-4268-B0D6-D838889863C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service Layer", "Service Layer\Service Layer.csproj", "{E9AF2902-A16A-4268-B0D6-D838889863C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repository Layer", "Repository Layer\Repository Layer.csproj", "{8930B72C-2259-48B0-8691-E8B8C311B8BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repository Layer", "Repository Layer\Repository Layer.csproj", "{8930B72C-2259-48B0-8691-E8B8C311B8BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data Access Layer", "Data Access Layer\Data Access Layer.csproj", "{5A8C91B9-680C-47DB-A145-8FE73634D965}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data Access Layer", "Data Access Layer\Data Access Layer.csproj", "{5A8C91B9-680C-47DB-A145-8FE73634D965}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Entity Layer", "Entity Layer\Entity Layer.csproj", "{B92A71DF-0415-435E-9284-FBB9189D52F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Entity Layer", "Entity Layer\Entity Layer.csproj", "{B92A71DF-0415-435E-9284-FBB9189D52F9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C69D7601-A721-4C09-9950-3AA1F7806399}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

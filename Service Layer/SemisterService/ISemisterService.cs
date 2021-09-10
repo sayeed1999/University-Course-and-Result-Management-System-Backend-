@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace Service_Layer.SemisterService
 {
-    public interface ISemisterService : IRepository<Semister>
+    public interface ISemisterService
     {
+        public Task<ServiceResponse<IEnumerable<Semister>>> GetSemisters();
     }
 }
