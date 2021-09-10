@@ -18,6 +18,8 @@ using Repository_Layer.UnitOfWork;
 using Service_Layer.DepartmentService;
 using Service_Layer.CourseService;
 using Service_Layer.SemisterService;
+using Service_Layer.DesignationService;
+using Service_Layer.TeacherService;
 
 namespace API_Layer
 {
@@ -57,9 +59,9 @@ namespace API_Layer
             services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<ICourseService, CourseService>();
             services.AddScoped<ISemisterService, SemisterService>();
-            /*services.AddScoped<IDesignationRepository, DesignationRepository>();
-            services.AddScoped<ITeacherRepository, TeacherRepository>();
-            services.AddScoped<IStudentRepository, StudentRepository>();
+            services.AddScoped<IDesignationService, DesignationService>();
+            services.AddScoped<ITeacherService, TeacherService>();
+            /*services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<IGradeRepository, GradeRepository>();
             services.AddScoped<IRoomRepository, RoomRepository>();
             services.AddScoped<IDayRepository, DayRepository>();

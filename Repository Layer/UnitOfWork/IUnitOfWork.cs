@@ -13,6 +13,8 @@ namespace Repository_Layer.UnitOfWork
         IDepartmentRepository Departments { get; }
         ICourseRepository Courses { get; }
         ISemisterRepository Semisters {  get; }
+        ITeacherRepository Teachers { get; }
+        IDesignationRepository Designations { get; }
         Task CompleteAsync();
 
 
