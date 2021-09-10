@@ -51,7 +51,7 @@ namespace API_Layer
             });
             services.AddDbContext<ApplicationDbContext>();
             //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IDepartmentService, DepartmentService>();
             /*
             services.AddScoped<ICourseRepository, CourseRepository>();

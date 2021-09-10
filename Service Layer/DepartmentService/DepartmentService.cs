@@ -1,5 +1,6 @@
 ﻿using Data_Access_Layer;
 using Entity_Layer;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Repository_Layer;
 using Repository_Layer.Child_Repositories;
 using Repository_Layer.Repository;
@@ -14,13 +15,11 @@ namespace Service_Layer.DepartmentService
 {
     public class DepartmentService : IDepartmentService
     {
-        private readonly IDepartmentRepository service;
-        private readonly IUnitOfWork<ApplicationDbContext> unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DepartmentService(IUnitOfWork<ApplicationDbContext> unitOfWork)
+        public DepartmentService(IUnitOfWork unitOfWork)
         {
-            this.unitOfWork = unitOfWork;
-            this.service = new DepartmentRepository(unitOfWork);
+            _unitOfWork = unitOfWork;
         }
 
         // Story 01
@@ -30,41 +29,40 @@ namespace Service_Layer.DepartmentService
             serviceResponse.Data = department;
             try
             {
-                unitOfWork.CreateTransaction();
+                //unitOfWork.CreateTransaction();
                 string error = "";
                 // operations start
+                if(department.Code == null || department.Name == null)
+                {
+                    error = "Model is invalid";
+                    throw new Exception(error);
+                }
                 if (department.Code.Length < 2 && department.Code.Length > 7)
                 {
                     error += "Code must be between 2-7 characters.\n";
                 }
-                var tempResponse = await service.GetDepartmentByCode(department.Code);
-                if(!tempResponse.Success)
+                var tempResponse = await _unitOfWork.Departments.GetDepartmentByCode(department.Code);
+                if(tempResponse.Data != null)
                 {
-                    error += tempResponse.Message + "\n";
+                    error += "Code is duplicate.\n";
                 }
-                tempResponse = await service.GetDepartmentByName(department.Name);
-                if(!tempResponse.Success)
+                tempResponse = await _unitOfWork.Departments.GetDepartmentByName(department.Name);
+                if(tempResponse.Data != null)
                 {
-                    error += tempResponse.Message + "\n";
-                }
-                tempResponse = await service.Add(department);
-                if(!tempResponse.Success)
-                {
-                    error += tempResponse.Message + "\n";
+                    error += "Name is duplicate.\n";
                 }
                 if(error.Length > 0)
                 {
                     throw new Exception(error);
                 }
+                serviceResponse = await _unitOfWork.Departments.Add(department);
                 // operations end
-                unitOfWork.Save();
-                unitOfWork.Commit();
+                await _unitOfWork.CompleteAsync(); // if it fails in the middle, it should automatically rollback...
             }
             catch (Exception ex)
             {
                 serviceResponse.Message = ex.Message;
                 serviceResponse.Success = false;
-                unitOfWork.Rollback();
             }
             return serviceResponse;
         }
@@ -72,7 +70,7 @@ namespace Service_Layer.DepartmentService
         // Story 02
         public async Task<ServiceResponse<IEnumerable<Department>>> GetDepartments()
         {
-            return await service.GetAll();      
+            return await _unitOfWork.Departments.GetAll();      
         }
 
     }

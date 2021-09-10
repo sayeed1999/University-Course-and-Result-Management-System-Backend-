@@ -27,13 +27,13 @@ namespace API_Layer.Controllers
         }
 
         // GET: Departments
-        /*[HttpGet]
+        [HttpGet]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Department>>>> GetDepartments()
         {
-            var serviceResponse = await service.GetAll();
+            var serviceResponse = await service.GetDepartments();
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
-        }*/
+        }
 
         // GET: Departments/All
         /*[HttpGet("All")]
