@@ -32,27 +32,14 @@ namespace Repository_Layer.Child_Repositories
             return serviceResponse;
         }
 
-
-        /*
-        public override async Task<ServiceResponse<Course>> Add(Course item)
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId)
         {
-            var serviceResponse = new ServiceResponse<Course>();
-
-            // find if there remains a course with the same name in the same department
-            if (await _dbContext.Courses.SingleOrDefaultAsync(x => (x.Code == item.Code || x.Name == item.Name) && x.DepartmentId == item.DepartmentId) != null)
-            {
-                serviceResponse.Data = item;
-                serviceResponse.Message = "Code and name must be unique in the respective department";
-                serviceResponse.Success = false;
-                return serviceResponse;
-            }
-
+            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
             try
             {
-                _dbContext.Courses.Add(item);
-                await _dbContext.SaveChangesAsync();
-                serviceResponse.Data = item;
-                serviceResponse.Message = "Item stored successfully to the database.";
+                serviceResponse.Data = await _dbSet.Where(x => x.DepartmentId == departmentId)
+                                                   .ToListAsync();
+                serviceResponse.Message = "Data fetched successfully from the database";
             }
             catch (Exception ex)
             {
@@ -62,29 +49,8 @@ namespace Repository_Layer.Child_Repositories
             return serviceResponse;
         }
 
-        public virtual async Task<ServiceResponse<Course>> GetCourseByCompositeKeyIncludingTeacher(long departmentId, string courseCode)
-        {
-            var serviceResponse = new ServiceResponse<Course>();
-            try
-            {
-                serviceResponse.Data = await _dbContext.Courses.Include(x => x.Teacher)
-                    .SingleOrDefaultAsync(x => x.DepartmentId == departmentId 
-                                            && x.Code == courseCode);
-                
-                if (serviceResponse.Data == null)
-                {
-                    serviceResponse.Message = "Data not found with the given constrain.";
-                    serviceResponse.Success = false;
-                }
-                else serviceResponse.Message = "Data  with the given id was fetched successfully from the database";
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
-                serviceResponse.Success = false;
-            }
-            return serviceResponse;
-        }
+
+        /*
         public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(long departmentId)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
@@ -121,24 +87,6 @@ namespace Repository_Layer.Child_Repositories
             catch (Exception ex)
             {
                 serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
-                serviceResponse.Success = false;
-            }
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId)
-        {
-            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
-            try
-            {
-                serviceResponse.Data = await _dbContext.Courses
-                    .Where(x => x.DepartmentId == departmentId)
-                    .ToListAsync();
-                serviceResponse.Message = "Data fetched successfully from the database";
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = ex.Message;
                 serviceResponse.Success = false;
             }
             return serviceResponse;

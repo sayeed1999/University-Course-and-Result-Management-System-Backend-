@@ -40,15 +40,6 @@ namespace API_Layer.Controllers
         }
 
         // GET: Courses
-        [HttpGet("Department/{id:int}")]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(int id)
-        {
-            var serviceResponse = await _service.GetCoursesByDepartment(id);
-            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
-            return Ok(serviceResponse);
-        }
-
-        // GET: Courses
         [HttpGet("Department/{code}")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(string code)
         {
@@ -66,14 +57,21 @@ namespace API_Layer.Controllers
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }
-        /*
+
+        // GET: Courses
+        [HttpGet("Department/{departmentId}")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(long departmentId)
+        {
+            var serviceResponse = await _service.GetCoursesByDepartment(departmentId);
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+        
         [HttpPost("CourseAssignToTeacher")]
         public async Task<ActionResult<ServiceResponse<Course>>> CourseAssignToTeacher([FromBody]CourseAssignToTeacher body)
         {
-            var response = await _service.GetCourseByCompositeKeyIncludingTeacher(body.DepartmentId, body.CourseCode);
-            //return Ok(response);
-            if (response.Success == false) return BadRequest(response);
-
+            ServiceResponse<Course> response = await _service.GetCourseById(body.CourseId);
+            
             if (response.Data == null)
             {
                 response.Message = "Course not found on the database.";
@@ -82,7 +80,7 @@ namespace API_Layer.Controllers
             
             if(response.Data.TeacherId == body.TeacherId)
             {
-                response.Message = $"The course {body.CourseCode} of the department is aleady assigned to the same teacher! :)";
+                response.Message = $"This course is already assigned to the same teacher. :)";
                 response.Success = false;
                 return BadRequest(response);
             }
@@ -92,39 +90,20 @@ namespace API_Layer.Controllers
 
             if(response.Data.TeacherId != null)
             {
-                response.Message = $"This course is already assigned to {response.Data.Teacher.Name}! :)";
+                response.Message = $"This course is already assigned to another teacher. :(";
                 response.Success = false;
                 return BadRequest(response);
             }
             
             // else, now assign teacher
             response.Data.TeacherId = body.TeacherId;
-            var response2 = await _service.Update(response.Data);
-            if (response2.Success == false) return BadRequest(response2);
-
-            // now teacher is assigned, reduce the remainingCredit
-            var teacherResponse = await _teacherService.GetById(body.TeacherId);
-            
-            if(teacherResponse.Success == false)
-            {
-                teacherResponse.Message = "Non-reversible error! Course Assigned to teacherId that doesn't exist! You have to manually change it or unassign the teacher. :(";
-                return BadRequest(teacherResponse);
-            }
-
-            Teacher teacher = teacherResponse.Data;
-            //teacher.RemainingCredit = teacher.RemainingCredit <= response.Data.Credit ? 0 : teacher.RemainingCredit - response.Data.Credit;
-
-            teacherResponse = await _teacherService.Update(teacher);
-            if (teacherResponse.Success == false)
-            {
-                teacherResponse.Message = "Non-reversible error! Course Assigned but remaining credit from teacher not reduced. You have to manually change it or unassign the teacher. :(";
-                return BadRequest(teacherResponse);
-            }
+            response = await _service.UpdateCourse(response.Data);
+            if (response.Success == false) return BadRequest(response);
 
             response.Message = $"Course successfully assigned to respective teacher.";
             return Ok(response);
         }
-
+        /*
         [HttpGet("Department/{departmentId:int}/AllocatedRooms")]
         public async Task<ActionResult<IEnumerable<ServiceResponse<Course>>>> GetCoursesWithAllocatedRoomsByDepartment(int departmentId)
         {

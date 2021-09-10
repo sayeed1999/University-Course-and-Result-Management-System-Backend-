@@ -74,5 +74,31 @@ namespace Service_Layer.CourseService
             }
             return serviceResponse;
         }
+
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId)
+        {
+            return await _unitOfWork.Courses.GetCoursesByDepartment(departmentId);
+        }
+
+        public async Task<ServiceResponse<Course>> UpdateCourse(Course course)
+        {
+            var serviceResponse = new ServiceResponse<Course>();
+            try
+            {
+                serviceResponse = await _unitOfWork.Courses.Update(course);
+                await _unitOfWork.CompleteAsync();
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Operation unsuccessful";
+            }
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<Course>> GetCourseById(long courseId)
+        {
+            return await _unitOfWork.Courses.GetById(courseId);
+        }
     }
 }

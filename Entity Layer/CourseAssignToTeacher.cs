@@ -8,8 +8,7 @@ namespace Entity_Layer
 {
     public class CourseAssignToTeacher
     {
-        public long DepartmentId { get; set; }
-        public long TeacherId { get; set; }
         public long CourseId {  get; set; }
+        public long TeacherId { get; set; }
     }
 }

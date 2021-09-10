@@ -40,12 +40,12 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
-        /*[HttpGet("Department/{departmentId:int}")]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Teacher>>>> GetTeachersByDepartment(int departmentId)
+        [HttpGet("Department/{departmentId}")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Teacher>>>> GetTeachersByDepartmentWithAssignedCourses(long departmentId)
         {
-            var serviceResponse = await _service.GetTeachersByDepartment(departmentId);
+            var serviceResponse = await _service.GetTeachersByDepartmentWithAssignedCourses(departmentId);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
-        }*/
+        }
     }
 }
