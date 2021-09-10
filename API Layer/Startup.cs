@@ -20,6 +20,7 @@ using Service_Layer.CourseService;
 using Service_Layer.SemisterService;
 using Service_Layer.DesignationService;
 using Service_Layer.TeacherService;
+using Service_Layer.StudentService;
 
 namespace API_Layer
 {
@@ -61,8 +62,8 @@ namespace API_Layer
             services.AddScoped<ISemisterService, SemisterService>();
             services.AddScoped<IDesignationService, DesignationService>();
             services.AddScoped<ITeacherService, TeacherService>();
-            /*services.AddScoped<IStudentRepository, StudentRepository>();
-            services.AddScoped<IGradeRepository, GradeRepository>();
+            services.AddScoped<IStudentService, StudentService>();
+            /*services.AddScoped<IGradeRepository, GradeRepository>();
             services.AddScoped<IRoomRepository, RoomRepository>();
             services.AddScoped<IDayRepository, DayRepository>();
             services.AddScoped<IMenuRepository, MenuRepository>();

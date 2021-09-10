@@ -15,6 +15,7 @@ namespace Repository_Layer.UnitOfWork
         ISemisterRepository Semisters {  get; }
         ITeacherRepository Teachers { get; }
         IDesignationRepository Designations { get; }
+        IStudentRepository Students { get; }
         Task CompleteAsync();
 
 

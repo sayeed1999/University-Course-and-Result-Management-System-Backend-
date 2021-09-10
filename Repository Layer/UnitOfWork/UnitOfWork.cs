@@ -13,6 +13,7 @@ namespace Repository_Layer.UnitOfWork
         public ISemisterRepository Semisters {  get; private set; }
         public ITeacherRepository Teachers { get; private set; }
         public IDesignationRepository Designations { get; private set; }
+        public IStudentRepository Students { get; private set; }
         public UnitOfWork(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -21,6 +22,7 @@ namespace Repository_Layer.UnitOfWork
             Semisters = new SemisterRepository(dbContext);
             Teachers = new TeacherRepository(dbContext);
             Designations = new DesignationRepository(dbContext);
+            Students = new StudentRepository(dbContext);
         }
 
         public async Task CompleteAsync()

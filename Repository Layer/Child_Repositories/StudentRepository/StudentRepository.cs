@@ -8,186 +8,162 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-/*
+
 namespace Repository_Layer.Child_Repositories
 {
     public class StudentRepository : Repository<Student>, IStudentRepository
     {
-        private readonly IDepartmentRepository _departmentService;
-        public StudentRepository(ApplicationDbContext dbContext, IDepartmentRepository departmentService) : base(dbContext)
+        public StudentRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
-            _departmentService = departmentService;
+
         }
 
-        public async Task<ServiceResponse<IEnumerable<Student>>> GetAll(string regNum)
+        public async Task<long> CountStudentsInDepartment(long departmentId)
         {
-            var serviceResponse = new ServiceResponse<IEnumerable<Student>>();
-            try
-            {
-                serviceResponse.Data = await _dbContext.Students
-                    .Include(x => x.Department)
-                    .Include(x => x.StudentsCourses)
-                        .ThenInclude(y => y.Course)
-                    .Where(x => x.RegistrationNumber.Contains(regNum))
-                    .Take(10)
-                    .ToListAsync();                
-
-                serviceResponse.Message = "Data fetched successfully from the database";
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
-                serviceResponse.Success = false;
-            }
-            return serviceResponse;
+            long count = await _dbSet.CountAsync(x => x.DepartmentId == departmentId);
+            return count;
         }
 
-        public async Task<ServiceResponse<StudentCourse>> EnrollStudentInCourse(StudentCourse data)
-        {
-            var serviceResponse = new ServiceResponse<StudentCourse>();
-            serviceResponse.Data = data;
-            try
-            {
-                _dbContext.StudentsCourses.Add(data);
-                await _dbContext.SaveChangesAsync();
-                serviceResponse.Message = "Successfully enrolled.";
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = ex.Message;
-                serviceResponse.Success = false;
-            }
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<Student>> RegisterStudent(StudentRegistration student)
+        public async Task<ServiceResponse<Student>> GetStudentByEmail(string email)
         {
             var serviceResponse = new ServiceResponse<Student>();
-
-            // Creating Registration number
-
-            string reg = "";
-            var response01 = await _departmentService.GetById(student.DepartmentId);
-            if(!response01.Success)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = response01.Message;
-                return serviceResponse;
-            }
-            reg += response01.Data.Code + '-';
-            reg += student.Date.Year.ToString() + '-';
-            int countOfStudents = await _dbContext.Students.CountAsync(x => x.DepartmentId == student.DepartmentId) + 1;
-            if (countOfStudents / 10 == 0) reg += "00";
-            else if (countOfStudents / 10 < 10) reg += "0";
-            reg += countOfStudents.ToString();
-
-            // Registration Number creating ends..
-
-            var newStudent = new Student
-            {
-                Id = 0,
-                Name = student.Name,
-                Email = student.Email,
-                Contact = student.Contact,
-                Address = student.Address,
-                Date = student.Date,
-                DepartmentId = student.DepartmentId,
-                RegistrationNumber = reg
-            };
-            return await this.Add(newStudent);
-        }
-
-        public async Task<ServiceResponse<StudentCourse>> SaveResult(StudentCourse data)
-        {
-            var serviceResponse = new ServiceResponse<StudentCourse>();
-            try
-            {
-                var course = await _dbContext.StudentsCourses.FindAsync(data.DepartmentId, data.CourseCode, data.StudentId);
-                course.Grade = data.Grade;
-                _dbContext.StudentsCourses.Update(course);
-                await _dbContext.SaveChangesAsync();
-                serviceResponse.Data = course;
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = $"Something failed. Please try with proper data.\nError: {ex.Message}";
-                serviceResponse.Success = false;
-            }
+            serviceResponse.Data = await _dbSet.SingleOrDefaultAsync(x => x.Email == email);
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<IEnumerable<Student>>> GetStudentsResults()
-        {
-            var serviceResponse = new ServiceResponse<IEnumerable<Student>>();
-            try
-            {
-                serviceResponse.Data = await _dbContext.Students
-                                    .Include(x => x.Department)
-                                    .Include(x => x.StudentsCourses)
-                                        .ThenInclude(z => z.Course)
-                                    .ToListAsync();
+        /*
+public async Task<ServiceResponse<IEnumerable<Student>>> GetAll(string regNum)
+{
+   var serviceResponse = new ServiceResponse<IEnumerable<Student>>();
+   try
+   {
+       serviceResponse.Data = await _dbContext.Students
+           .Include(x => x.Department)
+           .Include(x => x.StudentsCourses)
+               .ThenInclude(y => y.Course)
+           .Where(x => x.RegistrationNumber.Contains(regNum))
+           .Take(10)
+           .ToListAsync();                
 
-                serviceResponse.Message = "Data fetched successfully from the database";
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
-                serviceResponse.Success = false;
-            }
-            return serviceResponse;
-        }
+       serviceResponse.Message = "Data fetched successfully from the database";
+   }
+   catch (Exception ex)
+   {
+       serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+       serviceResponse.Success = false;
+   }
+   return serviceResponse;
+}
 
-        public async Task<ServiceResponse<Student>> GetStudentResultById(long id)
-        {
-            var serviceResponse = new ServiceResponse<Student>();
-            try
-            {
-                serviceResponse.Data = await _dbContext.Students
-                                    .Include(x => x.Department)
-                                    .Include(x => x.StudentsCourses)
-                                        .ThenInclude(z => z.Course)
-                                    .SingleOrDefaultAsync(x => x.Id == id);
+public async Task<ServiceResponse<StudentCourse>> EnrollStudentInCourse(StudentCourse data)
+{
+   var serviceResponse = new ServiceResponse<StudentCourse>();
+   serviceResponse.Data = data;
+   try
+   {
+       _dbContext.StudentsCourses.Add(data);
+       await _dbContext.SaveChangesAsync();
+       serviceResponse.Message = "Successfully enrolled.";
+   }
+   catch (Exception ex)
+   {
+       serviceResponse.Message = ex.Message;
+       serviceResponse.Success = false;
+   }
+   return serviceResponse;
+}
 
-                serviceResponse.Message = "Data fetched successfully from the database";
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = ex.Message;
-                serviceResponse.Success = false;
-            }
-            if (serviceResponse.Data == null)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = "Data not found";
-            }
-            return serviceResponse;
-        }
+public async Task<ServiceResponse<StudentCourse>> SaveResult(StudentCourse data)
+{
+   var serviceResponse = new ServiceResponse<StudentCourse>();
+   try
+   {
+       var course = await _dbContext.StudentsCourses.FindAsync(data.DepartmentId, data.CourseCode, data.StudentId);
+       course.Grade = data.Grade;
+       _dbContext.StudentsCourses.Update(course);
+       await _dbContext.SaveChangesAsync();
+       serviceResponse.Data = course;
+   }
+   catch (Exception ex)
+   {
+       serviceResponse.Message = $"Something failed. Please try with proper data.\nError: {ex.Message}";
+       serviceResponse.Success = false;
+   }
+   return serviceResponse;
+}
 
-        public async Task<ServiceResponse<Student>> GetStudentResultByRegNo(string reg)
-        {
-            var serviceResponse = new ServiceResponse<Student>();
-            try
-            {
-                serviceResponse.Data = await _dbContext.Students
-                                    .Include(x => x.Department)
-                                    .Include(x => x.StudentsCourses)
-                                        .ThenInclude(z => z.Course)
-                                    .SingleOrDefaultAsync(x => x.RegistrationNumber == reg);
+public async Task<ServiceResponse<IEnumerable<Student>>> GetStudentsResults()
+{
+   var serviceResponse = new ServiceResponse<IEnumerable<Student>>();
+   try
+   {
+       serviceResponse.Data = await _dbContext.Students
+                           .Include(x => x.Department)
+                           .Include(x => x.StudentsCourses)
+                               .ThenInclude(z => z.Course)
+                           .ToListAsync();
 
-                serviceResponse.Message = "Data fetched successfully from the database";
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = ex.Message;
-                serviceResponse.Success = false;
-            }
-            if(serviceResponse.Data == null)
-            {
-                serviceResponse.Success = false;
-                serviceResponse.Message = "Data not found";
-            }
-            return serviceResponse;
-        }
-    }
+       serviceResponse.Message = "Data fetched successfully from the database";
+   }
+   catch (Exception ex)
+   {
+       serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+       serviceResponse.Success = false;
+   }
+   return serviceResponse;
+}
+
+public async Task<ServiceResponse<Student>> GetStudentResultById(long id)
+{
+   var serviceResponse = new ServiceResponse<Student>();
+   try
+   {
+       serviceResponse.Data = await _dbContext.Students
+                           .Include(x => x.Department)
+                           .Include(x => x.StudentsCourses)
+                               .ThenInclude(z => z.Course)
+                           .SingleOrDefaultAsync(x => x.Id == id);
+
+       serviceResponse.Message = "Data fetched successfully from the database";
+   }
+   catch (Exception ex)
+   {
+       serviceResponse.Message = ex.Message;
+       serviceResponse.Success = false;
+   }
+   if (serviceResponse.Data == null)
+   {
+       serviceResponse.Success = false;
+       serviceResponse.Message = "Data not found";
+   }
+   return serviceResponse;
+}
+
+public async Task<ServiceResponse<Student>> GetStudentResultByRegNo(string reg)
+{
+   var serviceResponse = new ServiceResponse<Student>();
+   try
+   {
+       serviceResponse.Data = await _dbContext.Students
+                           .Include(x => x.Department)
+                           .Include(x => x.StudentsCourses)
+                               .ThenInclude(z => z.Course)
+                           .SingleOrDefaultAsync(x => x.RegistrationNumber == reg);
+
+       serviceResponse.Message = "Data fetched successfully from the database";
+   }
+   catch (Exception ex)
+   {
+       serviceResponse.Message = ex.Message;
+       serviceResponse.Success = false;
+   }
+   if(serviceResponse.Data == null)
+   {
+       serviceResponse.Success = false;
+       serviceResponse.Message = "Data not found";
+   }
+   return serviceResponse;
 }
 */
+    }
+}

@@ -2,7 +2,6 @@
 using Entity_Layer;
 using FastReport.Export.PdfSimple;
 using FastReport.Data;
-using FastReport.Export.Image;
 using FastReport.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using System.IO;
-using Repository_Layer.Child_Repositories;
+using Service_Layer.StudentService;
 
 namespace API_Layer.Controllers
 {
@@ -19,9 +18,9 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class StudentsController : Controller
     {
-        private readonly IStudentRepository _service;
+        private readonly IStudentService _service;
         private readonly AppSettings _appSettings;
-        public StudentsController(IStudentRepository service, IOptions<AppSettings> appSettings)
+        public StudentsController(IStudentService service, IOptions<AppSettings> appSettings)
         {
             this._service = service;
             this._appSettings = appSettings.Value;
@@ -91,13 +90,13 @@ namespace API_Layer.Controllers
 
         // POST: Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        /*[HttpPost]
+        [HttpPost]
         public async Task<ActionResult<ServiceResponse<Student>>> PostStudent(StudentRegistration student)
         {
             var serviceResponse = await _service.RegisterStudent(student);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
-        }*/
+        }
 
         /*[HttpPost("enroll-in-course")]
         public async Task<ActionResult<ServiceResponse<StudentCourse>>> EnrollStudentInCourse([FromBody] StudentCourse data)
