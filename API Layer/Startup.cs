@@ -6,17 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
-using Repository_Layer;
-using Service_Layer.CourseService;
-using Service_Layer.DepartmentService;
-using Service_Layer.SemisterService;
-using Service_Layer.DesignationService;
-using Service_Layer.TeacherService;
-using Service_Layer.StudentService;
-using Service_Layer.GradeService;
-using Service_Layer.RoomService;
-using Service_Layer.DayService;
-using Service_Layer.MenuService;
 using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -25,6 +14,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Repository_Layer.UnitOfWork;
+using Service_Layer.DepartmentService;
 
 namespace API_Layer
 {
@@ -46,7 +37,7 @@ namespace API_Layer
 
             services.AddMvc(options =>
             {
-                options.Filters.Add(new AuthorizeFilter());
+                //options.Filters.Add(new AuthorizeFilter());
             });
 
             services.AddControllers().AddNewtonsoftJson(options => {
@@ -59,25 +50,24 @@ namespace API_Layer
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API_Layer", Version = "v1" });
             });
             services.AddDbContext<ApplicationDbContext>();
-            services.AddScoped<ApplicationDbContext>();
-            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
             services.AddScoped<IDepartmentService, DepartmentService>();
-            services.AddScoped<ICourseService, CourseService>();
-            services.AddScoped<ISemisterService, SemisterService>();
-            services.AddScoped<IDesignationService, DesignationService>();
-            services.AddScoped<ITeacherService, TeacherService>();
-            services.AddScoped<IStudentService, StudentService>();
-            services.AddScoped<IGradeService, GradeService>();
-            services.AddScoped<IRoomService, RoomService>();
-            services.AddScoped<IDayService, DayService>();
-            services.AddScoped<IMenuService, MenuService>();
+            /*
+            services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<ISemisterRepository, SemisterRepository>();
+            services.AddScoped<IDesignationRepository, DesignationRepository>();
+            services.AddScoped<ITeacherRepository, TeacherRepository>();
+            services.AddScoped<IStudentRepository, StudentRepository>();
+            services.AddScoped<IGradeRepository, GradeRepository>();
+            services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<IDayRepository, DayRepository>();
+            services.AddScoped<IMenuRepository, MenuRepository>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-
+            */
             // Disable automatic 400 response
             services.Configure<ApiBehaviorOptions>(options =>
             {
-                //options.SuppressConsumesConstraintForFormFileParameters = true;
-                //options.SuppressInferBindingSourcesForParameters = true;
                 options.SuppressModelStateInvalidFilter = true;
             });
 

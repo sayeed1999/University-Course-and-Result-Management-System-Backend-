@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
-using Service_Layer.TeacherService;
+using Repository_Layer.Child_Repositories;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,9 +15,9 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class TeachersController : ControllerBase
     {
-        private readonly ITeacherService _service;
+        private readonly ITeacherRepository _service;
 
-        public TeachersController(ITeacherService service)
+        public TeachersController(ITeacherRepository service)
         {
             this._service = service;
         }

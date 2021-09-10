@@ -1,7 +1,9 @@
 ﻿using Data_Access_Layer;
 using Entity_Layer;
-using Microsoft.EntityFrameworkCore;
 using Repository_Layer;
+using Repository_Layer.Child_Repositories;
+using Repository_Layer.Repository;
+using Repository_Layer.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,45 +12,67 @@ using System.Threading.Tasks;
 
 namespace Service_Layer.DepartmentService
 {
-    public class DepartmentService : Repository<Department>, IDepartmentService
+    public class DepartmentService : IDepartmentService
     {
-        public DepartmentService(ApplicationDbContext dbContext) : base(dbContext) { }
+        private readonly IDepartmentRepository service;
+        private readonly IUnitOfWork<ApplicationDbContext> unitOfWork;
 
-        public virtual async Task<ServiceResponse<IEnumerable<Department>>> GetAllIncludingTeachersAndCourses()
+        public DepartmentService(IUnitOfWork<ApplicationDbContext> unitOfWork)
         {
-            var serviceResponse = new ServiceResponse<IEnumerable<Department>>();
+            this.unitOfWork = unitOfWork;
+            this.service = new DepartmentRepository(unitOfWork);
+        }
+
+        // Story 01
+        public async Task<ServiceResponse<Department>> SaveDepartment(Department department)
+        {
+            var serviceResponse = new ServiceResponse<Department>();
+            serviceResponse.Data = department;
             try
             {
-                serviceResponse.Data = await _dbContext.Departments
-                        .Include(x => x.Teachers)
-                        .Include(x => x.Courses).ThenInclude(x => x.Semister)
-                        .ToListAsync();
-                serviceResponse.Message = "Data fetched successfully from the database";
+                unitOfWork.CreateTransaction();
+                string error = "";
+                // operations start
+                if (department.Code.Length < 2 && department.Code.Length > 7)
+                {
+                    error += "Code must be between 2-7 characters.\n";
+                }
+                var tempResponse = await service.GetDepartmentByCode(department.Code);
+                if(!tempResponse.Success)
+                {
+                    error += tempResponse.Message + "\n";
+                }
+                tempResponse = await service.GetDepartmentByName(department.Name);
+                if(!tempResponse.Success)
+                {
+                    error += tempResponse.Message + "\n";
+                }
+                tempResponse = await service.Add(department);
+                if(!tempResponse.Success)
+                {
+                    error += tempResponse.Message + "\n";
+                }
+                if(error.Length > 0)
+                {
+                    throw new Exception(error);
+                }
+                // operations end
+                unitOfWork.Save();
+                unitOfWork.Commit();
             }
             catch (Exception ex)
             {
-                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Message = ex.Message;
                 serviceResponse.Success = false;
+                unitOfWork.Rollback();
             }
             return serviceResponse;
         }
 
-        public virtual async Task<ServiceResponse<IEnumerable<Department>>> GetAllIncludingCourses()
+        // Story 02
+        public async Task<ServiceResponse<IEnumerable<Department>>> GetDepartments()
         {
-            var serviceResponse = new ServiceResponse<IEnumerable<Department>>();
-            try
-            {
-                serviceResponse.Data = await _dbContext.Departments
-                        .Include(x => x.Courses)
-                        .ToListAsync();
-                serviceResponse.Message = "Data fetched successfully from the database";
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
-                serviceResponse.Success = false;
-            }
-            return serviceResponse;
+            return await service.GetAll();      
         }
 
     }

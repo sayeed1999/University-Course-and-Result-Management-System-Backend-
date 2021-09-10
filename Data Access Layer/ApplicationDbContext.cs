@@ -11,10 +11,6 @@ namespace Data_Access_Layer
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions options) : base(options)
-        {
-            
-        }
 
         public DbSet<Department> Departments { get; set; }
         public DbSet<Course> Courses { get; set; }

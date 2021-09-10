@@ -1,7 +1,7 @@
 ﻿using Entity_Layer;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
-using Service_Layer.SemisterService;
+using Repository_Layer.Child_Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +13,8 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class SemistersController : ControllerBase
     {
-        private readonly ISemisterService _service;
-        public SemistersController(ISemisterService service)
+        private readonly ISemisterRepository _service;
+        public SemistersController(ISemisterRepository service)
         {
             _service = service;
         }
