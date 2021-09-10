@@ -74,5 +74,11 @@ namespace Service_Layer.CourseService
             }
             return serviceResponse;
         }
+
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId)
+        {
+            return await _unitOfWork.Courses.GetCoursesByDepartment(departmentId);
+        }
+
     }
 }

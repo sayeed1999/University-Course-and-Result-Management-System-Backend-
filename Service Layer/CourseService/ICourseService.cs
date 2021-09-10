@@ -11,5 +11,6 @@ namespace Service_Layer.CourseService
     public interface ICourseService
     {
         public Task<ServiceResponse<Course>> SaveCourse(Course course); // Story 03
+        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId); // Story 05
     }
 }

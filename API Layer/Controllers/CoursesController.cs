@@ -40,15 +40,6 @@ namespace API_Layer.Controllers
         }
 
         // GET: Courses
-        [HttpGet("Department/{id:int}")]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(int id)
-        {
-            var serviceResponse = await _service.GetCoursesByDepartment(id);
-            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
-            return Ok(serviceResponse);
-        }
-
-        // GET: Courses
         [HttpGet("Department/{code}")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(string code)
         {
@@ -63,6 +54,15 @@ namespace API_Layer.Controllers
         public async Task<ActionResult<ServiceResponse<Course>>> PostCourse(Course course)
         {
             var serviceResponse = await _service.SaveCourse(course);
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
+        // GET: Courses
+        [HttpGet("Department/{departmentId}")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(long departmentId)
+        {
+            var serviceResponse = await _service.GetCoursesByDepartment(departmentId);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }
