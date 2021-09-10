@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
-using Repository_Layer.Repository;
 using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -15,8 +14,8 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Repository_Layer.Child_Repositories;
 using Repository_Layer.UnitOfWork;
+using Service_Layer.DepartmentService;
 
 namespace API_Layer
 {
@@ -51,11 +50,11 @@ namespace API_Layer
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API_Layer", Version = "v1" });
             });
             services.AddDbContext<ApplicationDbContext>();
-            //services.AddScoped<ApplicationDbContext>();
             //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            //services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
-            //services.AddScoped<IDepartmentRepository, DepartmentRepository>();
-            /*services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
+            services.AddScoped<IDepartmentService, DepartmentService>();
+            /*
+            services.AddScoped<ICourseRepository, CourseRepository>();
             services.AddScoped<ISemisterRepository, SemisterRepository>();
             services.AddScoped<IDesignationRepository, DesignationRepository>();
             services.AddScoped<ITeacherRepository, TeacherRepository>();

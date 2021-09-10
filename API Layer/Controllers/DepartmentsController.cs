@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
 using Repository_Layer.Child_Repositories;
 using Repository_Layer.UnitOfWork;
+using Service_Layer.DepartmentService;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,47 +19,46 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class DepartmentsController : ControllerBase
     {
-        private readonly IDepartmentRepository _service;
-        private readonly IUnitOfWork<ApplicationDbContext> unitOfWork = new UnitOfWork<ApplicationDbContext>();
+        private readonly IDepartmentService service;
 
-        public DepartmentsController()
+        public DepartmentsController(IDepartmentService service)
         {
-            _service = new DepartmentRepository(unitOfWork);
+            this.service = service;
         }
 
         // GET: Departments
-        [HttpGet]
+        /*[HttpGet]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Department>>>> GetDepartments()
         {
-            var serviceResponse = await _service.GetAll();
+            var serviceResponse = await service.GetAll();
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
-        }
+        }*/
 
         // GET: Departments/All
-        [HttpGet("All")]
+        /*[HttpGet("All")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Department>>>> GetDepartmentsIncludingTeachersAndCourses()
         {
-            var serviceResponse = await _service.GetAllIncludingTeachersAndCourses();
+            var serviceResponse = await service.GetAllIncludingTeachersAndCourses();
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
-        }
+        }*/
 
         // GET: Departments/Courses
-        [HttpGet("Courses")]
+        /*[HttpGet("Courses")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Department>>>> GetDepartmentsIncludingCourses()
         {
-            var serviceResponse = await _service.GetAllIncludingCourses();
+            var serviceResponse = await service.GetAllIncludingCourses();
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
-        }
+        }*/
 
         // POST: Departments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<Department>>> PostDepartment(Department department)
         {
-            var serviceResponse = await _service.Add(department);
+            var serviceResponse = await service.SaveDepartment(department);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }

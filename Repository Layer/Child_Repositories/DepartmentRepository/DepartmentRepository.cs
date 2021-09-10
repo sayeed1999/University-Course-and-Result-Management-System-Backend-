@@ -23,7 +23,7 @@ namespace Repository_Layer.Child_Repositories
         {
             var serviceResponse = new ServiceResponse<Department>();
             serviceResponse.Data = await _dbContext.Departments.FirstOrDefaultAsync(x => x.Code == code);
-            if(serviceResponse.Data.Id != 0)
+            if(serviceResponse.Data != null)
             {
                 serviceResponse.Message = "Duplicate department code found in the database.";
                 serviceResponse.Success = false;
@@ -35,7 +35,7 @@ namespace Repository_Layer.Child_Repositories
         {
             var serviceResponse = new ServiceResponse<Department>();
             serviceResponse.Data = await _dbContext.Departments.FirstOrDefaultAsync(x => x.Name == name);
-            if (serviceResponse.Data.Id != 0)
+            if (serviceResponse.Data != null)
             {
                 serviceResponse.Message = "Duplicate department code found in the database.";
                 serviceResponse.Success = false;
