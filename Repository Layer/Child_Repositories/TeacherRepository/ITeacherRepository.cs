@@ -10,6 +10,7 @@ namespace Repository_Layer.Child_Repositories
 {
     public interface ITeacherRepository : IRepository<Teacher>
     {
+        public Task<ServiceResponse<Teacher>> GetTeacherByEmail(string email);
         public Task<ServiceResponse<IEnumerable<Teacher>>> GetTeachersByDepartment(int departmentId);
     }
 }

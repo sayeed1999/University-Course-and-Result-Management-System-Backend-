@@ -11,12 +11,16 @@ namespace Repository_Layer.UnitOfWork
         public IDepartmentRepository Departments { get; private set; }
         public ICourseRepository Courses {  get; private set; }
         public ISemisterRepository Semisters {  get; private set; }
+        public ITeacherRepository Teachers { get; private set; }
+        public IDesignationRepository Designations { get; private set; }
         public UnitOfWork(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
             Departments = new DepartmentRepository(dbContext);
             Courses = new CourseRepository(dbContext);
             Semisters = new SemisterRepository(dbContext);
+            Teachers = new TeacherRepository(dbContext);
+            Designations = new DesignationRepository(dbContext);
         }
 
         public async Task CompleteAsync()

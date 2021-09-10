@@ -1,7 +1,7 @@
 ﻿using Entity_Layer;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
-using Repository_Layer.Child_Repositories;
+using Service_Layer.DesignationService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +13,9 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class DesignationsController : ControllerBase
     {
-        private readonly IDesignationRepository _service;
+        private readonly IDesignationService _service;
 
-        public DesignationsController(IDesignationRepository service)
+        public DesignationsController(IDesignationService service)
         {
             this._service = service;
         }
@@ -24,7 +24,7 @@ namespace API_Layer.Controllers
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Designation>>>> GetDesignations()
         {
-            var serviceResponse = await _service.GetAll();
+            var serviceResponse = await _service.GetDesignations();
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
-using Repository_Layer.Child_Repositories;
+using Service_Layer.TeacherService;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,38 +15,37 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class TeachersController : ControllerBase
     {
-        private readonly ITeacherRepository _service;
+        private readonly ITeacherService _service;
 
-        public TeachersController(ITeacherRepository service)
+        public TeachersController(ITeacherService service)
         {
             this._service = service;
         }
 
-        [HttpGet("{id:int}")]
+        /*[HttpGet("{id:int}")]
         public async Task<ActionResult<ServiceResponse<Teacher>>> GetById(int id)
         {
             var serviceResponse = await _service.GetById(id);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
-        }
+        }*/
 
         // POST: Teachers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<Teacher>>> PostTeacher(Teacher teacher)
         {
-            //teacher.RemainingCredit = teacher.CreditToBeTaken;
-            var serviceResponse = await _service.Add(teacher);
+            var serviceResponse = await _service.SaveTeacher(teacher);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }
 
-        [HttpGet("Department/{departmentId:int}")]
+        /*[HttpGet("Department/{departmentId:int}")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Teacher>>>> GetTeachersByDepartment(int departmentId)
         {
             var serviceResponse = await _service.GetTeachersByDepartment(departmentId);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
-        }
+        }*/
     }
 }

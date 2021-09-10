@@ -8,16 +8,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-/*
+
 namespace Repository_Layer.Child_Repositories
 {
     public class TeacherRepository : Repository<Teacher>, ITeacherRepository
     {
         public TeacherRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
+
         }
 
-        public async Task<ServiceResponse<IEnumerable<Teacher>>> GetTeachersByDepartment(int departmentId)
+        public async Task<ServiceResponse<Teacher>> GetTeacherByEmail(string email)
+        {
+            var serviceResponse = new ServiceResponse<Teacher>();
+            serviceResponse.Data = await _dbSet.SingleOrDefaultAsync(x => x.Email == email);
+            return serviceResponse;
+        }
+
+        public Task<ServiceResponse<IEnumerable<Teacher>>> GetTeachersByDepartment(int departmentId)
+        {
+            throw new NotImplementedException();
+        }
+
+        /*public async Task<ServiceResponse<IEnumerable<Teacher>>> GetTeachersByDepartment(int departmentId)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Teacher>>();
             try
@@ -33,7 +46,6 @@ namespace Repository_Layer.Child_Repositories
                 serviceResponse.Success = false;
             }
             return serviceResponse;
-        }
+        }*/
     }
 }
-*/
