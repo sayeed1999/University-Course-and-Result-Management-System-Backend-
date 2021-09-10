@@ -8,13 +8,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-/*
+
 namespace Repository_Layer.Child_Repositories
 {
     public class CourseRepository : Repository<Course>, ICourseRepository
     {
-        public CourseRepository(ApplicationDbContext dbContext) : base(dbContext) { }
+        public CourseRepository(ApplicationDbContext dbContext) : base(dbContext)
+        {
 
+        }
+
+        public async Task<ServiceResponse<Course>> GetCourseByCode(string code)
+        {
+            var serviceResponse = new ServiceResponse<Course>();
+            serviceResponse.Data = await _dbSet.SingleOrDefaultAsync(x => x.Code == code);
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<Course>> GetCourseByName(string name)
+        {
+            var serviceResponse = new ServiceResponse<Course>();
+            serviceResponse.Data = await _dbSet.SingleOrDefaultAsync(x => x.Name == name);
+            return serviceResponse;
+        }
+
+
+        /*
         public override async Task<ServiceResponse<Course>> Add(Course item)
         {
             var serviceResponse = new ServiceResponse<Course>();
@@ -222,7 +241,6 @@ namespace Repository_Layer.Child_Repositories
                 serviceResponse.Success = false;
             }
             return serviceResponse;
-        }
+        }*/
     }
 }
-*/

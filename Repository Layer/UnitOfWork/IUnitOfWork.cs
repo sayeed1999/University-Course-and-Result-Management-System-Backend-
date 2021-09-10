@@ -11,6 +11,8 @@ namespace Repository_Layer.UnitOfWork
     public interface IUnitOfWork
     {
         IDepartmentRepository Departments { get; }
+        ICourseRepository Courses { get; }
+        ISemisterRepository Semisters {  get; }
         Task CompleteAsync();
 
 
