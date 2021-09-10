@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer.UnitOfWork;
 using Service_Layer.DepartmentService;
+using Service_Layer.CourseService;
+using Service_Layer.SemisterService;
 
 namespace API_Layer
 {
@@ -53,10 +55,9 @@ namespace API_Layer
             //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IDepartmentService, DepartmentService>();
-            /*
-            services.AddScoped<ICourseRepository, CourseRepository>();
-            services.AddScoped<ISemisterRepository, SemisterRepository>();
-            services.AddScoped<IDesignationRepository, DesignationRepository>();
+            services.AddScoped<ICourseService, CourseService>();
+            services.AddScoped<ISemisterService, SemisterService>();
+            /*services.AddScoped<IDesignationRepository, DesignationRepository>();
             services.AddScoped<ITeacherRepository, TeacherRepository>();
             services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<IGradeRepository, GradeRepository>();

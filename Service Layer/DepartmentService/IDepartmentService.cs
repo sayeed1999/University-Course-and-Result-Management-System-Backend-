@@ -10,7 +10,7 @@ namespace Service_Layer.DepartmentService
 {
     public interface IDepartmentService
     {
-        public Task<ServiceResponse<Department>> SaveDepartment(Department department);
-        public Task<ServiceResponse<IEnumerable<Department>>> GetDepartments();
+        public Task<ServiceResponse<Department>> SaveDepartment(Department department); // Story 01
+        public Task<ServiceResponse<IEnumerable<Department>>> GetDepartments(); // Story 02
     }
 }
