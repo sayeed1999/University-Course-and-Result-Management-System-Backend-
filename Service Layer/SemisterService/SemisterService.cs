@@ -1,6 +1,10 @@
 ﻿using Data_Access_Layer;
 using Entity_Layer;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Repository_Layer;
+using Repository_Layer.Child_Repositories;
+using Repository_Layer.Repository;
+using Repository_Layer.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +13,19 @@ using System.Threading.Tasks;
 
 namespace Service_Layer.SemisterService
 {
-    public class SemisterService : Repository<Semister>, ISemisterService
+    public class SemisterService : ISemisterService
     {
-        public SemisterService(ApplicationDbContext dbContext) : base(dbContext)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public SemisterService(IUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
         }
+
+        public async Task<ServiceResponse<IEnumerable<Semister>>> GetSemisters()
+        {
+            return await _unitOfWork.Semisters.GetAll();
+        }
+
     }
 }

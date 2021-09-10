@@ -1,7 +1,6 @@
-﻿using Data_Access_Layer;
-using Entity_Layer;
-using Microsoft.EntityFrameworkCore;
+﻿using Entity_Layer;
 using Repository_Layer;
+using Repository_Layer.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,68 +9,67 @@ using System.Threading.Tasks;
 
 namespace Service_Layer.CourseService
 {
-    public class CourseService : Repository<Course>, ICourseService
+    public class CourseService : ICourseService
     {
-        public CourseService(ApplicationDbContext dbContext) : base(dbContext) { }
+        private readonly IUnitOfWork _unitOfWork;
 
-        public override async Task<ServiceResponse<IEnumerable<Course>>> GetAll()
+        public CourseService(IUnitOfWork unitOfWork)
         {
-            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
-            try
-            {
-                serviceResponse.Data = await _dbContext.Courses
-                    .Include(x => x.Teacher)
-                    .ToListAsync();
-
-                serviceResponse.Message = "Data fetched successfully from the database";
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
-                serviceResponse.Success = false;
-            }
-            return serviceResponse;
+            _unitOfWork = unitOfWork;
         }
 
-        public virtual async Task<ServiceResponse<Course>> GetByCompositeKey(int departmentId, string courseCode)
+        // Story 03
+        public async Task<ServiceResponse<Course>> SaveCourse(Course course)
         {
             var serviceResponse = new ServiceResponse<Course>();
+            serviceResponse.Data = course;
             try
             {
-                serviceResponse.Data = await _dbContext.Courses.Include(x => x.Teacher)
-                    .SingleOrDefaultAsync(x => x.DepartmentId == departmentId 
-                                            && x.Code == courseCode);
-                
-                if (serviceResponse.Data == null)
+                //unitOfWork.CreateTransaction();
+                string error = "";
+                // operations start
+                if (course.Code == null || course.Name == null)
                 {
-                    serviceResponse.Message = "Data not found with the given constrain.";
-                    serviceResponse.Success = false;
+                    error = "Model is invalid";
+                    throw new Exception(error);
                 }
-                else serviceResponse.Message = "Data  with the given id was fetched successfully from the database";
+                if (course.Code.Length < 5)
+                {
+                    error += "\nCode must be atleast 5 characters.";
+                }
+                if(course.Credit < 0.5 || course.Credit > 5.0)
+                {
+                    error += "\nCredit must be between 0.5 - 5.0.";
+                }
+                if(course.DepartmentId <= 0)
+                {
+                    error += "\nA valid department should be chosen";
+                }
+                if (course.SemisterId <= 0)
+                {
+                    error += "\nA valid semester should be chosen";
+                }
+                var tempResponse = await _unitOfWork.Courses.GetCourseByCode(course.Code);
+                if (tempResponse.Data != null)
+                {
+                    error += "\nCode is duplicate.";
+                }
+                tempResponse = await _unitOfWork.Courses.GetCourseByName(course.Name);
+                if (tempResponse.Data != null)
+                {
+                    error += "\nName is duplicate.";
+                }
+                if (error.Length > 0)
+                {
+                    throw new Exception(error);
+                }
+                serviceResponse = await _unitOfWork.Courses.Add(course);
+                // operations end
+                await _unitOfWork.CompleteAsync(); // if it fails in the middle, it should automatically rollback...
             }
             catch (Exception ex)
             {
-                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
-                serviceResponse.Success = false;
-            }
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(int departmentId)
-        {
-            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
-            try
-            {
-                serviceResponse.Data = await _dbContext.Courses
-                    .Include(x => x.Teacher)
-                    .Where(x => x.DepartmentId == departmentId)
-                    .ToListAsync();
-
-                serviceResponse.Message = "Data fetched successfully from the database";
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Message = ex.Message;
                 serviceResponse.Success = false;
             }
             return serviceResponse;
