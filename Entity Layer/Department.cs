@@ -8,18 +8,13 @@ namespace Entity_Layer
 {
     public class Department
     {
-        public Department()
-        {
-            this.Courses = new HashSet<Course>();
-            this.Teachers = new HashSet<Teacher>();
-            //this.Students = new HashSet<Student>();
-        }
-
-        public int Id { get; set; }
-        public string Code { get; set; }
-        public string Name { get; set; }
+        public long Id { get; set; }
+        public string Code { get; set; } // 2-7 chars, unique
+        public string Name { get; set; } // unique
         public ICollection<Course> Courses { get; set; }
         public ICollection<Teacher> Teachers { get; set; }
-        //public ICollection<Student> Students { get; set; }
+        public ICollection<CourseHistory> CourseHistories { get; set; }
+        public ICollection<AllocateClassroom> AllocateClassrooms { get; set; }
+        public ICollection<AllocateClassroomHistory> AllocateClassroomHistories { get; set; }
     }
 }

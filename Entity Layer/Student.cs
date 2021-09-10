@@ -11,12 +11,13 @@ namespace Entity_Layer
         public long Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public string Contact {  get; set; }
+        public long Contact {  get; set; }
         public DateTime Date {  get; set; }
         public string Address { get; set; }
-        public Department? Department{ get; set; }
-        public int DepartmentId { get; set; }
+        public Department Department{ get; set; }
+        public long DepartmentId { get; set; }
         public string RegistrationNumber { get; init; }
-        public ICollection<StudentCourse> StudentsCourses {  get; set; }
+        public List<StudentCourse> StudentsCourses {  get; set; }
+        public ICollection<StudentCourseHistory> StudentCourseHistories { get; set; }
     }
 }

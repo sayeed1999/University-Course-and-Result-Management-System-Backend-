@@ -8,7 +8,9 @@ namespace Entity_Layer
 {
     public class Day
     {
+        public long Id { get; set; }
         public string Name {  get; set; }
         public ICollection<AllocateClassroom> AllocateClassrooms {  get; set; }
+        public ICollection<AllocateClassroomHistory> AllocateClassroomHistories { get; set; }
     }
 }

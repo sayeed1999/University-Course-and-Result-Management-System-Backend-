@@ -1,7 +1,7 @@
 ﻿using Entity_Layer;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
-using Service_Layer.DesignationService;
+using Repository_Layer.Child_Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +13,9 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class DesignationsController : ControllerBase
     {
-        private readonly IDesignationService _service;
+        private readonly IDesignationRepository _service;
 
-        public DesignationsController(IDesignationService service)
+        public DesignationsController(IDesignationRepository service)
         {
             this._service = service;
         }
