@@ -30,22 +30,39 @@ namespace Repository_Layer.Child_Repositories
             throw new NotImplementedException();
         }
 
-        /*public async Task<ServiceResponse<IEnumerable<Teacher>>> GetTeachersByDepartment(int departmentId)
+        public async Task<ServiceResponse<IEnumerable<TeacherView>>> GetTeachersByDepartmentWithAssignedCourses(long departmentId)
         {
-            var serviceResponse = new ServiceResponse<IEnumerable<Teacher>>();
+            var serviceResponse = new ServiceResponse<IEnumerable<TeacherView>>();
             try
             {
-                serviceResponse.Data = await _dbContext.Teachers
-                    .Where(x => x.DepartmentId == departmentId)
-                    .ToListAsync();
+                IEnumerable<Teacher> teachers = await _dbSet.Where(x => x.DepartmentId == departmentId)
+                                                   .Include(x => x.Courses)
+                                                   .ToListAsync();
                 serviceResponse.Message = "Data fetched successfully from the database";
+
+                var teacherViews = from teacher in teachers
+                                   select new TeacherView
+                                   {
+                                       Address = teacher.Address,
+                                       Contact = teacher.Contact,
+                                       Courses = teacher.Courses,
+                                       CreditToBeTaken = teacher.CreditToBeTaken,
+                                       DepartmentId = teacher.DepartmentId,
+                                       DesignationId = teacher.DesignationId,
+                                       Id = teacher.Id,
+                                       Email = teacher.Email,
+                                       Name = teacher.Name,
+                                       RemainingCredit = teacher.CreditToBeTaken - teacher.Courses.Sum(x => x.Credit)
+                                   };
+                serviceResponse.Data = teacherViews;
             }
             catch (Exception ex)
             {
                 serviceResponse.Message = ex.Message;
                 serviceResponse.Success = false;
             }
+
             return serviceResponse;
-        }*/
+        }
     }
 }

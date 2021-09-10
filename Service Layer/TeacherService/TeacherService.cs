@@ -17,6 +17,7 @@ namespace Service_Layer.TeacherService
         {
             this._unitOfWork = unitOfWork;
         }
+
         public async Task<ServiceResponse<Teacher>> SaveTeacher(Teacher teacher)
         {
             var serviceResponse = new ServiceResponse<Teacher>();
@@ -54,6 +55,11 @@ namespace Service_Layer.TeacherService
                 serviceResponse.Success = false;
             }
             return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<IEnumerable<TeacherView>>> GetTeachersByDepartmentWithAssignedCourses(long departmentId)
+        {
+            return await _unitOfWork.Teachers.GetTeachersByDepartmentWithAssignedCourses(departmentId);
         }
     }
 }
