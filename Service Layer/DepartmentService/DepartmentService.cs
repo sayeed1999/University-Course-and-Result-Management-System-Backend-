@@ -1,7 +1,10 @@
 ﻿using Data_Access_Layer;
 using Entity_Layer;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Repository_Layer;
+using Repository_Layer.Child_Repositories;
+using Repository_Layer.Repository;
+using Repository_Layer.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,45 +13,64 @@ using System.Threading.Tasks;
 
 namespace Service_Layer.DepartmentService
 {
-    public class DepartmentService : Repository<Department>, IDepartmentService
+    public class DepartmentService : IDepartmentService
     {
-        public DepartmentService(ApplicationDbContext dbContext) : base(dbContext) { }
+        private readonly IUnitOfWork _unitOfWork;
 
-        public virtual async Task<ServiceResponse<IEnumerable<Department>>> GetAllIncludingTeachersAndCourses()
+        public DepartmentService(IUnitOfWork unitOfWork)
         {
-            var serviceResponse = new ServiceResponse<IEnumerable<Department>>();
+            _unitOfWork = unitOfWork;
+        }
+
+        // Story 01
+        public async Task<ServiceResponse<Department>> SaveDepartment(Department department)
+        {
+            var serviceResponse = new ServiceResponse<Department>();
+            serviceResponse.Data = department;
             try
             {
-                serviceResponse.Data = await _dbContext.Departments
-                        .Include(x => x.Teachers)
-                        .Include(x => x.Courses).ThenInclude(x => x.Semister)
-                        .ToListAsync();
-                serviceResponse.Message = "Data fetched successfully from the database";
+                //unitOfWork.CreateTransaction();
+                string error = "";
+                // operations start
+                if(department.Code == null || department.Name == null)
+                {
+                    error = "Model is invalid";
+                    throw new Exception(error);
+                }
+                if (department.Code.Length < 2 && department.Code.Length > 7)
+                {
+                    error += "Code must be between 2-7 characters.\n";
+                }
+                var tempResponse = await _unitOfWork.Departments.GetDepartmentByCode(department.Code);
+                if(tempResponse.Data != null)
+                {
+                    error += "Code is duplicate.\n";
+                }
+                tempResponse = await _unitOfWork.Departments.GetDepartmentByName(department.Name);
+                if(tempResponse.Data != null)
+                {
+                    error += "Name is duplicate.\n";
+                }
+                if(error.Length > 0)
+                {
+                    throw new Exception(error);
+                }
+                serviceResponse = await _unitOfWork.Departments.Add(department);
+                // operations end
+                await _unitOfWork.CompleteAsync(); // if it fails in the middle, it should automatically rollback...
             }
             catch (Exception ex)
             {
-                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
+                serviceResponse.Message = ex.Message;
                 serviceResponse.Success = false;
             }
             return serviceResponse;
         }
 
-        public virtual async Task<ServiceResponse<IEnumerable<Department>>> GetAllIncludingCourses()
+        // Story 02
+        public async Task<ServiceResponse<IEnumerable<Department>>> GetDepartments()
         {
-            var serviceResponse = new ServiceResponse<IEnumerable<Department>>();
-            try
-            {
-                serviceResponse.Data = await _dbContext.Departments
-                        .Include(x => x.Courses)
-                        .ToListAsync();
-                serviceResponse.Message = "Data fetched successfully from the database";
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
-                serviceResponse.Success = false;
-            }
-            return serviceResponse;
+            return await _unitOfWork.Departments.GetAll();      
         }
 
     }

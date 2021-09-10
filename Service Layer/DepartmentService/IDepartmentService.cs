@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Service_Layer.DepartmentService
 {
-    public interface IDepartmentService : IRepository<Department>
+    public interface IDepartmentService
     {
-        public Task<ServiceResponse<IEnumerable<Department>>> GetAllIncludingTeachersAndCourses();
-        public Task<ServiceResponse<IEnumerable<Department>>> GetAllIncludingCourses();
+        public Task<ServiceResponse<Department>> SaveDepartment(Department department); // Story 01
+        public Task<ServiceResponse<IEnumerable<Department>>> GetDepartments(); // Story 02
     }
 }

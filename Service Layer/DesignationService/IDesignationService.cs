@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace Service_Layer.DesignationService
 {
-    public interface IDesignationService : IRepository<Designation>
+    public interface IDesignationService
     {
+        public Task<ServiceResponse<IEnumerable<Designation>>> GetDesignations();
     }
 }

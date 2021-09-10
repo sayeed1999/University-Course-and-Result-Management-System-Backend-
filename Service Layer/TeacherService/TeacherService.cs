@@ -1,7 +1,6 @@
-﻿using Data_Access_Layer;
-using Entity_Layer;
-using Microsoft.EntityFrameworkCore;
+﻿using Entity_Layer;
 using Repository_Layer;
+using Repository_Layer.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,21 +9,44 @@ using System.Threading.Tasks;
 
 namespace Service_Layer.TeacherService
 {
-    public class TeacherService : Repository<Teacher>, ITeacherService
+    public class TeacherService : ITeacherService
     {
-        public TeacherService(ApplicationDbContext dbContext) : base(dbContext)
-        {
-        }
+        private readonly IUnitOfWork _unitOfWork;
 
-        public async Task<ServiceResponse<IEnumerable<Teacher>>> GetTeachersByDepartment(int departmentId)
+        public TeacherService(IUnitOfWork unitOfWork)
         {
-            var serviceResponse = new ServiceResponse<IEnumerable<Teacher>>();
+            this._unitOfWork = unitOfWork;
+        }
+        public async Task<ServiceResponse<Teacher>> SaveTeacher(Teacher teacher)
+        {
+            var serviceResponse = new ServiceResponse<Teacher>();
+            serviceResponse.Data = teacher;
             try
             {
-                serviceResponse.Data = await _dbContext.Teachers
-                    .Where(x => x.DepartmentId == departmentId)
-                    .ToListAsync();
-                serviceResponse.Message = "Data fetched successfully from the database";
+                //unitOfWork.CreateTransaction();
+                string error = "";
+                // operations start
+                if (teacher.Name == null || teacher.Address == null || teacher.Email == null)
+                {
+                    error = "Model is invalid";
+                    throw new Exception(error);
+                }
+                if (teacher.CreditToBeTaken < 0)
+                {
+                    error += "Credit must be non-negative.\n";
+                }
+                var tempResponse = await _unitOfWork.Teachers.GetTeacherByEmail(teacher.Email);
+                if (tempResponse.Data != null)
+                {
+                    error += "Duplicate email found.\n";
+                }
+                if (error.Length > 0)
+                {
+                    throw new Exception(error);
+                }
+                serviceResponse = await _unitOfWork.Teachers.Add(teacher);
+                // operations end
+                await _unitOfWork.CompleteAsync(); // if it fails in the middle, it should automatically rollback...
             }
             catch (Exception ex)
             {
