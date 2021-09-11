@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
-using Repository_Layer.Child_Repositories;
+using Service_Layer.RoomService;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,9 +15,9 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class RoomsController : ControllerBase
     {
-        private readonly IRoomRepository service;
+        private readonly IRoomService service;
 
-        public RoomsController(IRoomRepository service)
+        public RoomsController(IRoomService service)
         {
             this.service = service;
         }
@@ -25,18 +25,18 @@ namespace API_Layer.Controllers
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Room>>>> GetRooms()
         {
-            var serviceResponse = await service.GetAll();
+            var serviceResponse = await service.GetRooms();
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }
 
-        [HttpGet("{departmentId:int}")]
+        /*[HttpGet("{departmentId:int}")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Room>>>> GetAllocatedRoomsByDepartment(int departmentId)
         {
             var serviceResponse = await service.GetAllocatedRoomsByDepartment(departmentId);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
-}
+        }*/
 
         [HttpPost("allocate-classroom")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Room>>>> AllocateClassroom(AllocateClassroom data)
