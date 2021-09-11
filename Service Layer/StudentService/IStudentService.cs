@@ -8,11 +8,8 @@ using System.Threading.Tasks;
 
 namespace Service_Layer.StudentService
 {
-    public interface IStudentService : IRepository<Student>
+    public interface IStudentService
     {
-        public Task<ServiceResponse<IEnumerable<Student>>> GetStudentsResults();
-        public Task<ServiceResponse<Student>> RegisterStudent(StudentRegistration student);
-        public Task<ServiceResponse<StudentCourse>> EnrollStudentInCourse(StudentCourse data);
-        public Task<ServiceResponse<StudentCourse>> SaveResult(StudentCourse data);
+        public Task<ServiceResponse<Student>> RegisterStudent(StudentRegistration student); // Story 07
     }
 }

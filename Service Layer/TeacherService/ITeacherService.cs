@@ -8,7 +8,9 @@ using System.Threading.Tasks;
 
 namespace Service_Layer.TeacherService
 {
-    public interface ITeacherService : IRepository<Teacher>
+    public interface ITeacherService
     {
+        public Task<ServiceResponse<Teacher>> SaveTeacher(Teacher teacher); // Story 04
+        public Task<ServiceResponse<IEnumerable<TeacherView>>> GetTeachersByDepartmentWithAssignedCourses(long departmentId); // Story 05
     }
 }

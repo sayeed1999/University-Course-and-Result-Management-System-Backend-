@@ -1,6 +1,7 @@
 ﻿using Entity_Layer;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
+using Repository_Layer.Child_Repositories;
 using Service_Layer.SemisterService;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace API_Layer.Controllers
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Semister>>>> GetSemisters()
         {
-            var serviceResponse = await _service.GetAll();
+            var serviceResponse = await _service.GetSemisters();
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }

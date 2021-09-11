@@ -24,7 +24,7 @@ namespace API_Layer.Controllers
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Designation>>>> GetDesignations()
         {
-            var serviceResponse = await _service.GetAll();
+            var serviceResponse = await _service.GetDesignations();
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }

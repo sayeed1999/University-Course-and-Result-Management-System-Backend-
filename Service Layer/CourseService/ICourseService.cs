@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 
 namespace Service_Layer.CourseService
 {
-    public interface ICourseService : IRepository<Course>
+    public interface ICourseService
     {
-        public Task<ServiceResponse<Course>> GetByCompositeKey(int departmentId, string courseCode);
-        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(int departmentId);
-        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentCode(String departmentCode);
+        public Task<ServiceResponse<Course>> GetCourseById(long courseId);
+        public Task<ServiceResponse<Course>> SaveCourse(Course course); // Story 03
+        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId); // Story 05
+        public Task<ServiceResponse<Course>> UpdateCourse(Course course); // Story 05
+        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentWithTeacher(long departmentId); // Story 06
 
     }
 }
