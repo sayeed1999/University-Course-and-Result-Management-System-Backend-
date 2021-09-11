@@ -21,6 +21,8 @@ using Service_Layer.SemisterService;
 using Service_Layer.DesignationService;
 using Service_Layer.TeacherService;
 using Service_Layer.StudentService;
+using Service_Layer.RoomService;
+using Service_Layer.DayService;
 
 namespace API_Layer
 {
@@ -63,13 +65,12 @@ namespace API_Layer
             services.AddScoped<IDesignationService, DesignationService>();
             services.AddScoped<ITeacherService, TeacherService>();
             services.AddScoped<IStudentService, StudentService>();
-            /*services.AddScoped<IGradeRepository, GradeRepository>();
-            services.AddScoped<IRoomRepository, RoomRepository>();
-            services.AddScoped<IDayRepository, DayRepository>();
-            services.AddScoped<IMenuRepository, MenuRepository>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            */
+            services.AddScoped<IRoomService, RoomService>();
+            services.AddScoped<IDayService, DayService>();
+
+
             // Disable automatic 400 response
+
             services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;

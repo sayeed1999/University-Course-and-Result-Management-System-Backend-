@@ -8,13 +8,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-/*
+
 namespace Repository_Layer.Child_Repositories
 {
     public class RoomRepository : Repository<Room>, IRoomRepository
     {
         public RoomRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
+
         }
 
         public async Task<ServiceResponse<AllocateClassroom>> AllocateClassroom(AllocateClassroom data)
@@ -22,13 +23,6 @@ namespace Repository_Layer.Child_Repositories
             var response = new ServiceResponse<AllocateClassroom>();
             response.Data = data;
             
-            if(data.From >= data.To)
-            {
-                response.Message = "Class duration cannot be less than one minute!";
-                response.Success = false;
-                return response;
-            }
-
             var count = await _dbContext.AllocateClassrooms.CountAsync(
                                                             x => x.RoomId == data.RoomId
                                                         && x.DayId == data.DayId
@@ -42,8 +36,7 @@ namespace Repository_Layer.Child_Repositories
             }
             try
             {
-                _dbContext.AllocateClassrooms.Add(data);
-                await _dbContext.SaveChangesAsync();
+                await _dbContext.AllocateClassrooms.AddAsync(data);
             }
             catch (Exception ex)
             {
@@ -74,7 +67,7 @@ namespace Repository_Layer.Child_Repositories
 
         }
 
-        public async Task<ServiceResponse<List<AllocateClassroomHistory>>> UnallocateAllClassrooms()
+        /*public async Task<ServiceResponse<List<AllocateClassroomHistory>>> UnallocateAllClassrooms()
         {
             var serviceResponse = new ServiceResponse<List<AllocateClassroomHistory>>();
             serviceResponse.Data = new List<AllocateClassroomHistory>();
@@ -110,7 +103,6 @@ namespace Repository_Layer.Child_Repositories
             }
             return serviceResponse;
 
-        }
+        }*/
     }
 }
-*/
