@@ -104,16 +104,24 @@ namespace Repository_Layer.Child_Repositories
 
             return await this.GetCoursesByDepartment(dept.Id);
         }
+        */
 
-
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(int departmentId)
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(long departmentId)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
             try
             {
-                serviceResponse.Data = await _dbContext.Courses.Where(x => x.DepartmentId == departmentId)
-                                                            .Include(x => x.AllocateClassrooms)
-                                                            .ToListAsync();
+                serviceResponse.Data = from course in _dbSet
+                                       where course.DepartmentId == departmentId
+                                       select new Course
+                                       {
+                                           Code = course.Code,
+                                           Name = course.Name,
+                                           AllocateClassrooms = (ICollection<AllocateClassroom>)
+                                                                _dbContext.AllocateClassrooms
+                                                                          .Include(x => x.Room)
+                                                                          .Include(x => x.Day)
+                                       };
             }
             catch (Exception ex)
             {
@@ -122,7 +130,8 @@ namespace Repository_Layer.Child_Repositories
             }
             return serviceResponse;
         }
-
+        
+        /*
         public async Task<ServiceResponse<List<CourseHistory>>> UnassignAllCourses()
         {
             var serviceResponse = new ServiceResponse<List<CourseHistory>>();

@@ -103,16 +103,15 @@ namespace API_Layer.Controllers
             response.Message = $"Course successfully assigned to respective teacher.";
             return Ok(response);
         }
-
-        /*
-        [HttpGet("Department/{departmentId:int}/AllocatedRooms")]
-        public async Task<ActionResult<IEnumerable<ServiceResponse<Course>>>> GetCoursesWithAllocatedRoomsByDepartment(int departmentId)
+        
+        [HttpGet("Department/{departmentId:int}/ClassSchedule")]
+        public async Task<ActionResult<IEnumerable<ServiceResponse<ClassSchedule>>>> GetCoursesWithAllocatedRoomsByDepartment(int departmentId)
         {
-            var response = await _service.GetCoursesWithAllocatedRoomsByDepartment(departmentId);
+            var response = await _service.GetClassScheduleByDepartment(departmentId);
             if (response.Success == false) return BadRequest(response);
             return Ok(response);
         }
-
+        /*
         [HttpDelete("UnassignAll")]
         public async Task<ActionResult> UnassignAllCourses()
         {

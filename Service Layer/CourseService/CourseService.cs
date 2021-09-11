@@ -105,5 +105,29 @@ namespace Service_Layer.CourseService
         {
             return await _unitOfWork.Courses.GetCoursesByDepartmentWithTeacher(departmentId);
         }
+
+        public async Task<ServiceResponse<IEnumerable<ClassSchedule>>> GetClassScheduleByDepartment(long departmentId)
+        {
+            ServiceResponse<IEnumerable<Course>> coursesResponse = await _unitOfWork.Courses.GetCoursesWithAllocatedRoomsByDepartment(departmentId);
+            var response = new ServiceResponse<IEnumerable<ClassSchedule>>();
+            var schedule = new List<ClassSchedule>();
+            foreach(var course in coursesResponse.Data)
+            {
+                string scheduleInfo = "";
+                foreach(var tmp in course.AllocateClassrooms)
+                {
+                    if (scheduleInfo.Length > 0) scheduleInfo += ";\n";
+                    scheduleInfo += $"R. No : {tmp.Room.Name}, {tmp.Day.Name}, {tmp.From} - {tmp.To}";
+                }
+                schedule.Add(new ClassSchedule
+                {
+                    Code = course.Code,
+                    Name = course.Name,
+                    ScheduleInfo = scheduleInfo
+                });
+            }
+            response.Data = schedule;
+            return response;
+        }
     }
 }
