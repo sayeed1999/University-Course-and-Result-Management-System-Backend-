@@ -30,7 +30,7 @@ namespace Repository_Layer.Child_Repositories
                                                       );
             if ( count > 0)
             {
-                response.Message = "Some overlap occurred.  Check your routine to avoid overlapping!";
+                response.Message = "Overlap in classes occurred. Check class schedule please.";
                 response.Success = false;
                 return response;
             }

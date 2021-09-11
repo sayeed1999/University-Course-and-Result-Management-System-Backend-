@@ -119,6 +119,7 @@ namespace Repository_Layer.Child_Repositories
                                            Name = course.Name,
                                            AllocateClassrooms = (ICollection<AllocateClassroom>)
                                                                 _dbContext.AllocateClassrooms
+                                                                          .Where(x => x.CourseId == course.Id)
                                                                           .Include(x => x.Room)
                                                                           .Include(x => x.Day)
                                        };

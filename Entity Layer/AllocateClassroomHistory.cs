@@ -17,8 +17,8 @@ namespace Entity_Layer
         public long CourseId { get; set; }
         public Day Day { get; set; }
         public long DayId { get; set; }
-        public DateTime From { get; set; }
-        public DateTime To { get; set; }
+        public float From { get; set; }
+        public float To { get; set; }
         public long NthHistory { get; set; }
     }
 }
