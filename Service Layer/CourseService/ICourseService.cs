@@ -15,6 +15,7 @@ namespace Service_Layer.CourseService
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId); // Story 05
         public Task<ServiceResponse<Course>> UpdateCourse(Course course); // Story 05
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentWithTeacher(long departmentId); // Story 06
+        public Task<ServiceResponse<IEnumerable<ClassSchedule>>> GetClassScheduleByDepartment(long departmentId); // Story 09
 
     }
 }
