@@ -28,9 +28,23 @@ namespace Service_Layer.RoomService
             var response = new ServiceResponse<AllocateClassroom>();
             response.Data = data;
 
+            if (data.CourseId <= 0 || data.DayId <= 0 || data.From < 0 || data.From >= 24 || data.To < 0 || data.To >= 24)
+            {
+                response.Success = false;
+                response.Message = "Model is invalid";
+                return response;
+            }
+
+            if((data.From > (Math.Floor(data.From) + 0.59)) || (data.To > (Math.Floor(data.To) + 0.59)))
+            {
+                response.Success = false;
+                response.Message = "Second cannot be greater than 59.";
+                return response;
+            }
+
             if (data.From >= data.To)
             {
-                response.Message = "Class duration cannot be less than one minute!";
+                response.Message = "Class duration cannot be less than zero minute or negative time.";
                 response.Success = false;
                 return response;
             }

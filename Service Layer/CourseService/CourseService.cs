@@ -113,17 +113,25 @@ namespace Service_Layer.CourseService
             var schedule = new List<ClassSchedule>();
             foreach(var course in coursesResponse.Data)
             {
-                string scheduleInfo = "";
+                StringBuilder scheduleInfo = new StringBuilder();
                 foreach(var tmp in course.AllocateClassrooms)
                 {
-                    if (scheduleInfo.Length > 0) scheduleInfo += ";\n";
-                    scheduleInfo += $"R. No : {tmp.Room.Name}, {tmp.Day.Name}, {tmp.From} - {tmp.To}";
+                    if (scheduleInfo.Length > 0)
+                    {
+                        scheduleInfo.Append(';');
+                        scheduleInfo.AppendLine();
+                    }
+                    string from = tmp.From < 13.00 ? $"{String.Format("{0:.00}", tmp.From)} AM" : $"{String.Format("{0:.00}", (tmp.From - 12.00))} PM";
+                    from = from.Replace('.', ':');
+                    string to = tmp.To < 13 ? $"{String.Format("{0:.00}", tmp.To)} AM" : $"{String.Format("{0:.00}", (tmp.To - 12.00))} PM";
+                    to = to.Replace('.', ':');
+                    scheduleInfo.Append($"R. No : {tmp.Room.Name}, {tmp.Day.Name}, {from} - {to}");
                 }
                 schedule.Add(new ClassSchedule
                 {
                     Code = course.Code,
                     Name = course.Name,
-                    ScheduleInfo = scheduleInfo
+                    ScheduleInfo = scheduleInfo.ToString(),
                 });
             }
             response.Data = schedule;
