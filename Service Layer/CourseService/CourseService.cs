@@ -114,6 +114,7 @@ namespace Service_Layer.CourseService
             foreach(var course in coursesResponse.Data)
             {
                 StringBuilder scheduleInfo = new StringBuilder();
+
                 foreach(var tmp in course.AllocateClassrooms)
                 {
                     if (scheduleInfo.Length > 0)
@@ -131,7 +132,7 @@ namespace Service_Layer.CourseService
                 {
                     Code = course.Code,
                     Name = course.Name,
-                    ScheduleInfo = scheduleInfo.ToString(),
+                    ScheduleInfo = course.AllocateClassrooms.Count > 0 ? scheduleInfo.ToString() : "Not Scheduled Yet",
                 });
             }
             response.Data = schedule;
