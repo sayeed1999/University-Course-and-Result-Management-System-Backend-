@@ -12,5 +12,6 @@ namespace Service_Layer.RoomService
     {
         public Task<ServiceResponse<IEnumerable<Room>>> GetRooms(); // Story 08
         public Task<ServiceResponse<AllocateClassroom>> AllocateClassroom(AllocateClassroom data); // Story 08
+        public Task<ServiceResponse<IEnumerable<AllocateClassroom>>> UnallocateAllClassrooms(); // Story 14
     }
 }

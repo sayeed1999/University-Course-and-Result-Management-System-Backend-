@@ -17,12 +17,9 @@ namespace Repository_Layer.Child_Repositories
         // to check if course is under the department or not!
         public Task<bool> IsCourseInDepartment(long courseId, long departmentId);
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId);
-        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentWithTeacher(long departmentId);
+        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentWithTeacherAndSemister(long departmentId);
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(long departmentId);
         public Task<ServiceResponse<IEnumerable<Course>>> GetEnrolledCoursesByStudent(long studentId);
-
-        //public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(long departmentId);
-        //public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(string departmentCode);
-        //public Task<ServiceResponse<List<CourseHistory>>> UnassignAllCourses();
+        public Task<ServiceResponse<IEnumerable<Course>>> UnassignAllCourses();
     }
 }

@@ -67,10 +67,10 @@ namespace Repository_Layer.Child_Repositories
 
         }
 
-        /*public async Task<ServiceResponse<List<AllocateClassroomHistory>>> UnallocateAllClassrooms()
+        public async Task<ServiceResponse<IEnumerable<AllocateClassroom>>> UnallocateAllClassrooms()
         {
-            var serviceResponse = new ServiceResponse<List<AllocateClassroomHistory>>();
-            serviceResponse.Data = new List<AllocateClassroomHistory>();
+            var serviceResponse = new ServiceResponse<IEnumerable<AllocateClassroom>>();
+
             try
             {
                 long nthUnallocating = 0;
@@ -88,21 +88,21 @@ namespace Repository_Layer.Child_Repositories
                 List<AllocateClassroom> allocatedRooms = await _dbContext.AllocateClassrooms.ToListAsync();
                 foreach (var room in allocatedRooms)
                 {
-                    AllocateClassroomHistory roomHistory = new AllocateClassroomHistory { CourseCode = room.CourseCode, DayId = room.DayId, DepartmentId = room.DepartmentId, From = room.From, To = room.To, RoomId = room.RoomId, NthHistory = nthUnallocating };
-                    serviceResponse.Data.Add(roomHistory);
-                    _dbContext.AllocateClassroomHistories.Add(roomHistory);
+                    AllocateClassroomHistory roomHistory = new AllocateClassroomHistory { CourseId = room.CourseId, DayId = room.DayId, DepartmentId = room.DepartmentId, From = room.From, To = room.To, RoomId = room.RoomId, NthHistory = nthUnallocating };
+                    await _dbContext.AllocateClassroomHistories.AddAsync(roomHistory);
                     _dbContext.AllocateClassrooms.Remove(room);
                 }
-                await _dbContext.SaveChangesAsync();
+
                 serviceResponse.Message = "Allocated Rooms History successfully saved!";
+
             }
             catch (Exception ex)
             {
-                serviceResponse.Message = "Fatal error! Course saving failed. May be you need to clear data manually in the db";
+                serviceResponse.Message = "Unallocating rooms failed. :(";
                 serviceResponse.Success = false;
             }
             return serviceResponse;
 
-        }*/
+        }
     }
 }

@@ -59,10 +59,10 @@ namespace API_Layer.Controllers
         }
 
         // GET: Courses
-        [HttpGet("IncludeTeachers/Department/{departmentId}")]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartmentIncludingTeachers(long departmentId)
+        [HttpGet("IncludeTeachersAndSemisters/Department/{departmentId}")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(long departmentId)
         {
-            var serviceResponse = await _service.GetCoursesByDepartmentWithTeacher(departmentId);
+            var serviceResponse = await _service.GetCoursesByDepartmentWithTeacherAndSemister(departmentId);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
         }
@@ -120,7 +120,6 @@ namespace API_Layer.Controllers
             return Ok(response);
         }
 
-        /*
         [HttpDelete("UnassignAll")]
         public async Task<ActionResult> UnassignAllCourses()
         {
@@ -128,6 +127,6 @@ namespace API_Layer.Controllers
             if (unassignCourses.Success == false) return BadRequest(unassignCourses);
 
             return Ok(unassignCourses);
-        }*/
+        }
     }
 }

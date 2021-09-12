@@ -61,5 +61,23 @@ namespace Service_Layer.RoomService
             }
             return response;
         }
+
+        public async Task<ServiceResponse<IEnumerable<AllocateClassroom>>> UnallocateAllClassrooms()
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<AllocateClassroom>>();
+
+            try
+            {
+                serviceResponse = await _unitOfWork.Rooms.UnallocateAllClassrooms();
+                await _unitOfWork.CompleteAsync();
+            }
+            catch(Exception ex)
+            {
+                serviceResponse.Message = "Ünallocating classrooms failed.";
+                serviceResponse.Success = false;
+            }
+
+            return serviceResponse;
+        }
     }
 }

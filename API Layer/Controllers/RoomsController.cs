@@ -30,14 +30,6 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
-        /*[HttpGet("{departmentId:int}")]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Room>>>> GetAllocatedRoomsByDepartment(int departmentId)
-        {
-            var serviceResponse = await service.GetAllocatedRoomsByDepartment(departmentId);
-            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
-            return Ok(serviceResponse);
-        }*/
-
         [HttpPost("allocate-classroom")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Room>>>> AllocateClassroom(AllocateClassroom data)
         {
@@ -46,12 +38,12 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
-        /*[HttpDelete("UnallocateAll")]
+        [HttpDelete("UnallocateAll")]
         public async Task<ActionResult<ServiceResponse<List<AllocateClassroomHistory>>>> UnallocateClassrooms()
         {
             var serviceResponse = await service.UnallocateAllClassrooms();
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
-        }*/
+        }
     }
 }

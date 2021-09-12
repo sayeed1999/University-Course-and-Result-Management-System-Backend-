@@ -49,13 +49,14 @@ namespace Repository_Layer.Child_Repositories
             return serviceResponse;
         }
 
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentWithTeacher(long departmentId)
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentWithTeacherAndSemister(long departmentId)
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
             try
             {
                 serviceResponse.Data = await _dbSet.Where(x => x.DepartmentId == departmentId)
                                                    .Include(x => x.Teacher)
+                                                   .Include(x => x.Semister)
                                                    .ToListAsync();
 
                 serviceResponse.Message = "Data fetched successfully from the database";
@@ -161,15 +162,14 @@ namespace Repository_Layer.Child_Repositories
             return ret;
         }
 
-        /*
-        public async Task<ServiceResponse<List<CourseHistory>>> UnassignAllCourses()
+        public async Task<ServiceResponse<IEnumerable<Course>>> UnassignAllCourses()
         {
-            var serviceResponse = new ServiceResponse<List<CourseHistory>>();
-            serviceResponse.Data = new List<CourseHistory>();
+            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
+
             try
             {
                 var count = await _dbContext.CoursesHistories.CountAsync();
-                int unassignId = 0;
+                long unassignId = 0;
                 if(count == 0)
                 {
                     unassignId = 1;
@@ -186,46 +186,28 @@ namespace Repository_Layer.Child_Repositories
                 foreach (Course course in courses)
                 {
                     CourseHistory courseHistory = new CourseHistory { Code = course.Code, DepartmentId = course.DepartmentId, SemisterId = course.SemisterId, TeacherId = course?.TeacherId, NthHistory = unassignId };
-                    serviceResponse.Data.Add(courseHistory);
-                    _dbContext.CoursesHistories.Add(courseHistory);
-                    if(course.TeacherId != null)
-                    {
-                        try
-                        {
-                            Teacher teacher = await _dbContext.Teachers.FindAsync(course.TeacherId);
-                            teacher.RemainingCredit = teacher.CreditToBeTaken;
-                            _dbContext.Teachers.Update(teacher);
-                        }
-                        catch (Exception ex)
-                        {
-                            serviceResponse.Message = "Fatal Error! Execution stopped at the middle";
-                            serviceResponse.Success = false;
-                            return serviceResponse;
-                        }
-                    }
-
+                    await _dbContext.CoursesHistories.AddAsync(courseHistory);
                     course.TeacherId = null;
                     _dbContext.Courses.Update(course);
                 }
-                await _dbContext.SaveChangesAsync();
                 
                 var studentsCourses = await _dbContext.StudentsCourses.ToListAsync();
                 foreach(var studentCourse in studentsCourses)
                 {
-                    var newStudentCourse = new StudentCourseHistory { DepartmentId = studentCourse.DepartmentId, CourseCode = studentCourse.CourseCode, Date = studentCourse.Date, StudentId = studentCourse.StudentId, Grade = studentCourse.Grade, NthHistory = unassignId };
-                    _dbContext.StudentCourseHistories.Add(newStudentCourse);
+                    var newStudentCourse = new StudentCourseHistory { DepartmentId = studentCourse.DepartmentId, CourseId = studentCourse.CourseId, Date = studentCourse.Date, StudentId = studentCourse.StudentId, GradeId = studentCourse.GradeId, NthHistory = unassignId };
+                    await _dbContext.StudentCourseHistories.AddAsync(newStudentCourse);
                     _dbContext.StudentsCourses.Remove(studentCourse);
                 }
 
                 serviceResponse.Message = "Courses & Students History successfully saved!";
-                await _dbContext.SaveChangesAsync();
+            
             }
             catch (Exception ex)
             {
-                serviceResponse.Message = "Fatal error! Course saving failed. May be you need to clear data manually in the db";
+                serviceResponse.Message = "Unassigning courses and students failed. :(";
                 serviceResponse.Success = false;
             }
             return serviceResponse;
-        }*/
+        }
     }
 }

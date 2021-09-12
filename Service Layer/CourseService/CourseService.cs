@@ -101,9 +101,9 @@ namespace Service_Layer.CourseService
             return await _unitOfWork.Courses.GetCoursesByDepartment(departmentId);
         }
 
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentWithTeacher(long departmentId)
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentWithTeacherAndSemister(long departmentId)
         {
-            return await _unitOfWork.Courses.GetCoursesByDepartmentWithTeacher(departmentId);
+            return await _unitOfWork.Courses.GetCoursesByDepartmentWithTeacherAndSemister(departmentId);
         }
 
         public async Task<ServiceResponse<IEnumerable<ClassSchedule>>> GetClassScheduleByDepartment(long departmentId)
@@ -142,6 +142,22 @@ namespace Service_Layer.CourseService
         public async Task<ServiceResponse<IEnumerable<Course>>> GetEnrolledCoursesByStudent(long studentId)
         {
             return await _unitOfWork.Courses.GetEnrolledCoursesByStudent(studentId);
+        }
+
+        public async Task<ServiceResponse<IEnumerable<Course>>> UnassignAllCourses()
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
+            try
+            {
+                serviceResponse = await _unitOfWork.Courses.UnassignAllCourses();
+                await _unitOfWork.CompleteAsync();
+            }
+            catch(Exception ex)
+            {
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
         }
     }
 }
