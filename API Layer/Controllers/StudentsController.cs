@@ -54,10 +54,10 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
-        /*[HttpGet("Result-Sheet/{reg}")]
-        public async Task<IActionResult> PrintStudentResultByRegistrationNumber(string reg)
+        [HttpGet("Result-Sheet/Student/{id:long}")]
+        public async Task<IActionResult> PrintStudentResultByRegistrationNumber(long id)
         {
-            var serviceResponse = await _service.GetStudentResultByRegNo(reg);
+            var serviceResponse = await _service.GetStudentResultById(id);
 
             if(serviceResponse.Success)
             {
@@ -66,7 +66,7 @@ namespace API_Layer.Controllers
                 msSqlDataConnection.ConnectionString = _appSettings.ConnectionString;
                 webReport.Report.Dictionary.Connections.Add(msSqlDataConnection);
                 webReport.Report.Load("report.frx");
-                webReport.Report.SetParameterValue("reg", reg);
+                webReport.Report.SetParameterValue("reg", serviceResponse.Data.RegistrationNumber);
                 webReport.Report.Prepare(false);
                 PDFSimpleExport pdf = new PDFSimpleExport();
                 webReport.Report.Export(pdf, "report.pdf");
@@ -74,7 +74,7 @@ namespace API_Layer.Controllers
                 return new FileStreamResult(stream, "application/pdf");
             }
             return NotFound(serviceResponse);
-        }*/
+        }
 
 
         // POST: Students
