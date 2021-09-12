@@ -19,11 +19,26 @@ namespace Service_Layer.StudentService
             this._unitOfWork = unitOfWork;
         }
 
+        public async Task<ServiceResponse<IEnumerable<Student>>> GetAll(string regNum = "")
+        {
+            return await _unitOfWork.Students.GetAll(regNum);
+        }
+
+        public async Task<ServiceResponse<Student>> GetStudentByRegNum(string regNum)
+        {
+            return await _unitOfWork.Students.GetStudentByRegNum(regNum);
+        }
+
+        public async Task<ServiceResponse<Student>> GetStudentByEmail(string email)
+        {
+            return await _unitOfWork.Students.GetStudentByEmail(email);
+        }
+
         public async Task<ServiceResponse<Student>> RegisterStudent(StudentRegistration student)
         {
             var serviceResponse = new ServiceResponse<Student>();
 
-            serviceResponse = await _unitOfWork.Students.GetStudentByEmail(student.Email);
+            serviceResponse = await GetStudentByEmail(student.Email);
             if(serviceResponse.Data != null)
             {
                 serviceResponse.Success = false;
@@ -74,6 +89,24 @@ namespace Service_Layer.StudentService
             catch(Exception ex)
             {
                 serviceResponse.Message = "Student Registration failed";
+                serviceResponse.Success = false;
+            }
+
+            return serviceResponse;
+        }
+
+        public async Task<ServiceResponse<StudentCourse>> EnrollStudentInCourse(StudentCourse studentCourse)
+        {
+            var serviceResponse = new ServiceResponse<StudentCourse>();
+
+            try
+            {
+                serviceResponse = await _unitOfWork.Students.EnrollStudentInCourse(studentCourse);
+                await _unitOfWork.CompleteAsync();
+            }
+            catch(Exception ex)
+            {
+                serviceResponse.Message = "Enrolling student failed";
                 serviceResponse.Success = false;
             }
 

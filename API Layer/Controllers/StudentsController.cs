@@ -14,9 +14,10 @@ using Service_Layer.StudentService;
 
 namespace API_Layer.Controllers
 {
+
     [ApiController]
     [Route("[controller]")]
-    public class StudentsController : Controller
+    public class StudentsController : ControllerBase
     {
         private readonly IStudentService _service;
         private readonly AppSettings _appSettings;
@@ -25,15 +26,23 @@ namespace API_Layer.Controllers
             this._service = service;
             this._appSettings = appSettings.Value;
         }
-
-        // GET: Students
-        /*[HttpGet]
+        
+        [HttpGet]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Student>>>> GetStudents([FromQuery] string regNum = "")
         {
             var serviceResponse = await _service.GetAll(regNum);
             if (serviceResponse.Success == false) return NotFound(serviceResponse);
             return Ok(serviceResponse);
-        }*/
+        }
+
+        [HttpGet]
+        [Route("RegistrationNumber/{reg}")]
+        public async Task<ActionResult<ServiceResponse<Student>>> GetStudentByRegistrationNumber(string reg)
+        {
+            var serviceResponse = await _service.GetStudentByRegNum(reg);
+            if (serviceResponse.Success == false) return NotFound(serviceResponse);
+            return Ok(serviceResponse);
+        }
 
         // GET: Students/Results
         /*[HttpGet]
@@ -57,7 +66,7 @@ namespace API_Layer.Controllers
 
         // GET: Students/Results/MTE-2021-003
         /*[HttpGet]
-        [Route("Results/{reg}")]
+        [R8oute("Results/{reg}")]
         public async Task<ActionResult<ServiceResponse<Student>>> GetStudentResultByRegistrationNumber(string reg)
         {
             var serviceResponse = await _service.GetStudentResultByRegNo(reg);
@@ -98,13 +107,13 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
-        /*[HttpPost("enroll-in-course")]
+        [HttpPost("enroll-in-course")]
         public async Task<ActionResult<ServiceResponse<StudentCourse>>> EnrollStudentInCourse([FromBody] StudentCourse data)
         {
             var serviceResponse = await _service.EnrollStudentInCourse(data);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);
-        }*/
+        }
 
         /*[HttpPost]
         [Route("save-result")]

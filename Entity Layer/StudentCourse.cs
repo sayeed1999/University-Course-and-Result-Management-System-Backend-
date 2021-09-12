@@ -10,10 +10,11 @@ namespace Entity_Layer
     public class StudentCourse
     {
         public long Id { get; set; }
-        public long DepartmentId { get; set; } // three
-        public long CourseId { get; set; } // combines
+        public long DepartmentId { get; set; }
+        public Department Department { get; set; }
+        public long CourseId { get; set; }
         public Course Course { get; set; }
-        public long StudentId { get; set; } // the PK
+        public long StudentId { get; set; }
         public Student Student { get; set; }
         public DateTime Date {  get; set; }
         public long? GradeId {  get; set; }

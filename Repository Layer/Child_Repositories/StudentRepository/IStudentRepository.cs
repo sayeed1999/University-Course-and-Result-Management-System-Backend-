@@ -13,11 +13,13 @@ namespace Repository_Layer.Child_Repositories
     {
         public Task<long> CountStudentsInDepartment(long departmentId);
         public Task<ServiceResponse<Student>> GetStudentByEmail(string email);
-        //public Task<ServiceResponse<IEnumerable<Student>>> GetAll(string regNum);
+        public Task<ServiceResponse<Student>> GetStudentByRegNum(string regNum);
+        public Task<ServiceResponse<IEnumerable<Student>>> GetAll(string regNum);
+        public Task<ServiceResponse<StudentCourse>> EnrollStudentInCourse(StudentCourse data);
+        
         //public Task<ServiceResponse<IEnumerable<Student>>> GetStudentsResults();
         //public Task<ServiceResponse<Student>> GetStudentResultById(long id);
         //public Task<ServiceResponse<Student>> GetStudentResultByRegNo(String reg);
-        //public Task<ServiceResponse<StudentCourse>> EnrollStudentInCourse(StudentCourse data);
         //public Task<ServiceResponse<StudentCourse>> SaveResult(StudentCourse data);
     }
 }
