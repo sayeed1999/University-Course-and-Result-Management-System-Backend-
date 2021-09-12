@@ -16,6 +16,7 @@ namespace Service_Layer.StudentService
         public Task<ServiceResponse<Student>> GetStudentByRegNum(string regNum);
         public Task<ServiceResponse<StudentCourse>> EnrollStudentInCourse(StudentCourse studentCourse); // Story 10
         public Task<ServiceResponse<StudentCourse>> SaveResult(StudentCourse data); // Story 11
+        public Task<ServiceResponse<Student>> GetStudentResultById(long id); // Story 12
 
     }
 }

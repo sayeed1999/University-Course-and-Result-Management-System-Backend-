@@ -102,79 +102,37 @@ namespace Repository_Layer.Child_Repositories
             return serviceResponse;
         }
 
-        /*
-public async Task<ServiceResponse<IEnumerable<Student>>> GetStudentsResults()
-{
-   var serviceResponse = new ServiceResponse<IEnumerable<Student>>();
-   try
-   {
-       serviceResponse.Data = await _dbContext.Students
-                           .Include(x => x.Department)
-                           .Include(x => x.StudentsCourses)
-                               .ThenInclude(z => z.Course)
-                           .ToListAsync();
+        public async Task<ServiceResponse<Student>> GetStudentResultById(long id)
+        {
+            var serviceResponse = new ServiceResponse<Student>();
+            try
+            {
+                serviceResponse.Data = await _dbSet.Include(x => x.Department)
+                                                   .Include(x => x.StudentsCourses)
+                                                   .SingleOrDefaultAsync(x => x.Id == id);
 
-       serviceResponse.Message = "Data fetched successfully from the database";
-   }
-   catch (Exception ex)
-   {
-       serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
-       serviceResponse.Success = false;
-   }
-   return serviceResponse;
-}
+                if(serviceResponse.Data != null)
+                {
+                    serviceResponse.Data.StudentsCourses = await _dbContext.StudentsCourses.Where(x => x.StudentId == id)
+                                                                                     .Include(x => x.Course)
+                                                                                     .Include(x => x.Grade)
+                                                                                     .ToListAsync();
+                }
 
-public async Task<ServiceResponse<Student>> GetStudentResultById(long id)
-{
-   var serviceResponse = new ServiceResponse<Student>();
-   try
-   {
-       serviceResponse.Data = await _dbContext.Students
-                           .Include(x => x.Department)
-                           .Include(x => x.StudentsCourses)
-                               .ThenInclude(z => z.Course)
-                           .SingleOrDefaultAsync(x => x.Id == id);
+                serviceResponse.Message = "Data fetched successfully from the database";
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
+            }
+            if (serviceResponse.Data == null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Data not found";
+            }
+            return serviceResponse;
+        }
 
-       serviceResponse.Message = "Data fetched successfully from the database";
-   }
-   catch (Exception ex)
-   {
-       serviceResponse.Message = ex.Message;
-       serviceResponse.Success = false;
-   }
-   if (serviceResponse.Data == null)
-   {
-       serviceResponse.Success = false;
-       serviceResponse.Message = "Data not found";
-   }
-   return serviceResponse;
-}
-
-public async Task<ServiceResponse<Student>> GetStudentResultByRegNo(string reg)
-{
-   var serviceResponse = new ServiceResponse<Student>();
-   try
-   {
-       serviceResponse.Data = await _dbContext.Students
-                           .Include(x => x.Department)
-                           .Include(x => x.StudentsCourses)
-                               .ThenInclude(z => z.Course)
-                           .SingleOrDefaultAsync(x => x.RegistrationNumber == reg);
-
-       serviceResponse.Message = "Data fetched successfully from the database";
-   }
-   catch (Exception ex)
-   {
-       serviceResponse.Message = ex.Message;
-       serviceResponse.Success = false;
-   }
-   if(serviceResponse.Data == null)
-   {
-       serviceResponse.Success = false;
-       serviceResponse.Message = "Data not found";
-   }
-   return serviceResponse;
-}
-*/
     }
 }

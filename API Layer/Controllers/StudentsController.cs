@@ -44,35 +44,15 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
-        // GET: Students/Results
-        /*[HttpGet]
-        [Route("Results")]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Student>>>> GetStudentsResults()
-        {
-            var serviceResponse = await _service.GetStudentsResults();
-            if (serviceResponse.Success == false) return NotFound(serviceResponse);
-            return Ok(serviceResponse);
-        }*/
-
-        // GET: Students/Results/1
-        /*[HttpGet]
-        [Route("Results/{id:long}")]
+        // GET: Students/Results/Student/1
+        [HttpGet]
+        [Route("Results/Student/{id:long}")]
         public async Task<ActionResult<ServiceResponse<Student>>> GetStudentResultById(long id)
         {
             var serviceResponse = await _service.GetStudentResultById(id);
             if (serviceResponse.Success == false) return NotFound(serviceResponse);
             return Ok(serviceResponse);
-        }*/
-
-        // GET: Students/Results/MTE-2021-003
-        /*[HttpGet]
-        [R8oute("Results/{reg}")]
-        public async Task<ActionResult<ServiceResponse<Student>>> GetStudentResultByRegistrationNumber(string reg)
-        {
-            var serviceResponse = await _service.GetStudentResultByRegNo(reg);
-            if (serviceResponse.Success == false) return NotFound(serviceResponse);
-            return Ok(serviceResponse);
-        }*/
+        }
 
         /*[HttpGet("Result-Sheet/{reg}")]
         public async Task<IActionResult> PrintStudentResultByRegistrationNumber(string reg)

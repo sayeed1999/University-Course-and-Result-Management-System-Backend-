@@ -146,5 +146,10 @@ namespace Service_Layer.StudentService
 
             return serviceResponse;
         }
+
+        public async Task<ServiceResponse<Student>> GetStudentResultById(long id)
+        {
+            return await _unitOfWork.Students.GetStudentResultById(id);
+        }
     }
 }
