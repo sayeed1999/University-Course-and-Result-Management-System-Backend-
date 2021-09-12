@@ -132,6 +132,21 @@ namespace Repository_Layer.Child_Repositories
             return serviceResponse;
         }
 
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetEnrolledCoursesByStudent(long studentId)
+        {
+            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
+            var courses = new List<Course>();
+            foreach(var studentCourse in _dbContext.StudentsCourses.Include(x => x.Course))
+            {
+                if(studentCourse.StudentId == studentId)
+                {
+                    courses.Add(studentCourse.Course);
+                }
+            }
+            serviceResponse.Data = courses;
+            return serviceResponse;
+        }
+
         public async Task<bool> IsCourseInDepartment(long courseId, long departmentId)
         {
             Course course = await _dbSet.FindAsync(courseId);

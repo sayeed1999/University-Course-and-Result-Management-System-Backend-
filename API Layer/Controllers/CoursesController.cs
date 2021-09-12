@@ -105,12 +105,21 @@ namespace API_Layer.Controllers
         }
         
         [HttpGet("Department/{departmentId:int}/ClassSchedule")]
-        public async Task<ActionResult<IEnumerable<ServiceResponse<ClassSchedule>>>> GetCoursesWithAllocatedRoomsByDepartment(int departmentId)
+        public async Task<ActionResult<IEnumerable<ServiceResponse<ClassSchedule>>>> GetCoursesWithAllocatedRoomsByDepartment(long departmentId)
         {
             var response = await _service.GetClassScheduleByDepartment(departmentId);
             if (response.Success == false) return BadRequest(response);
             return Ok(response);
         }
+
+        [HttpGet("Student/{studentId}")]
+        public async Task<ActionResult<IEnumerable<ServiceResponse<ClassSchedule>>>> GetEnrolledCoursesByStudent(long studentId)
+        {
+            var response = await _service.GetEnrolledCoursesByStudent(studentId);
+            if (response.Success == false) return BadRequest(response);
+            return Ok(response);
+        }
+
         /*
         [HttpDelete("UnassignAll")]
         public async Task<ActionResult> UnassignAllCourses()

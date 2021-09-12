@@ -19,6 +19,7 @@ namespace Repository_Layer.Child_Repositories
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId);
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentWithTeacher(long departmentId);
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(long departmentId);
+        public Task<ServiceResponse<IEnumerable<Course>>> GetEnrolledCoursesByStudent(long studentId);
 
         //public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(long departmentId);
         //public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(string departmentCode);

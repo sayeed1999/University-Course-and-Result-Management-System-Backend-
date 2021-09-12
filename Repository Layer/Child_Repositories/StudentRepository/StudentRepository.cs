@@ -84,26 +84,25 @@ namespace Repository_Layer.Child_Repositories
             return sc != null;
         }
 
-        /*
-public async Task<ServiceResponse<StudentCourse>> SaveResult(StudentCourse data)
-{
-   var serviceResponse = new ServiceResponse<StudentCourse>();
-   try
-   {
-       var course = await _dbContext.StudentsCourses.FindAsync(data.DepartmentId, data.CourseCode, data.StudentId);
-       course.Grade = data.Grade;
-       _dbContext.StudentsCourses.Update(course);
-       await _dbContext.SaveChangesAsync();
-       serviceResponse.Data = course;
-   }
-   catch (Exception ex)
-   {
-       serviceResponse.Message = $"Something failed. Please try with proper data.\nError: {ex.Message}";
-       serviceResponse.Success = false;
-   }
-   return serviceResponse;
-}
+        public async Task<ServiceResponse<StudentCourse>> SaveResult(StudentCourse data)
+        {
+            var serviceResponse = new ServiceResponse<StudentCourse>();
+            try
+            {
+                StudentCourse studentCourse = await _dbContext.StudentsCourses.FindAsync(data.Id);
+                studentCourse.GradeId = data.GradeId;
+                _dbContext.StudentsCourses.Update(studentCourse);
+                serviceResponse.Data = studentCourse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
+        }
 
+        /*
 public async Task<ServiceResponse<IEnumerable<Student>>> GetStudentsResults()
 {
    var serviceResponse = new ServiceResponse<IEnumerable<Student>>();

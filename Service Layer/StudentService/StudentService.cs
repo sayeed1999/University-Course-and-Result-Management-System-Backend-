@@ -128,5 +128,23 @@ namespace Service_Layer.StudentService
 
             return serviceResponse;
         }
+
+        public async Task<ServiceResponse<StudentCourse>> SaveResult(StudentCourse data)
+        {
+            var serviceResponse = new ServiceResponse<StudentCourse>();
+
+            try
+            {
+                serviceResponse = await _unitOfWork.Students.SaveResult(data);
+                await _unitOfWork.CompleteAsync();
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = "Student result saving failed";
+                serviceResponse.Success = false;
+            }
+
+            return serviceResponse;
+        }
     }
 }

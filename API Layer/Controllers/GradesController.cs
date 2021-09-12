@@ -1,7 +1,7 @@
 ﻿using Entity_Layer;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
-using Repository_Layer.Child_Repositories;
+using Service_Layer.GradeService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +13,9 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class GradesController : ControllerBase
     {
-        private readonly IGradeRepository service;
+        private readonly IGradeService service;
 
-        public GradesController(IGradeRepository service)
+        public GradesController(IGradeService service)
         {
             this.service = service;
         }
@@ -24,7 +24,7 @@ namespace API_Layer.Controllers
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<Student>>> GetGrades()
         {
-            var serviceResponse = await service.GetAll();
+            var serviceResponse = await service.GetGrades();
             if (serviceResponse.Success == false) return NotFound(serviceResponse);
             return Ok(serviceResponse);
         }

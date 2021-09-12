@@ -138,5 +138,10 @@ namespace Service_Layer.CourseService
             response.Data = schedule;
             return response;
         }
+
+        public async Task<ServiceResponse<IEnumerable<Course>>> GetEnrolledCoursesByStudent(long studentId)
+        {
+            return await _unitOfWork.Courses.GetEnrolledCoursesByStudent(studentId);
+        }
     }
 }

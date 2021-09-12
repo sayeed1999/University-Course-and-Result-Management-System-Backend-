@@ -16,6 +16,7 @@ namespace Repository_Layer.UnitOfWork
         public IStudentRepository Students { get; private set; }
         public IRoomRepository Rooms { get; private set; }
         public IDayRepository Days { get; private set; }
+        public IGradeRepository Grades { get; private set; }
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -28,6 +29,7 @@ namespace Repository_Layer.UnitOfWork
             Students = new StudentRepository(dbContext);
             Rooms = new RoomRepository(dbContext);
             Days = new DayRepository(dbContext);
+            Grades = new GradeRepository(dbContext);
         }
 
         public async Task CompleteAsync()

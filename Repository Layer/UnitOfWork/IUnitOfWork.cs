@@ -18,6 +18,7 @@ namespace Repository_Layer.UnitOfWork
         IStudentRepository Students { get; }
         IRoomRepository Rooms { get; }
         IDayRepository Days { get; }
+        IGradeRepository Grades { get; }
         Task CompleteAsync();
 
 

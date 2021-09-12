@@ -23,6 +23,7 @@ using Service_Layer.TeacherService;
 using Service_Layer.StudentService;
 using Service_Layer.RoomService;
 using Service_Layer.DayService;
+using Service_Layer.GradeService;
 
 namespace API_Layer
 {
@@ -57,7 +58,6 @@ namespace API_Layer
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API_Layer", Version = "v1" });
             });
             services.AddDbContext<ApplicationDbContext>();
-            //services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<ICourseService, CourseService>();
@@ -67,7 +67,7 @@ namespace API_Layer
             services.AddScoped<IStudentService, StudentService>();
             services.AddScoped<IRoomService, RoomService>();
             services.AddScoped<IDayService, DayService>();
-
+            services.AddScoped<IGradeService, GradeService>();
 
             // Disable automatic 400 response
 
