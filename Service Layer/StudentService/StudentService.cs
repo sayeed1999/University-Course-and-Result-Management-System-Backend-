@@ -99,6 +99,22 @@ namespace Service_Layer.StudentService
         {
             var serviceResponse = new ServiceResponse<StudentCourse>();
 
+            bool isCourseInDepartment = await _unitOfWork.Courses.IsCourseInDepartment(studentCourse.CourseId, studentCourse.DepartmentId);
+            if (!isCourseInDepartment)
+            {
+                serviceResponse.Message = "Course is not in the department";
+                serviceResponse.Success = false;
+                return serviceResponse;
+            }
+
+            bool isStudentEnrolledInCourse = await _unitOfWork.Students.IsStudentEnrolledInCourse(studentCourse.StudentId, studentCourse.CourseId);
+            if (isStudentEnrolledInCourse)
+            {
+                serviceResponse.Message = "Student is already enrolled in the course";
+                serviceResponse.Success = false;
+                return serviceResponse;
+            }
+
             try
             {
                 serviceResponse = await _unitOfWork.Students.EnrollStudentInCourse(studentCourse);

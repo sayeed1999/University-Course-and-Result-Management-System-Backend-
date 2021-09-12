@@ -11,6 +11,7 @@ namespace Entity_Layer
     {
         public long Id { get; set; }
         public long DepartmentId { get; set; }
+        public Department Department { get; set; }
         public long CourseId { get; set; }
         public Course Course { get; set; }
         public long StudentId { get; set; }

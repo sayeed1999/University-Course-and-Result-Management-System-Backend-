@@ -16,6 +16,7 @@ namespace Repository_Layer.Child_Repositories
         public Task<ServiceResponse<Student>> GetStudentByRegNum(string regNum);
         public Task<ServiceResponse<IEnumerable<Student>>> GetAll(string regNum);
         public Task<ServiceResponse<StudentCourse>> EnrollStudentInCourse(StudentCourse data);
+        public Task<bool> IsStudentEnrolledInCourse(long studentId, long courseId);
         
         //public Task<ServiceResponse<IEnumerable<Student>>> GetStudentsResults();
         //public Task<ServiceResponse<Student>> GetStudentResultById(long id);

@@ -131,7 +131,21 @@ namespace Repository_Layer.Child_Repositories
             }
             return serviceResponse;
         }
-        
+
+        public async Task<bool> IsCourseInDepartment(long courseId, long departmentId)
+        {
+            Course course = await _dbSet.FindAsync(courseId);
+            bool ret = false;
+            if(course != null)
+            {
+                if(course.DepartmentId == departmentId)
+                {
+                    ret = true;
+                }
+            }
+            return ret;
+        }
+
         /*
         public async Task<ServiceResponse<List<CourseHistory>>> UnassignAllCourses()
         {

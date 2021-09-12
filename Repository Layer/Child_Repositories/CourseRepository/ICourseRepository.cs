@@ -14,6 +14,8 @@ namespace Repository_Layer.Child_Repositories
         public Task<ServiceResponse<Course>> GetCourseByCode(string code);
         // to check duplicates!
         public Task<ServiceResponse<Course>> GetCourseByName(string name);
+        // to check if course is under the department or not!
+        public Task<bool> IsCourseInDepartment(long courseId, long departmentId);
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId);
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentWithTeacher(long departmentId);
         public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(long departmentId);

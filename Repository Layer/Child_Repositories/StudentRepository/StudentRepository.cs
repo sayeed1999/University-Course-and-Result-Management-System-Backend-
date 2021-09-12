@@ -78,6 +78,12 @@ namespace Repository_Layer.Child_Repositories
             return serviceResponse;
         }
 
+        public async Task<bool> IsStudentEnrolledInCourse(long studentId, long courseId)
+        {
+            StudentCourse sc = await _dbContext.StudentsCourses.SingleOrDefaultAsync(x => x.StudentId == studentId && x.CourseId == courseId);
+            return sc != null;
+        }
+
         /*
 public async Task<ServiceResponse<StudentCourse>> SaveResult(StudentCourse data)
 {
