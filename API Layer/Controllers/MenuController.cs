@@ -82,8 +82,8 @@ namespace API_Layer.Controllers
         }
 
         [HttpDelete]
-        [Route("{id:int}")]
-        public async Task<ActionResult<ServiceResponse<Menu>>> DeleteMenuById(int id)
+        [Route("{id:long}")]
+        public async Task<ActionResult<ServiceResponse<Menu>>> DeleteMenuById(long id)
         {
             ServiceResponse<Menu> response = await _service.DeleteById(id);
             if (response.Success) return Ok(response);
