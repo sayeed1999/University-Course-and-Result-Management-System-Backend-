@@ -80,6 +80,13 @@ namespace API_Layer.Controllers
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<Student>>> PostStudent(StudentRegistration student)
         {
+            if (student == null)
+            {
+                var response = new ServiceResponse<Student>();
+                response.Message = "Model is null";
+                response.Success = false;
+                return BadRequest(response);
+            }
             var serviceResponse = await _service.RegisterStudent(student);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);

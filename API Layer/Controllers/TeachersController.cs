@@ -27,6 +27,13 @@ namespace API_Layer.Controllers
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<Teacher>>> PostTeacher(Teacher teacher)
         {
+            if (teacher == null)
+            {
+                var response = new ServiceResponse<Teacher>();
+                response.Message = "Model is null";
+                response.Success = false;
+                return BadRequest(response);
+            }
             var serviceResponse = await _service.SaveTeacher(teacher);
             if (serviceResponse.Success == false) return BadRequest(serviceResponse);
             return Ok(serviceResponse);

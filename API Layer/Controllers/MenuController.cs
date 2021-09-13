@@ -59,6 +59,13 @@ namespace API_Layer.Controllers
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<Menu>>> CreateMenu(Menu menu)
         {
+            if (menu == null)
+            {
+                var _response = new ServiceResponse<Menu>();
+                _response.Message = "Model is null";
+                _response.Success = false;
+                return BadRequest(_response);
+            }
             ServiceResponse<Menu> response = await _service.Add(menu);
             if (response.Success) return Ok(response);
             return BadRequest(response);
