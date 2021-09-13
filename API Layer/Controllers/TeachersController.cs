@@ -22,14 +22,6 @@ namespace API_Layer.Controllers
             this._service = service;
         }
 
-        /*[HttpGet("{id:int}")]
-        public async Task<ActionResult<ServiceResponse<Teacher>>> GetById(int id)
-        {
-            var serviceResponse = await _service.GetById(id);
-            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
-            return Ok(serviceResponse);
-        }*/
-
         // POST: Teachers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]

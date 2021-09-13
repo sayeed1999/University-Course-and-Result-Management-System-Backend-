@@ -1,4 +1,7 @@
 ﻿using Data_Access_Layer;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Repository_Layer.Child_Repositories;
 using System;
 using System.Threading.Tasks;
@@ -17,8 +20,9 @@ namespace Repository_Layer.UnitOfWork
         public IRoomRepository Rooms { get; private set; }
         public IDayRepository Days { get; private set; }
         public IGradeRepository Grades { get; private set; }
+public IMenuRepository Menus {  get; private set; }
 
-        public UnitOfWork(ApplicationDbContext dbContext)
+        public UnitOfWork(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
             Departments = new DepartmentRepository(dbContext);
@@ -30,6 +34,7 @@ namespace Repository_Layer.UnitOfWork
             Rooms = new RoomRepository(dbContext);
             Days = new DayRepository(dbContext);
             Grades = new GradeRepository(dbContext);
+            Menus = new MenuRepository(dbContext, userManager, roleManager, httpContextAccessor);
         }
 
         public async Task CompleteAsync()

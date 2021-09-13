@@ -47,6 +47,8 @@ namespace Repository_Layer.Child_Repositories
                     .Include(x => x.Department)
                     .Include(x => x.StudentsCourses)
                         .ThenInclude(y => y.Course)
+                    .Include(x => x.StudentsCourses)
+                        .ThenInclude(y => y.Grade)
                     .Where(x => x.RegistrationNumber.Contains(regNum))
                     .Take(10)
                     .ToListAsync();
@@ -89,7 +91,7 @@ namespace Repository_Layer.Child_Repositories
             var serviceResponse = new ServiceResponse<StudentCourse>();
             try
             {
-                StudentCourse studentCourse = await _dbContext.StudentsCourses.FindAsync(data.Id);
+                StudentCourse studentCourse = await _dbContext.StudentsCourses.FirstOrDefaultAsync(x => x.StudentId == data.StudentId && x.CourseId == data.CourseId);
                 studentCourse.GradeId = data.GradeId;
                 _dbContext.StudentsCourses.Update(studentCourse);
                 serviceResponse.Data = studentCourse;
@@ -109,15 +111,10 @@ namespace Repository_Layer.Child_Repositories
             {
                 serviceResponse.Data = await _dbSet.Include(x => x.Department)
                                                    .Include(x => x.StudentsCourses)
+                                                       .ThenInclude(x => x.Course)
+                                                   .Include(x => x.StudentsCourses)
+                                                       .ThenInclude(x => x.Grade)
                                                    .SingleOrDefaultAsync(x => x.Id == id);
-
-                if(serviceResponse.Data != null)
-                {
-                    serviceResponse.Data.StudentsCourses = await _dbContext.StudentsCourses.Where(x => x.StudentId == id)
-                                                                                     .Include(x => x.Course)
-                                                                                     .Include(x => x.Grade)
-                                                                                     .ToListAsync();
-                }
 
                 serviceResponse.Message = "Data fetched successfully from the database";
             }

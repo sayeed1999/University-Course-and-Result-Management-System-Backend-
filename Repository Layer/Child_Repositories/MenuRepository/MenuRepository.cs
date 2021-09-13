@@ -11,7 +11,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-/*
+
 namespace Repository_Layer.Child_Repositories
 {
     public class MenuRepository : Repository<Menu>, IMenuRepository
@@ -53,8 +53,7 @@ namespace Repository_Layer.Child_Repositories
             {
                 item.Id = 0;
                 item.StatusId = Status.Inactive; // = 1
-                _dbContext.Menus.Add(item);
-                await _dbContext.SaveChangesAsync();
+                await _dbContext.Menus.AddAsync(item);
                 serviceResponse.Data = item;
                 serviceResponse.Message = "Item stored successfully to the database.";
             }
@@ -155,4 +154,3 @@ namespace Repository_Layer.Child_Repositories
         }
     }
 }
-*/

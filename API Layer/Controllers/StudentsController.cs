@@ -28,7 +28,7 @@ namespace API_Layer.Controllers
         }
         
         [HttpGet]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Student>>>> GetStudents([FromQuery] string regNum = "")
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Student>>>> GetStudents(string regNum = "")
         {
             var serviceResponse = await _service.GetAll(regNum);
             if (serviceResponse.Success == false) return NotFound(serviceResponse);
@@ -58,7 +58,6 @@ namespace API_Layer.Controllers
         public async Task<IActionResult> PrintStudentResultByRegistrationNumber(long id)
         {
             var serviceResponse = await _service.GetStudentResultById(id);
-
             if(serviceResponse.Success)
             {
                 var webReport = new WebReport();
@@ -66,7 +65,7 @@ namespace API_Layer.Controllers
                 msSqlDataConnection.ConnectionString = _appSettings.ConnectionString;
                 webReport.Report.Dictionary.Connections.Add(msSqlDataConnection);
                 webReport.Report.Load("report.frx");
-                webReport.Report.SetParameterValue("reg", serviceResponse.Data.RegistrationNumber);
+                webReport.Report.SetParameterValue("id", serviceResponse.Data.Id);
                 webReport.Report.Prepare(false);
                 PDFSimpleExport pdf = new PDFSimpleExport();
                 webReport.Report.Export(pdf, "report.pdf");
@@ -75,7 +74,6 @@ namespace API_Layer.Controllers
             }
             return NotFound(serviceResponse);
         }
-
 
         // POST: Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

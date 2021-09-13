@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="09/02/2021 18:23:13" ReportInfo.Modified="09/05/2021 20:03:43" ReportInfo.CreatorVersion="1.0.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="09/02/2021 18:23:13" ReportInfo.Modified="09/13/2021 08:51:24" ReportInfo.CreatorVersion="1.0.0.0">
   <Styles Name="Green">
     <Style Name="Title" Font="Arial, 12pt, style=Bold"/>
     <Style Name="Header" Fill.Color="PaleGreen" Font="Arial, 10pt, style=Bold"/>
@@ -9,20 +9,19 @@
     <Style Name="EvenRows" Fill.Color="Honeydew" Font="Arial, 10pt"/>
   </Styles>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqOk3ggRjy4WWC5qKh2ycyXsfIZ6d0Dn40hbAHFZruiQNXbF2rHp5HvyNdLu/s7Bjklv0UKtUYGsgusVo3qZo33rUE8kh5muJHDYdS7U5d2P/lGg8iiclG2d+Vjod/vftIEnP8pS+Ae2KTnVjFdLcoiVmHnSEiD3CBxeFI/Q7IZ3FYdAqjMM0AIWrU2woh9jizdL2NmC076TrqmrnkiyNX1MpuDNNzEU1eGZ8CywmuYLXqcn/PcOevx1QOXBZsUmPZ">
-      <TableDataSource Name="Departments" DataType="System.Int32" Enabled="true" TableName="Departments">
-        <Column Name="Id" DataType="System.Int32"/>
-        <Column Name="Code" DataType="System.String"/>
-        <Column Name="Name" DataType="System.String"/>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqOk3ggRjy4WWC5qKh2ycyXsfIZ6d0Dn40hbAHFZruiQNXbF2rHp5HvyNdLu/s7Bjklv0UKtUYGsgusVo3qZo33rUE8kh5muJHDYdS7U5d2P/lGg8iiclG2d+Vjod/vftIEnP8pS+Ae2KTnVjFdLcoiVEmo/4mMTQOpwfI4LcA5z7FRQG/d1xjr1FQUFTEffCxjiftyyXz5FWStLikTqdxG2CJaPmjMBD9vnXFqhBUrMwOAZPxzztA4XCVDRwlJNa5qHe3TY1nCqGumhD48+6CzQ==">
+      <TableDataSource Name="StudentsCourses" DataType="System.Int32" Enabled="true" TableName="StudentsCourses">
+        <Column Name="Id" DataType="System.Int64"/>
+        <Column Name="DepartmentId" DataType="System.Int64"/>
+        <Column Name="CourseId" DataType="System.Int64"/>
+        <Column Name="StudentId" DataType="System.Int64"/>
+        <Column Name="Date" DataType="System.DateTime"/>
+        <Column Name="GradeId" DataType="System.Int64"/>
       </TableDataSource>
-      <TableDataSource Name="Courses" DataType="System.Int32" Enabled="true" TableName="Courses">
+      <TableDataSource Name="Departments" DataType="System.Int32" Enabled="true" TableName="Departments">
+        <Column Name="Id" DataType="System.Int64"/>
         <Column Name="Code" DataType="System.String"/>
-        <Column Name="DepartmentId" DataType="System.Int32"/>
         <Column Name="Name" DataType="System.String"/>
-        <Column Name="Credit" DataType="System.Single"/>
-        <Column Name="Description" DataType="System.String"/>
-        <Column Name="SemisterId" DataType="System.Byte"/>
-        <Column Name="TeacherId" DataType="System.Int32"/>
       </TableDataSource>
       <TableDataSource Name="Students" DataType="System.Int32" Enabled="true" TableName="Students">
         <Column Name="Id" DataType="System.Int64"/>
@@ -31,26 +30,38 @@
         <Column Name="Contact" DataType="System.Int64"/>
         <Column Name="Date" DataType="System.DateTime"/>
         <Column Name="Address" DataType="System.String"/>
-        <Column Name="DepartmentId" DataType="System.Int32"/>
+        <Column Name="DepartmentId" DataType="System.Int64"/>
         <Column Name="RegistrationNumber" DataType="System.String"/>
-        <CommandParameter Name="Parameter" DataType="22"/>
       </TableDataSource>
-      <TableDataSource Name="StudentsCourses" DataType="System.Int32" Enabled="true" TableName="StudentsCourses">
-        <Column Name="DepartmentId" DataType="System.Int32"/>
-        <Column Name="CourseCode" DataType="System.String"/>
+      <TableDataSource Name="Courses" DataType="System.Int32" Enabled="true" TableName="Courses">
+        <Column Name="Id" DataType="System.Int64"/>
+        <Column Name="Code" DataType="System.String"/>
+        <Column Name="Name" DataType="System.String"/>
+        <Column Name="Credit" DataType="System.Single"/>
+        <Column Name="Description" DataType="System.String"/>
+        <Column Name="DepartmentId" DataType="System.Int64"/>
+        <Column Name="SemisterId" DataType="System.Int64"/>
+        <Column Name="TeacherId" DataType="System.Int64"/>
+      </TableDataSource>
+      <TableDataSource Name="Grades" DataType="System.Int32" Enabled="true" TableName="Grades">
+        <Column Name="Id" DataType="System.Int64"/>
+        <Column Name="Name" DataType="System.String"/>
+      </TableDataSource>
+      <TableDataSource Name="Table" Alias="StudentsMarks" DataType="System.Int32" Enabled="true" SelectCommand="select sc.studentId as  'StudentId', c.code as 'Code', c.name as 'Name', coalesce(g.name, 'Not Graded Yet') as 'grade'&#13;&#10;from StudentsCourses as sc&#13;&#10;inner join courses as c&#13;&#10;on sc.courseId = c.id&#13;&#10;left join grades as g&#13;&#10;on sc.gradeId = g.id">
+        <Column Name="code" DataType="System.String"/>
+        <Column Name="name" DataType="System.String"/>
         <Column Name="StudentId" DataType="System.Int64"/>
-        <Column Name="Date" DataType="System.DateTime"/>
-        <Column Name="Grade" DataType="System.String"/>
+        <Column Name="grade" DataType="System.String"/>
       </TableDataSource>
     </MsSqlDataConnection>
   </Dictionary>
   <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
     <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="132.3">
-      <PictureObject Name="Picture1" Left="585.9" Top="9.45" Width="94.5" Height="94.5" ImageLocation="https://th.bing.com/th/id/OIP.C8KRD-do552oGrH9xT79eAHaIj?pid=ImgDet&amp;rs=1" ImageFormat="Jpeg"/>
+      <PictureObject Name="Picture1" Left="585.9" Top="9.45" Width="94.5" Height="94.5" ImageLocation="https://th.bing.com/th/id/OIP.C8KRD-do552oGrH9xT79eAHaIj?pid=ImgDet&amp;rs=1"/>
       <TextObject Name="Text11" Left="85.05" Top="28.35" Width="415.8" Height="47.25" Text="Rajshahi University of Engineering and Technology" Font="Arial, 14pt, style=Bold"/>
     </ReportTitleBand>
     <PageHeaderBand Name="PageHeader1" Top="136.3" Width="718.2" Height="18.9" Fill.Color="PaleGreen" Style="Header"/>
-    <DataBand Name="Data2" Top="159.2" Width="718.2" Height="321.3" DataSource="Students" Filter="[Students.RegistrationNumber] == [reg]">
+    <DataBand Name="Data2" Top="159.2" Width="718.2" Height="349.65" DataSource="Students" Filter="[Students.Id] == [id]">
       <TextObject Name="Text12" Left="311.85" Top="75.6" Width="311.85" Height="18.9" Text=": [Students.RegistrationNumber]" Font="Arial, 12pt"/>
       <TextObject Name="Text13" Left="311.85" Top="103.95" Width="311.85" Height="18.9" Text=": [Students.Name]" Font="Arial, 12pt"/>
       <TextObject Name="Text14" Left="311.85" Top="132.3" Width="311.85" Height="18.9" Text=": [Students.Email]" Font="Arial, 12pt"/>
@@ -59,22 +70,18 @@
       <TextObject Name="Text3" Left="141.75" Top="132.3" Width="151.2" Height="18.9" Text="Email" Font="Arial, 12pt, style=Bold"/>
       <TextObject Name="Text15" Left="311.85" Top="160.65" Width="311.85" Height="18.9" Text=": [Departments.Name]" Font="Arial, 12pt"/>
       <TextObject Name="Text4" Left="141.75" Top="160.65" Width="151.2" Height="18.9" Text="Department" Font="Arial, 12pt, style=Bold"/>
-      <TextObject Name="Text19" Left="103.95" Top="264.6" Width="359.1" Height="18.9" Fill.Color="Honeydew" Text="Your course wise results for this semester are:-" Font="Arial, 12pt, style=Italic"/>
-      <DataBand Name="Data1" Top="484.5" Width="718.2" DataSource="Departments" Filter="[Students.DepartmentId] == [Departments.Id]"/>
-      <DataBand Name="Data3" Top="530.3" Width="718.2" Height="18.9" DataSource="StudentsCourses" Filter="[Students.Id] == [StudentsCourses.StudentId]">
-        <TextObject Name="Text17" Left="472.5" Width="94.5" Height="18.9" Fill.Color="Honeydew" Text="[StudentsCourses.Grade]" Font="Arial, 10pt" Style="EvenRows"/>
-        <TextObject Name="Text16" Left="151.2" Width="94.5" Height="18.9" Fill.Color="Honeydew" Text="[StudentsCourses.CourseCode]" Font="Arial, 10pt" Style="EvenRows"/>
-        <TextObject Name="Text18" Left="245.7" Width="226.8" Height="18.9" Fill.Color="Honeydew" Text="[Courses.Name]" Font="Arial, 10pt" Style="EvenRows"/>
-        <DataHeaderBand Name="DataHeader1" Top="488.5" Width="718.2" Height="37.8">
-          <TextObject Name="Text5" Left="151.2" Top="9.45" Width="94.5" Height="18.9" Text="Code" Font="Arial, 10pt, style=Bold" Style="Group"/>
-          <TextObject Name="Text6" Left="472.5" Top="9.45" Width="94.5" Height="18.9" Text="Grade" Font="Arial, 10pt, style=Bold" Style="Group"/>
-          <TextObject Name="Text7" Left="245.7" Top="9.45" Width="226.8" Height="18.9" Text="Course Name" Font="Arial, 10pt, style=Bold" Style="Group"/>
-        </DataHeaderBand>
-        <DataBand Name="Data4" Top="553.2" Width="718.2" DataSource="Courses" Filter="[Courses.Code] == [StudentsCourses.CourseCode]"/>
-        <DataFooterBand Name="DataFooter1" Top="557.2" Width="718.2" Height="9.45"/>
+      <TextObject Name="Text19" Left="141.75" Top="264.6" Width="359.1" Height="18.9" Fill.Color="Honeydew" Text="Your course wise results for this semester are:-" Font="Arial, 12pt, style=Italic"/>
+      <TextObject Name="Text5" Left="94.5" Top="330.75" Width="122.85" Height="18.9" Text="Code" Font="Arial, 10pt, style=Bold" Style="Group"/>
+      <TextObject Name="Text6" Left="217.35" Top="330.75" Width="255.15" Height="18.9" Text="Name" Font="Arial, 10pt, style=Bold" Style="Group"/>
+      <TextObject Name="Text7" Left="472.5" Top="330.75" Width="113.4" Height="18.9" Text="Grade" Font="Arial, 10pt, style=Bold" Style="Group"/>
+      <DataBand Name="Data1" Top="512.85" Width="718.2" DataSource="Departments" Filter="[Students.DepartmentId] == [Departments.Id]"/>
+      <DataBand Name="Data3" Top="516.85" Width="718.2" Height="29.35" DataSource="Table" Filter="[StudentsMarks.StudentId] == [Students.Id]">
+        <TextObject Name="Text21" Left="217.35" Top="9.45" Width="255.15" Height="18.9" Text="[StudentsMarks.name]" Font="Arial, 10pt"/>
+        <TextObject Name="Text20" Left="94.5" Top="9.45" Width="122.85" Height="18.9" Text="[StudentsMarks.code]" Font="Arial, 10pt"/>
+        <TextObject Name="Text22" Left="472.5" Top="9.45" Width="113.4" Height="18.9" Text="[StudentsMarks.grade]" Font="Arial, 10pt"/>
       </DataBand>
     </DataBand>
-    <PageFooterBand Name="PageFooter1" Top="570.65" Width="718.2" Height="18.9">
+    <PageFooterBand Name="PageFooter1" Top="550.2" Width="718.2" Height="18.9">
       <TextObject Name="Text10" Width="718.2" Height="18.9" Dock="Fill" Fill.Color="PaleGreen" HorzAlign="Right" Font="Arial, 10pt" Style="Footer"/>
     </PageFooterBand>
   </ReportPage>

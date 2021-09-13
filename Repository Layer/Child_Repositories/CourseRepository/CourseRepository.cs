@@ -69,43 +69,6 @@ namespace Repository_Layer.Child_Repositories
             return serviceResponse;
         }
 
-        /*
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(long departmentId)
-        {
-            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
-            try
-            {
-                serviceResponse.Data = await _dbContext.Courses
-                    .Include(x => x.Teacher)
-                    .Include(x => x.Semister)
-                    .Where(x => x.DepartmentId == departmentId)
-                    .ToListAsync();
-
-                serviceResponse.Message = "Data fetched successfully from the database";
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
-                serviceResponse.Success = false;
-            }
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(string departmentCode)
-        {
-            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
-            var dept = await _dbContext.Departments.SingleOrDefaultAsync(x => x.Code == departmentCode);
-            
-            if(dept == null)
-            {
-                serviceResponse.Message = "Department not found with the code";
-                serviceResponse.Success = false;
-                return serviceResponse;
-            }
-
-            return await this.GetCoursesByDepartment(dept.Id);
-        }
-        */
 
         public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(long departmentId)
         {

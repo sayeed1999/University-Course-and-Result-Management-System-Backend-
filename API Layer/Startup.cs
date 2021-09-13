@@ -24,6 +24,7 @@ using Service_Layer.StudentService;
 using Service_Layer.RoomService;
 using Service_Layer.DayService;
 using Service_Layer.GradeService;
+using Service_Layer.MenuService;
 
 namespace API_Layer
 {
@@ -45,7 +46,7 @@ namespace API_Layer
 
             services.AddMvc(options =>
             {
-                //options.Filters.Add(new AuthorizeFilter());
+                options.Filters.Add(new AuthorizeFilter());
             });
 
             services.AddControllers().AddNewtonsoftJson(options => {
@@ -68,6 +69,7 @@ namespace API_Layer
             services.AddScoped<IRoomService, RoomService>();
             services.AddScoped<IDayService, DayService>();
             services.AddScoped<IGradeService, GradeService>();
+            services.AddScoped<IMenuService, MenuService>();
 
             // Disable automatic 400 response
 

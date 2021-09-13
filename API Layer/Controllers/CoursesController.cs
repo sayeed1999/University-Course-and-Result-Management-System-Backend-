@@ -20,25 +20,7 @@ namespace API_Layer.Controllers
         {
             this._service = courseService;
         }
-        /*
-        // GET: Courses
-        [HttpGet("IncludeTeachersAndSemisters/Department/{departmentId:int}")]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartmentIncludingTeachersAndSemisters(int departmentId)
-        {
-            var serviceResponse = await _service.GetCoursesByDepartmentIncludingTeachersAndSemisters(departmentId);
-            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
-            return Ok(serviceResponse);
-        }
 
-        // GET: Courses
-        [HttpGet("Department/{code}")]
-        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetCoursesByDepartment(string code)
-        {
-            var serviceResponse = await _service.GetCoursesByDepartment(code);
-            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
-            return Ok(serviceResponse);
-        }
-        */
         // POST: Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -85,9 +67,6 @@ namespace API_Layer.Controllers
                 return BadRequest(response);
             }
 
-            // if(response.Data.Teacher.RemainingCredit < response.Data.Credit) client hasn't asked for it in backend!
-            // { }
-
             if(response.Data.TeacherId != null)
             {
                 response.Message = $"This course is already assigned to another teacher. :(";
@@ -105,7 +84,7 @@ namespace API_Layer.Controllers
         }
         
         [HttpGet("Department/{departmentId:int}/ClassSchedule")]
-        public async Task<ActionResult<IEnumerable<ServiceResponse<ClassSchedule>>>> GetCoursesWithAllocatedRoomsByDepartment(long departmentId)
+        public async Task<ActionResult<ServiceResponse<IEnumerable<ClassSchedule>>>> GetCoursesWithAllocatedRoomsByDepartment(long departmentId)
         {
             var response = await _service.GetClassScheduleByDepartment(departmentId);
             if (response.Success == false) return BadRequest(response);
@@ -113,7 +92,7 @@ namespace API_Layer.Controllers
         }
 
         [HttpGet("Student/{studentId}")]
-        public async Task<ActionResult<IEnumerable<ServiceResponse<ClassSchedule>>>> GetEnrolledCoursesByStudent(long studentId)
+        public async Task<ActionResult<ServiceResponse<IEnumerable<Course>>>> GetEnrolledCoursesByStudent(long studentId)
         {
             var response = await _service.GetEnrolledCoursesByStudent(studentId);
             if (response.Success == false) return BadRequest(response);

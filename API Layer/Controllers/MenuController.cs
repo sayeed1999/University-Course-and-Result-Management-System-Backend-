@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repository_Layer;
-using Repository_Layer.Child_Repositories;
+using Service_Layer.MenuService;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,14 +15,14 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class MenuController : ControllerBase
     {
-        private readonly IMenuRepository _service;
+        private readonly IMenuService _service;
 
-        public MenuController(IMenuRepository service)
+        public MenuController(IMenuService service)
         {
             _service = service;
         }
 
-        [AllowAnonymous] // responsible for displaying menus in the frontend
+        //[AllowAnonymous] // responsible for displaying menus in the frontend
         [HttpGet("InOrder")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Menu>>>> GetMenusInOrder()
         {
@@ -49,7 +49,7 @@ namespace API_Layer.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<ServiceResponse<Menu>>> GetMenuById(int id)
+        public async Task<ActionResult<ServiceResponse<Menu>>> GetMenuById(long id)
         {
             ServiceResponse<Menu> response = await _service.GetById(id);
             if (response.Success) return Ok(response);
@@ -74,7 +74,7 @@ namespace API_Layer.Controllers
 
         [HttpPut]
         [Route("{id:int}")]
-        public async Task<ActionResult<ServiceResponse<Menu>>> UpdateMenu([FromBody]Menu menu, [FromRoute]int id)
+        public async Task<ActionResult<ServiceResponse<Menu>>> UpdateMenu([FromRoute] long id, [FromBody]Menu menu)
         {
             ServiceResponse<Menu> response = await _service.Update(id, menu);
             if (response.Success) return Ok(response);

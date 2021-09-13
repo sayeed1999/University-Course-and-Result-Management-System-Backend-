@@ -122,9 +122,9 @@ namespace Service_Layer.CourseService
                         scheduleInfo.Append(';');
                         scheduleInfo.AppendLine();
                     }
-                    string from = tmp.From < 13.00 ? $"{String.Format("{0:.00}", tmp.From)} AM" : $"{String.Format("{0:.00}", (tmp.From - 12.00))} PM";
+                    string from = FormatTime(tmp.From);
                     from = from.Replace('.', ':');
-                    string to = tmp.To < 13 ? $"{String.Format("{0:.00}", tmp.To)} AM" : $"{String.Format("{0:.00}", (tmp.To - 12.00))} PM";
+                    string to = FormatTime(tmp.To);
                     to = to.Replace('.', ':');
                     scheduleInfo.Append($"R. No : {tmp.Room.Name}, {tmp.Day.Name}, {from} - {to}");
                 }
@@ -158,6 +158,32 @@ namespace Service_Layer.CourseService
                 serviceResponse.Success = false;
             }
             return serviceResponse;
+        }
+
+        private string FormatTime(float time)
+        {
+            string ret = "";
+            if (time < 0 || time >= 24) throw new Exception("Invalid time!");
+
+            if (time >= 0.00 && time < 1.00)
+            {
+                time += 12.00f;
+                ret = $"{String.Format("{0:0.00}", time)} AM";
+            }
+            else if (time >= 1.00 && time < 12.00)
+            {
+                ret = $"{String.Format("{0:0.00}", time)} AM";
+            }
+            else if (time >= 12.00 && time < 13.00)
+            {
+                ret = $"{String.Format("{0:0.00}", time)} PM";
+            }
+            else if (time >= 13.00 && time < 24.00)
+            {
+                time -= 12.00f;
+                ret = $"{String.Format("{0:0.00}", time)} PM";
+            }
+            return ret;
         }
     }
 }
