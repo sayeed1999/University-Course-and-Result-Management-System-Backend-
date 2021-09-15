@@ -11,8 +11,6 @@ namespace Repository_Layer.Child_Repositories
 {
     public interface IRoomRepository : IRepository<Room>
     {
-        public Task<ServiceResponse<IEnumerable<AllocateClassroom>>> GetAllocatedRoomsByDepartment(int departmentId);
-        public Task<ServiceResponse<AllocateClassroom>> AllocateClassroom(AllocateClassroom data);
-        public Task<ServiceResponse<IEnumerable<AllocateClassroom>>> UnallocateAllClassrooms();
+
     }
 }

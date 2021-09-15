@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Repository_Layer.Child_Repositories
 {
-    public interface ICourseRepository : IRepository<Course>
+    public interface IAllocateClassroomRepository : IRepository<AllocateClassroom>
     {
-        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(long departmentId);
+
     }
 }

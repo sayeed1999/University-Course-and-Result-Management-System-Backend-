@@ -25,6 +25,8 @@ using Service_Layer.RoomService;
 using Service_Layer.DayService;
 using Service_Layer.GradeService;
 using Service_Layer.MenuService;
+using Repository_Layer.Child_Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace API_Layer
 {
@@ -58,19 +60,39 @@ namespace API_Layer
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "API_Layer", Version = "v1" });
             });
-            services.AddDbContext<ApplicationDbContext>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            // Services
             services.AddScoped<IDepartmentService, DepartmentService>();
             services.AddScoped<ICourseService, CourseService>();
             services.AddScoped<ISemisterService, SemisterService>();
-            services.AddScoped<IDesignationService, DesignationService>();
+            services.AddScoped<IDesignationService, DesignationService >();
             services.AddScoped<ITeacherService, TeacherService>();
             services.AddScoped<IStudentService, StudentService>();
             services.AddScoped<IRoomService, RoomService>();
             services.AddScoped<IDayService, DayService>();
             services.AddScoped<IGradeService, GradeService>();
             services.AddScoped<IMenuService, MenuService>();
-
+            // UnitOfWork
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            // DbContext
+            services.AddDbContext<ApplicationDbContext>(/*ServiceLifetime.Singleton*/);
+            // ChildRepositories
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<ICourseHistoryRepository, CourseHistoryRepository>();
+            services.AddScoped<ISemisterRepository, SemisterRepository>();
+            services.AddScoped<IDesignationRepository, DesignationRepository>();
+            services.AddScoped<ITeacherRepository, TeacherRepository>();
+            services.AddScoped<IStudentRepository, StudentRepository>();
+            services.AddScoped<IStudentCourseRepository, StudentCourseRepository>();
+            services.AddScoped<IStudentCourseHistoryRepository, StudentCourseHistoryRepository>();
+            services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<IDayRepository, DayRepository>();
+            services.AddScoped<IGradeRepository, GradeRepository>();
+            services.AddScoped<IAllocateClassroomRepository, AllocateClassroomRepository>();
+            services.AddScoped<IAllocateClassroomHistoryRepository, AllocateClassroomHistoryRepository>();
+            services.AddScoped<IMenuRepository, MenuRepository>();
+            services.AddScoped<IMenuWiseRolePermissionRepository, MenuWiseRolePermissionRepository>();
+            
             // Disable automatic 400 response
 
             services.Configure<ApiBehaviorOptions>(options =>

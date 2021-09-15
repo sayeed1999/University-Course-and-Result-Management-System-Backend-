@@ -11,8 +11,6 @@ namespace Repository_Layer.Child_Repositories
 {
     public interface IMenuRepository : IRepository<Menu>
     {
-        public Task<ServiceResponse<IEnumerable<Menu>>> GetMenusInOrder();
-        public Task<ServiceResponse<IEnumerable<Menu>>> GetAllRootMenus();
-        public Task<ServiceResponse<IEnumerable<Menu>>> GetAllMenusByRole(String roleName);
+
     }
 }

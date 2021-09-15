@@ -20,7 +20,17 @@ namespace Service_Layer.DayService
 
         public async Task<ServiceResponse<IEnumerable<Day>>> GetDays()
         {
-            return await unitOfWork.Days.GetAll();
+            var response = new ServiceResponse<IEnumerable<Day>>();
+            try
+            {
+                response.Data = await unitOfWork.DayRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                response.Message = "Day fetching failed. :(";
+                response.Success = false;
+            }
+            return response;
         }
     }
 }

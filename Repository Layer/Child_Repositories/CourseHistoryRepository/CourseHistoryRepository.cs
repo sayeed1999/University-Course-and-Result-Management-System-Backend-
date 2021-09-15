@@ -1,7 +1,5 @@
 ﻿using Data_Access_Layer;
 using Entity_Layer;
-using Microsoft.EntityFrameworkCore;
-using Repository_Layer;
 using Repository_Layer.Repository;
 using System;
 using System.Collections.Generic;
@@ -11,12 +9,11 @@ using System.Threading.Tasks;
 
 namespace Repository_Layer.Child_Repositories
 {
-    public class TeacherRepository : Repository<Teacher>, ITeacherRepository
+    public class CourseHistoryRepository : Repository<CourseHistory>, ICourseHistoryRepository
     {
-        public TeacherRepository(ApplicationDbContext dbContext) : base(dbContext)
+        public CourseHistoryRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
 
         }
-
     }
 }

@@ -17,28 +17,8 @@ namespace Repository_Layer.Child_Repositories
         {
 
         }
-
-        public async Task<long> CountStudentsInDepartment(long departmentId)
-        {
-            long count = await _dbSet.CountAsync(x => x.DepartmentId == departmentId);
-            return count;
-        }
-
-        public async Task<ServiceResponse<Student>> GetStudentByEmail(string email)
-        {
-            var serviceResponse = new ServiceResponse<Student>();
-            serviceResponse.Data = await _dbSet.SingleOrDefaultAsync(x => x.Email == email);
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<Student>> GetStudentByRegNum(string regNum)
-        {
-            var serviceResponse = new ServiceResponse<Student>();
-            serviceResponse.Data = await _dbSet.SingleOrDefaultAsync(x => x.RegistrationNumber == regNum);
-            return serviceResponse;
-        }
         
-        public async Task<ServiceResponse<IEnumerable<Student>>> GetAll(string regNum = "")
+        public async Task<ServiceResponse<IEnumerable<Student>>> GetAllIncludingAll(string regNum = "")
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Student>>();
             try
@@ -58,47 +38,6 @@ namespace Repository_Layer.Child_Repositories
             catch (Exception ex)
             {
                 serviceResponse.Message = "Some error occurred while fetching data.\nError message: " + ex.Message;
-                serviceResponse.Success = false;
-            }
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<StudentCourse>> EnrollStudentInCourse(StudentCourse data)
-        {
-            var serviceResponse = new ServiceResponse<StudentCourse>();
-            serviceResponse.Data = data;
-            try
-            {
-                await _dbContext.StudentsCourses.AddAsync(data);
-                serviceResponse.Message = "Successfully enrolled.";
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = ex.Message;
-                serviceResponse.Success = false;
-            }
-            return serviceResponse;
-        }
-
-        public async Task<bool> IsStudentEnrolledInCourse(long studentId, long courseId)
-        {
-            StudentCourse sc = await _dbContext.StudentsCourses.SingleOrDefaultAsync(x => x.StudentId == studentId && x.CourseId == courseId);
-            return sc != null;
-        }
-
-        public async Task<ServiceResponse<StudentCourse>> SaveResult(StudentCourse data)
-        {
-            var serviceResponse = new ServiceResponse<StudentCourse>();
-            try
-            {
-                StudentCourse studentCourse = await _dbContext.StudentsCourses.FirstOrDefaultAsync(x => x.StudentId == data.StudentId && x.CourseId == data.CourseId);
-                studentCourse.GradeId = data.GradeId;
-                _dbContext.StudentsCourses.Update(studentCourse);
-                serviceResponse.Data = studentCourse;
-            }
-            catch (Exception ex)
-            {
-                serviceResponse.Message = ex.Message;
                 serviceResponse.Success = false;
             }
             return serviceResponse;

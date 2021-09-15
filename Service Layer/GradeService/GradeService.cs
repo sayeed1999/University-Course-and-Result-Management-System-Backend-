@@ -20,7 +20,17 @@ namespace Service_Layer.GradeService
 
         public async Task<ServiceResponse<IEnumerable<Grade>>> GetGrades()
         {
-            return await unitOfWork.Grades.GetAll();
+            var response = new ServiceResponse<IEnumerable<Grade>>();
+            try
+            {
+                response.Data = await unitOfWork.GradeRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                response.Message = "Grade fetching failed. :(";
+                response.Success = false;
+            }
+            return response;
         }
     }
 }

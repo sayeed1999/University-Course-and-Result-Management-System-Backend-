@@ -11,10 +11,6 @@ namespace Repository_Layer.Child_Repositories
 {
     public interface IDepartmentRepository : IRepository<Department>
     {
-        // to check duplicates!
-        public Task<ServiceResponse<Department>> GetDepartmentByCode(string code);
-        // to check duplicates!
-        public Task<ServiceResponse<Department>> GetDepartmentByName(string name);
         public Task<ServiceResponse<IEnumerable<Department>>> GetAllIncludingTeachersAndCourses();
         public Task<ServiceResponse<IEnumerable<Department>>> GetAllIncludingCourses();
     }

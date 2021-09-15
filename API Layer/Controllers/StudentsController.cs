@@ -27,10 +27,10 @@ namespace API_Layer.Controllers
             this._appSettings = appSettings.Value;
         }
         
-        [HttpGet]
+        [HttpGet] // theninclude unresolved!
         public async Task<ActionResult<ServiceResponse<IEnumerable<Student>>>> GetStudents(string regNum = "")
         {
-            var serviceResponse = await _service.GetAll(regNum);
+            var serviceResponse = await _service.GetAllIncludingAll(regNum);
             if (serviceResponse.Success == false) return NotFound(serviceResponse);
             return Ok(serviceResponse);
         }
@@ -46,7 +46,7 @@ namespace API_Layer.Controllers
 
         // GET: Students/Results/Student/1
         [HttpGet]
-        [Route("Results/Student/{id:long}")]
+        [Route("Results/Student/{id:long}")] // theninclude unresolved!
         public async Task<ActionResult<ServiceResponse<Student>>> GetStudentResultById(long id)
         {
             var serviceResponse = await _service.GetStudentResultById(id);

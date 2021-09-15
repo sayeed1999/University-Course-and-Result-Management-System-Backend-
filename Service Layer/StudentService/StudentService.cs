@@ -19,19 +19,41 @@ namespace Service_Layer.StudentService
             this._unitOfWork = unitOfWork;
         }
 
-        public async Task<ServiceResponse<IEnumerable<Student>>> GetAll(string regNum = "")
+        public async Task<ServiceResponse<IEnumerable<Student>>> GetAllIncludingAll(string regNum = "")
         {
-            return await _unitOfWork.Students.GetAll(regNum);
+            return await _unitOfWork.StudentRepository.GetAllIncludingAll(regNum);
         }
 
         public async Task<ServiceResponse<Student>> GetStudentByRegNum(string regNum)
         {
-            return await _unitOfWork.Students.GetStudentByRegNum(regNum);
+            var response = new ServiceResponse<Student>();
+            try
+            {
+                response.Data = _unitOfWork.StudentRepository.SingleOrDefault(x => x.RegistrationNumber == regNum);
+                if (response.Data == null) throw new Exception("No student found with the registration number");
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                response.Success = false;
+            }
+            return response;
         }
 
         public async Task<ServiceResponse<Student>> GetStudentByEmail(string email)
         {
-            return await _unitOfWork.Students.GetStudentByEmail(email);
+            var response = new ServiceResponse<Student>();
+            try
+            {
+                response.Data = _unitOfWork.StudentRepository.SingleOrDefault(x => x.Email == email);
+                if (response.Data == null) throw new Exception("No student found with the email");
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                response.Success = false;
+            }
+            return response;
         }
 
         public async Task<ServiceResponse<Student>> RegisterStudent(StudentRegistration student)
@@ -50,17 +72,17 @@ namespace Service_Layer.StudentService
 
             string reg = "";
             
-            var departmentResponse = await _unitOfWork.Departments.GetById(student.DepartmentId);
-            if (!departmentResponse.Success)
+            Department dept = await _unitOfWork.DepartmentRepository.Find(student.DepartmentId);
+            if (dept == null)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = "Department not found.";
                 return serviceResponse;
             }
 
-            reg += departmentResponse.Data.Code + '-';
+            reg += dept.Code + '-';
             reg += student.Date.Year.ToString() + '-';
-            long countOfStudents = await _unitOfWork.Students.CountStudentsInDepartment(student.DepartmentId);
+            long countOfStudents = _unitOfWork.StudentRepository.Count(x => x.DepartmentId == student.DepartmentId);
             long id = countOfStudents + 1;
             if (id / 10 == 0) reg += "00";
             else if (id / 10 < 10) reg += "0";
@@ -83,7 +105,7 @@ namespace Service_Layer.StudentService
             try
             {
                 serviceResponse.Data = newStudent;
-                await _unitOfWork.Students.Add(newStudent);
+                await _unitOfWork.StudentRepository.AddAsync(newStudent);
                 await _unitOfWork.CompleteAsync();
             }
             catch(Exception ex)
@@ -99,7 +121,7 @@ namespace Service_Layer.StudentService
         {
             var serviceResponse = new ServiceResponse<StudentCourse>();
 
-            bool isCourseInDepartment = await _unitOfWork.Courses.IsCourseInDepartment(studentCourse.CourseId, studentCourse.DepartmentId);
+            bool isCourseInDepartment = _unitOfWork.CourseRepository.Contains(x => x.Id == studentCourse.CourseId && x.DepartmentId == studentCourse.DepartmentId);
             if (!isCourseInDepartment)
             {
                 serviceResponse.Message = "Course is not in the department";
@@ -107,7 +129,7 @@ namespace Service_Layer.StudentService
                 return serviceResponse;
             }
 
-            bool isStudentEnrolledInCourse = await _unitOfWork.Students.IsStudentEnrolledInCourse(studentCourse.StudentId, studentCourse.CourseId);
+            bool isStudentEnrolledInCourse = _unitOfWork.StudentCourseRepository.Contains(x => x.StudentId == studentCourse.StudentId && x.CourseId == studentCourse.CourseId);
             if (isStudentEnrolledInCourse)
             {
                 serviceResponse.Message = "Student is already enrolled in the course";
@@ -117,7 +139,7 @@ namespace Service_Layer.StudentService
 
             try
             {
-                serviceResponse = await _unitOfWork.Students.EnrollStudentInCourse(studentCourse);
+                await _unitOfWork.StudentCourseRepository.AddAsync(studentCourse);
                 await _unitOfWork.CompleteAsync();
             }
             catch(Exception ex)
@@ -132,10 +154,15 @@ namespace Service_Layer.StudentService
         public async Task<ServiceResponse<StudentCourse>> SaveResult(StudentCourse data)
         {
             var serviceResponse = new ServiceResponse<StudentCourse>();
-
             try
             {
-                serviceResponse = await _unitOfWork.Students.SaveResult(data);
+                StudentCourse? studentCourse = _unitOfWork.StudentCourseRepository.FirstOrDefault(x => x.StudentId == data.StudentId && x.CourseId == data.CourseId);
+                if (studentCourse == null) throw new Exception("Student is not enrolled in the course. Try enrolling first.");
+
+                studentCourse.GradeId = data.GradeId;
+                _unitOfWork.StudentCourseRepository.Update(studentCourse);
+                serviceResponse.Data = studentCourse;
+
                 await _unitOfWork.CompleteAsync();
             }
             catch (Exception ex)
@@ -149,7 +176,7 @@ namespace Service_Layer.StudentService
 
         public async Task<ServiceResponse<Student>> GetStudentResultById(long id)
         {
-            return await _unitOfWork.Students.GetStudentResultById(id);
+            return await _unitOfWork.StudentRepository.GetStudentResultById(id);
         }
     }
 }

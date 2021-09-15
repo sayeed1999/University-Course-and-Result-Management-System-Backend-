@@ -19,7 +19,17 @@ namespace Service_Layer.DesignationService
 
         public async Task<ServiceResponse<IEnumerable<Designation>>> GetDesignations()
         {
-            return await _unitOfWork.Designations.GetAll();
+            var response = new ServiceResponse<IEnumerable<Designation>>();
+            try
+            {
+                response.Data = await _unitOfWork.DesignationRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                response.Message = "Designation fetching failed. :(";
+                response.Success = false;
+            }
+            return response;
         }
     }
 }

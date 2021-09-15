@@ -19,20 +19,6 @@ namespace Repository_Layer.Child_Repositories
 
         }
 
-        public async Task<ServiceResponse<Department>> GetDepartmentByCode(string code)
-        {
-            var serviceResponse = new ServiceResponse<Department>();
-            serviceResponse.Data = await _dbSet.SingleOrDefaultAsync(x => x.Code == code);
-            return serviceResponse;
-        }
-
-        public async Task<ServiceResponse<Department>> GetDepartmentByName(string name)
-        {
-            var serviceResponse = new ServiceResponse<Department>();
-            serviceResponse.Data = await _dbSet.SingleOrDefaultAsync(x => x.Name == name);
-            return serviceResponse;
-        }
-
         public virtual async Task<ServiceResponse<IEnumerable<Department>>> GetAllIncludingTeachersAndCourses()
         {
             var serviceResponse = new ServiceResponse<IEnumerable<Department>>();

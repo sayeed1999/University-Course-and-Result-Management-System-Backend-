@@ -29,7 +29,6 @@ namespace Service_Layer.DepartmentService
             serviceResponse.Data = department;
             try
             {
-                //unitOfWork.CreateTransaction();
                 string error = "";
                 // operations start
                 if(department.Code == null || department.Name == null)
@@ -41,21 +40,35 @@ namespace Service_Layer.DepartmentService
                 {
                     error += "Code must be between 2-7 characters.\n";
                 }
-                var tempResponse = await _unitOfWork.Departments.GetDepartmentByCode(department.Code);
-                if(tempResponse.Data != null)
+                try
                 {
-                    error += "Code is duplicate.\n";
+                    Department? dept = _unitOfWork.DepartmentRepository.SingleOrDefault(x => x.Code == department.Code);
+                    if(dept != null)
+                    {
+                        error += "Code is duplicate.\n";
+                    }
                 }
-                tempResponse = await _unitOfWork.Departments.GetDepartmentByName(department.Name);
-                if(tempResponse.Data != null)
+                catch(Exception ex)
                 {
-                    error += "Name is duplicate.\n";
+                    throw new Exception(ex.Message);
+                }
+                try
+                {
+                    Department? dept = _unitOfWork.DepartmentRepository.SingleOrDefault(x => x.Name == department.Name);
+                    if (dept != null)
+                    {
+                        error += "Name is duplicate.\n";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
                 }
                 if(error.Length > 0)
                 {
                     throw new Exception(error);
                 }
-                serviceResponse = await _unitOfWork.Departments.Add(department);
+                await _unitOfWork.DepartmentRepository.AddAsync(department);
                 // operations end
                 await _unitOfWork.CompleteAsync(); // if it fails in the middle, it should automatically rollback...
             }
@@ -70,7 +83,17 @@ namespace Service_Layer.DepartmentService
         // Story 02
         public async Task<ServiceResponse<IEnumerable<Department>>> GetDepartments()
         {
-            return await _unitOfWork.Departments.GetAll();      
+            var response = new ServiceResponse<IEnumerable<Department>>();
+            try
+            {
+                response.Data = await _unitOfWork.DepartmentRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                response.Message = "Department fetching failed. :(";
+                response.Success = false;
+            }
+            return response;
         }
 
     }

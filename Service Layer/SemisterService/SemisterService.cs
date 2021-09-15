@@ -24,7 +24,17 @@ namespace Service_Layer.SemisterService
 
         public async Task<ServiceResponse<IEnumerable<Semister>>> GetSemisters()
         {
-            return await _unitOfWork.Semisters.GetAll();
+            var response = new ServiceResponse<IEnumerable<Semister>>();
+            try
+            {
+                response.Data = await _unitOfWork.SemisterRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                response.Message = "Semesters fetching failed. :(";
+                response.Success = false;
+            }
+            return response;
         }
 
     }

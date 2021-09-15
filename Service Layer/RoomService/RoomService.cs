@@ -20,7 +20,17 @@ namespace Service_Layer.RoomService
 
         public async Task<ServiceResponse<IEnumerable<Room>>> GetRooms()
         {
-            return await _unitOfWork.Rooms.GetAll();
+            var response = new ServiceResponse<IEnumerable<Room>>();
+            try
+            {
+                response.Data = await _unitOfWork.RoomRepository.GetAll();
+            }
+            catch (Exception ex)
+            {
+                response.Message = "Room fetching failed. :(";
+                response.Success = false;
+            }
+            return response;
         }
 
         public async Task<ServiceResponse<AllocateClassroom>> AllocateClassroom(AllocateClassroom data)
@@ -49,9 +59,21 @@ namespace Service_Layer.RoomService
                 return response;
             }
 
+            long count = _unitOfWork.AllocateClassroomRepository
+                                   .Count(x => x.RoomId == data.RoomId
+                                          && x.DayId == data.DayId
+                                          && (x.From < data.To && x.To > data.From)
+                                   );
+            if (count > 0)
+            {
+                response.Message = "Overlap in classes occurred. Check class schedule please.";
+                response.Success = false;
+                return response;
+            }
+            
             try
             {
-                response = await _unitOfWork.Rooms.AllocateClassroom(data);
+                await _unitOfWork.AllocateClassroomRepository.AddAsync(data);
                 await _unitOfWork.CompleteAsync();
             }
             catch(Exception ex)
@@ -66,17 +88,36 @@ namespace Service_Layer.RoomService
         {
             var serviceResponse = new ServiceResponse<IEnumerable<AllocateClassroom>>();
 
+            long nthUnallocating = 0;
+            long count = _unitOfWork.AllocateClassroomHistoryRepository.Count();
+            if (count == 0)
+            {
+                nthUnallocating = 1;
+            }
+            else
+            {
+                var temp = _unitOfWork.AllocateClassroomHistoryRepository.LastOrDefault();
+                nthUnallocating = temp.NthHistory + 1; // this is the nth time you are unallocating classrooms...
+            }
+
+            IEnumerable<AllocateClassroom> allocatedRooms = _unitOfWork.AllocateClassroomRepository.ToList();
+            foreach (var room in allocatedRooms)
+            {
+                AllocateClassroomHistory roomHistory = new AllocateClassroomHistory { CourseId = room.CourseId, DayId = room.DayId, DepartmentId = room.DepartmentId, From = room.From, To = room.To, RoomId = room.RoomId, NthHistory = nthUnallocating };
+                await _unitOfWork.AllocateClassroomHistoryRepository.AddAsync(roomHistory);
+                _unitOfWork.AllocateClassroomRepository.Delete(room);
+            }
+
             try
             {
-                serviceResponse = await _unitOfWork.Rooms.UnallocateAllClassrooms();
                 await _unitOfWork.CompleteAsync();
+                serviceResponse.Message = "Allocated Rooms History successfully saved!";
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 serviceResponse.Message = "Ünallocating classrooms failed.";
                 serviceResponse.Success = false;
             }
-
             return serviceResponse;
         }
     }

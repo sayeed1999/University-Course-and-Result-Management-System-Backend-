@@ -10,7 +10,7 @@ namespace Service_Layer.StudentService
 {
     public interface IStudentService
     {
-        public Task<ServiceResponse<IEnumerable<Student>>> GetAll(string regNum); // Story 10
+        public Task<ServiceResponse<IEnumerable<Student>>> GetAllIncludingAll(string regNum); // Story 10
         public Task<ServiceResponse<Student>> RegisterStudent(StudentRegistration student); // Story 07
         public Task<ServiceResponse<Student>> GetStudentByEmail(string email);
         public Task<ServiceResponse<Student>> GetStudentByRegNum(string regNum);

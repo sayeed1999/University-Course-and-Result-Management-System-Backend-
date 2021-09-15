@@ -8,33 +8,61 @@ using System.Threading.Tasks;
 
 namespace Repository_Layer.UnitOfWork
 {
-    public class UnitOfWork : IUnitOfWork, IDisposable
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _dbContext;
-        public IDepartmentRepository Departments { get; private set; }
-        public ICourseRepository Courses {  get; private set; }
-        public ISemisterRepository Semisters {  get; private set; }
-        public ITeacherRepository Teachers { get; private set; }
-        public IDesignationRepository Designations { get; private set; }
-        public IStudentRepository Students { get; private set; }
-        public IRoomRepository Rooms { get; private set; }
-        public IDayRepository Days { get; private set; }
-        public IGradeRepository Grades { get; private set; }
-public IMenuRepository Menus {  get; private set; }
-
-        public UnitOfWork(ApplicationDbContext dbContext, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IHttpContextAccessor httpContextAccessor)
-        {
+        public IDepartmentRepository DepartmentRepository { get; private set; }
+        public ICourseRepository CourseRepository {  get; private set; }
+        public ICourseHistoryRepository CourseHistoryRepository { get; private set; }
+        public ISemisterRepository SemisterRepository {  get; private set; }
+        public ITeacherRepository TeacherRepository { get; private set; }
+        public IDesignationRepository DesignationRepository { get; private set; }
+        public IStudentRepository StudentRepository { get; private set; }
+        public IStudentCourseRepository StudentCourseRepository { get; private set; }
+        public IStudentCourseHistoryRepository StudentCourseHistoryRepository { get; private set; }
+        public IRoomRepository RoomRepository { get; private set; }
+        public IAllocateClassroomRepository AllocateClassroomRepository { get; private set; }
+        public IAllocateClassroomHistoryRepository AllocateClassroomHistoryRepository { get; private set; }
+        public IDayRepository DayRepository { get; private set; }
+        public IGradeRepository GradeRepository { get; private set; }
+        public IMenuRepository MenuRepository {  get; private set; }
+        public IMenuWiseRolePermissionRepository MenuWiseRolePermissionRepository { get; private set; }
+        public UnitOfWork(
+            ApplicationDbContext dbContext,
+            IDepartmentRepository departmentRepository,
+            ICourseRepository courseRepository,
+            ICourseHistoryRepository courseHistoryRepository,
+            ISemisterRepository semisterRepository,
+            ITeacherRepository teacherRepository,
+            IDesignationRepository designationRepository,
+            IStudentRepository studentRepository,
+            IStudentCourseRepository studentCourseRepository,
+            IStudentCourseHistoryRepository studentCourseHistoryRepository,
+            IRoomRepository roomRepository,
+            IAllocateClassroomRepository allocateClassroomRepository,
+            IAllocateClassroomHistoryRepository allocateClassroomHistoryRepository,
+            IDayRepository dayRepository,
+            IGradeRepository gradeRepository,
+            IMenuRepository menuRepository,
+            IMenuWiseRolePermissionRepository menuWiseRolePermissionRepository
+        ) {
             _dbContext = dbContext;
-            Departments = new DepartmentRepository(dbContext);
-            Courses = new CourseRepository(dbContext);
-            Semisters = new SemisterRepository(dbContext);
-            Teachers = new TeacherRepository(dbContext);
-            Designations = new DesignationRepository(dbContext);
-            Students = new StudentRepository(dbContext);
-            Rooms = new RoomRepository(dbContext);
-            Days = new DayRepository(dbContext);
-            Grades = new GradeRepository(dbContext);
-            Menus = new MenuRepository(dbContext, userManager, roleManager, httpContextAccessor);
+            DepartmentRepository = departmentRepository;
+            CourseRepository = courseRepository;
+            CourseHistoryRepository = courseHistoryRepository;
+            SemisterRepository = semisterRepository;
+            TeacherRepository = teacherRepository;
+            DesignationRepository = designationRepository;
+            StudentRepository = studentRepository;
+            StudentCourseRepository = studentCourseRepository;
+            StudentCourseHistoryRepository = studentCourseHistoryRepository;
+            RoomRepository = roomRepository;
+            AllocateClassroomRepository = allocateClassroomRepository;
+            AllocateClassroomHistoryRepository = allocateClassroomHistoryRepository;
+            DayRepository = dayRepository;
+            GradeRepository = gradeRepository;
+            MenuRepository = menuRepository;
+            MenuWiseRolePermissionRepository = menuWiseRolePermissionRepository;
         }
 
         public async Task CompleteAsync()
@@ -42,9 +70,9 @@ public IMenuRepository Menus {  get; private set; }
             await _dbContext.SaveChangesAsync();
         }
 
-        public void Dispose()
-        {
-            _dbContext.Dispose();
-        }
+        //public void Dispose()
+        //{
+        //    _dbContext.Dispose();
+        //}
     }
 }

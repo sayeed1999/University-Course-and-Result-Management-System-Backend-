@@ -22,6 +22,7 @@ namespace Entity_Layer
         public ICollection<StudentCourse> StudentsCourses { get; set; }
         public ICollection<AllocateClassroom> AllocateClassrooms { get; set; }
         public ICollection<AllocateClassroomHistory> AllocateClassroomHistories { get; set; }
+        public ICollection<CourseHistory> CourseHistories { get; set; }
         public ICollection<StudentCourseHistory> StudentCourseHistories { get; set; }
     }
 }

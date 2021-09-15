@@ -1,4 +1,5 @@
 ﻿using Entity_Layer;
+using Microsoft.EntityFrameworkCore;
 using Repository_Layer;
 using Repository_Layer.UnitOfWork;
 using System;
@@ -25,7 +26,6 @@ namespace Service_Layer.CourseService
             serviceResponse.Data = course;
             try
             {
-                //unitOfWork.CreateTransaction();
                 string error = "";
                 // operations start
                 if (course.Code == null || course.Name == null)
@@ -49,21 +49,36 @@ namespace Service_Layer.CourseService
                 {
                     error += "\nA valid semester should be chosen";
                 }
-                var tempResponse = await _unitOfWork.Courses.GetCourseByCode(course.Code);
-                if (tempResponse.Data != null)
+                try
                 {
-                    error += "\nCode is duplicate.";
+                    Course? _course = _unitOfWork.CourseRepository.SingleOrDefault(x => x.Code == course.Code);
+                    if(_course != null)
+                    {
+                        error += "\nCode is duplicate.";
+                    }
                 }
-                tempResponse = await _unitOfWork.Courses.GetCourseByName(course.Name);
-                if (tempResponse.Data != null)
+                catch (Exception ex)
                 {
-                    error += "\nName is duplicate.";
+                    throw new Exception(ex.Message);
+                }
+                try
+                {
+                    Course? _course = _unitOfWork.CourseRepository.SingleOrDefault(x => x.Name == course.Name);
+                    if (_course != null)
+                    {
+                        error += "\nName is duplicate.";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(ex.Message);
                 }
                 if (error.Length > 0)
                 {
                     throw new Exception(error);
                 }
-                serviceResponse = await _unitOfWork.Courses.Add(course);
+
+                await _unitOfWork.CourseRepository.AddAsync(course);
                 // operations end
                 await _unitOfWork.CompleteAsync(); // if it fails in the middle, it should automatically rollback...
             }
@@ -80,7 +95,7 @@ namespace Service_Layer.CourseService
             var serviceResponse = new ServiceResponse<Course>();
             try
             {
-                serviceResponse = await _unitOfWork.Courses.Update(course);
+                _unitOfWork.CourseRepository.Update(course);
                 await _unitOfWork.CompleteAsync();
             }
             catch (Exception ex)
@@ -93,22 +108,54 @@ namespace Service_Layer.CourseService
 
         public async Task<ServiceResponse<Course>> GetCourseById(long courseId)
         {
-            return await _unitOfWork.Courses.GetById(courseId);
+            var serviceResponse = new ServiceResponse<Course>();
+            serviceResponse.Data = await _unitOfWork.CourseRepository.Find(courseId);
+            if(serviceResponse.Data == null)
+            {
+                serviceResponse.Message = "Not found";
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
         }
 
         public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartment(long departmentId)
         {
-            return await _unitOfWork.Courses.GetCoursesByDepartment(departmentId);
+            var response = new ServiceResponse<IEnumerable<Course>>();
+            try
+            {
+                IEnumerable<Course> courses = _unitOfWork.CourseRepository.Where(x => x.DepartmentId == departmentId)
+                                                                          .ToList(); // ei amar where(arrow func.) tolistasync hoyna!
+                response.Data = courses;
+            }
+            catch(Exception ex)
+            {
+                response.Success = false;
+                response.Message = "Course fetching failed. :(";
+            }
+            return response;
         }
 
         public async Task<ServiceResponse<IEnumerable<Course>>> GetCoursesByDepartmentWithTeacherAndSemister(long departmentId)
         {
-            return await _unitOfWork.Courses.GetCoursesByDepartmentWithTeacherAndSemister(departmentId);
+            var response = new ServiceResponse<IEnumerable<Course>>();
+            try
+            {
+                response.Data = _unitOfWork.CourseRepository.Where(x => x.DepartmentId == departmentId, 
+                                                                   x => x.Teacher, 
+                                                                   x => x.Semister)
+                                                            .ToList();
+            }
+            catch(Exception ex)
+            {
+                response.Success = false;
+                response.Message = "Course fetching failed. :(";
+            }
+            return response;
         }
 
         public async Task<ServiceResponse<IEnumerable<ClassSchedule>>> GetClassScheduleByDepartment(long departmentId)
         {
-            ServiceResponse<IEnumerable<Course>> coursesResponse = await _unitOfWork.Courses.GetCoursesWithAllocatedRoomsByDepartment(departmentId);
+            ServiceResponse<IEnumerable<Course>> coursesResponse = await _unitOfWork.CourseRepository.GetCoursesWithAllocatedRoomsByDepartment(departmentId);
             var response = new ServiceResponse<IEnumerable<ClassSchedule>>();
             var schedule = new List<ClassSchedule>();
             foreach(var course in coursesResponse.Data)
@@ -141,7 +188,23 @@ namespace Service_Layer.CourseService
 
         public async Task<ServiceResponse<IEnumerable<Course>>> GetEnrolledCoursesByStudent(long studentId)
         {
-            return await _unitOfWork.Courses.GetEnrolledCoursesByStudent(studentId);
+            var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
+            try
+            {
+                IEnumerable<StudentCourse> studentCourse = _unitOfWork.StudentCourseRepository.Where(x => x.StudentId == studentId, x => x.Course);
+                List<Course> courses = new List<Course>();
+                foreach (var tmp in studentCourse)
+                {
+                    courses.Add(tmp.Course);
+                }
+                serviceResponse.Data = courses;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Message = ex.Message;
+                serviceResponse.Success = false;
+            }
+            return serviceResponse;
         }
 
         public async Task<ServiceResponse<IEnumerable<Course>>> UnassignAllCourses()
@@ -149,12 +212,43 @@ namespace Service_Layer.CourseService
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
             try
             {
-                serviceResponse = await _unitOfWork.Courses.UnassignAllCourses();
+                long count = _unitOfWork.CourseHistoryRepository.Count();
+                long unassignId = 0;
+                if (count == 0)
+                {
+                    unassignId = 1;
+                }
+                else
+                {
+                    var temp = _unitOfWork.CourseHistoryRepository
+                                          .LastOrDefault();
+                    unassignId = (temp != null ? temp.NthHistory : 0) + 1;
+                }
+
+                IEnumerable<Course> courses = _unitOfWork.CourseRepository.Where(x => x.TeacherId != null).ToList();
+                foreach (Course course in courses)
+                {
+                    CourseHistory courseHistory = new CourseHistory { CourseId = course.Id, DepartmentId = course.DepartmentId, SemisterId = course.SemisterId, TeacherId = course?.TeacherId, NthHistory = unassignId };
+                    await _unitOfWork.CourseHistoryRepository.AddAsync(courseHistory);
+                    course.TeacherId = null;
+                    _unitOfWork.CourseRepository.Update(course);
+                }
+
+                IEnumerable<StudentCourse> studentsCourses = _unitOfWork.StudentCourseRepository.ToList();
+                foreach (StudentCourse studentCourse in studentsCourses)
+                {
+                    var newStudentCourse = new StudentCourseHistory { DepartmentId = studentCourse.DepartmentId, CourseId = studentCourse.CourseId, Date = studentCourse.Date, StudentId = studentCourse.StudentId, GradeId = studentCourse.GradeId, NthHistory = unassignId };
+                    await _unitOfWork.StudentCourseHistoryRepository.AddAsync(newStudentCourse);
+                    _unitOfWork.StudentCourseRepository.Delete(studentCourse);
+                }
+
+                serviceResponse.Message = "Courses & Students History successfully saved!";
+                // sync..!
                 await _unitOfWork.CompleteAsync();
             }
             catch(Exception ex)
             {
-                serviceResponse.Message = ex.Message;
+                serviceResponse.Message = "Unassigning courses and students failed. :(";
                 serviceResponse.Success = false;
             }
             return serviceResponse;

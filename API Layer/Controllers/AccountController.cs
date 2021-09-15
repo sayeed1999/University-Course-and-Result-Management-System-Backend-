@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Repository_Layer;
+using Repository_Layer.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,17 +22,17 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class AccountController : ControllerBase
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ApplicationDbContext _context;
+        //private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly AppSettings _appSettings;
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<IdentityRole> roleManager, ApplicationDbContext context, IOptions<AppSettings> appSettings)
+        public AccountController(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, /*SignInManager<ApplicationUser> signInManager,*/ RoleManager<IdentityRole> roleManager, IOptions<AppSettings> appSettings)
         {
+            _unitOfWork = unitOfWork;
             _userManager = userManager;
-            _signInManager = signInManager;
+            //_signInManager = signInManager;
             _roleManager = roleManager;
-            _context = context;
             _appSettings = appSettings.Value;
         }
 
@@ -126,7 +127,7 @@ namespace API_Layer.Controllers
             var temp = new List<string>();
             try
             {
-                foreach (var role in _context.Roles)
+                foreach (var role in _roleManager.Roles)
                 {
                     temp.Add(role.Name);
                 }
@@ -308,24 +309,23 @@ namespace API_Layer.Controllers
                 // adding 
                 foreach (var menuId in menuIds)
                 {
-                    if ((await _context.MenuWiseRolePermissions.SingleOrDefaultAsync(x => x.RoleId == role.Id && x.MenuId == menuId)) == null)
+                    if (_unitOfWork.MenuWiseRolePermissionRepository.SingleOrDefault(x => x.RoleId == role.Id && x.MenuId == menuId) == null)
                     {
                         var newMenuRole = new MenuRole() { Id = 0, MenuId = menuId, RoleId = role.Id };
-                        _context.MenuWiseRolePermissions.Add(newMenuRole);
+                        await _unitOfWork.MenuWiseRolePermissionRepository.AddAsync(newMenuRole);
                     }
                 }
                 // removing 
-                var allMenus = await _context.MenuWiseRolePermissions.Where(x => x.RoleId == role.Id).ToListAsync();
+                var allMenus = _unitOfWork.MenuWiseRolePermissionRepository.Where(x => x.RoleId == role.Id).ToList();
                 foreach(var menu in allMenus)
                 {
                     if(!menuIds.Contains(menu.MenuId))
                     {
-                        _context.MenuWiseRolePermissions.Remove(menu);
+                        _unitOfWork.MenuWiseRolePermissionRepository.Delete(menu);
                     }
                 }
-                // all updates tracked till now.. so saving!
-                await _context.SaveChangesAsync();
-
+                // all updates tracked till now. so sync..!
+                await _unitOfWork.CompleteAsync();
             }
             catch (Exception ex)
             {
