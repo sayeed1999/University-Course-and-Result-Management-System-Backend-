@@ -60,8 +60,8 @@ namespace Service_Layer.StudentService
         {
             var serviceResponse = new ServiceResponse<Student>();
 
-            serviceResponse = await GetStudentByEmail(student.Email);
-            if(serviceResponse.Data != null)
+            var temp = await GetStudentByEmail(student.Email);
+            if(temp.Data != null)
             {
                 serviceResponse.Success = false;
                 serviceResponse.Message = "Duplicate email cannot be processed";
@@ -107,10 +107,11 @@ namespace Service_Layer.StudentService
                 serviceResponse.Data = newStudent;
                 await _unitOfWork.StudentRepository.AddAsync(newStudent);
                 await _unitOfWork.CompleteAsync();
+                serviceResponse.Message = "Student registration successful.";
             }
             catch(Exception ex)
             {
-                serviceResponse.Message = "Student Registration failed";
+                serviceResponse.Message = "Student Registration failed.";
                 serviceResponse.Success = false;
             }
 

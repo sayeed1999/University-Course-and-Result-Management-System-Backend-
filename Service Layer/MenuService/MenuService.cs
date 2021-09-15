@@ -7,6 +7,7 @@ using Repository_Layer;
 using Repository_Layer.UnitOfWork;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -230,6 +231,46 @@ namespace Service_Layer.MenuService
                 response.Success = false;
             }
             return response;
+        }
+
+        /// Role Related Operations ..
+        
+        public async Task AddMenusToRoleAsync(List<long> menuIds, string roleId)
+        {
+            foreach (var menuId in menuIds)
+            {
+                if (_unitOfWork.MenuWiseRolePermissionRepository.SingleOrDefault(x => x.RoleId == roleId && x.MenuId == menuId) == null)
+                {
+                    var newMenuRole = new MenuRole() { Id = 0, MenuId = menuId, RoleId = roleId };
+                    await _unitOfWork.MenuWiseRolePermissionRepository.AddAsync(newMenuRole);
+                }
+            }
+        }
+
+        public void RemoveMenusFromRole(List<long> menuIds, string roleId)
+        {
+            IEnumerable<MenuRole> allMenus = _unitOfWork.MenuWiseRolePermissionRepository.Where(x => x.RoleId == roleId).ToList();
+            foreach (var menu in allMenus)
+            {
+                if (!menuIds.Contains(menu.MenuId))
+                {
+                    _unitOfWork.MenuWiseRolePermissionRepository.Delete(menu);
+                }
+            }
+        }
+
+        public async Task UpdateMenuPermissionByRole(List<long> menuIds, string roleId)
+        {
+            try
+            {
+                await AddMenusToRoleAsync(menuIds, roleId);
+                RemoveMenusFromRole(menuIds, roleId);
+                await _unitOfWork.CompleteAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Menu permission for role not updated. :(");
+            }
         }
     }
 }

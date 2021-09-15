@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Repository_Layer;
 using Repository_Layer.UnitOfWork;
+using Service_Layer.MenuService;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,18 +23,16 @@ namespace API_Layer.Controllers
     [Route("[controller]")]
     public class AccountController : ControllerBase
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<ApplicationUser> _userManager;
-        //private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly AppSettings _appSettings;
-        public AccountController(IUnitOfWork unitOfWork, UserManager<ApplicationUser> userManager, /*SignInManager<ApplicationUser> signInManager,*/ RoleManager<IdentityRole> roleManager, IOptions<AppSettings> appSettings)
+        private readonly IMenuService _menuService;
+        public AccountController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager, IOptions<AppSettings> appSettings, IMenuService menuService)
         {
-            _unitOfWork = unitOfWork;
             _userManager = userManager;
-            //_signInManager = signInManager;
             _roleManager = roleManager;
             _appSettings = appSettings.Value;
+            _menuService = menuService;
         }
 
         [AllowAnonymous]
@@ -57,12 +56,8 @@ namespace API_Layer.Controllers
 
                 if (result.Succeeded)
                 {
-                    //await _signInManager.SignInAsync(user, isPersistent: false);
                     serviceResponse.Message = "User registered successfully.";
                     ApplicationUser registeredUser = await _userManager.FindByEmailAsync(user.Email);
-
-                    //await _userManager.AddToRolesAsync(registeredUser, model.Roles);
-                    //var roles = model.Roles.Split(',', ' ');
 
                     foreach (string roleName in model.Roles)
                     {
@@ -306,26 +301,7 @@ namespace API_Layer.Controllers
 
             try
             {
-                // adding 
-                foreach (var menuId in menuIds)
-                {
-                    if (_unitOfWork.MenuWiseRolePermissionRepository.SingleOrDefault(x => x.RoleId == role.Id && x.MenuId == menuId) == null)
-                    {
-                        var newMenuRole = new MenuRole() { Id = 0, MenuId = menuId, RoleId = role.Id };
-                        await _unitOfWork.MenuWiseRolePermissionRepository.AddAsync(newMenuRole);
-                    }
-                }
-                // removing 
-                var allMenus = _unitOfWork.MenuWiseRolePermissionRepository.Where(x => x.RoleId == role.Id).ToList();
-                foreach(var menu in allMenus)
-                {
-                    if(!menuIds.Contains(menu.MenuId))
-                    {
-                        _unitOfWork.MenuWiseRolePermissionRepository.Delete(menu);
-                    }
-                }
-                // all updates tracked till now. so sync..!
-                await _unitOfWork.CompleteAsync();
+                await _menuService.UpdateMenuPermissionByRole(menuIds, role.Id);
             }
             catch (Exception ex)
             {

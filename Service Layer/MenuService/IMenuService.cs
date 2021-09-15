@@ -19,5 +19,11 @@ namespace Service_Layer.MenuService
         public Task<ServiceResponse<Menu>> Update(Menu menu);
         public Task<ServiceResponse<Menu>> Update(long id, Menu menu);
         public Task<ServiceResponse<Menu>> DeleteById(long id);
+
+        // Role related operations ..
+        public Task AddMenusToRoleAsync(List<long> menuIds, string roleId);
+        public void RemoveMenusFromRole(List<long> menuIds, string roleId);
+        public Task UpdateMenuPermissionByRole(List<long> menuIds, string roleId);
+
     }
 }

@@ -45,7 +45,7 @@ namespace Service_Layer.RoomService
                 return response;
             }
 
-            if((data.From > (Math.Floor(data.From) + 0.59)) || (data.To > (Math.Floor(data.To) + 0.59)))
+            if((data.From > (float)(Math.Floor(data.From) + 0.59)) || (data.To > (float)(Math.Floor(data.To) + 0.59)))
             {
                 response.Success = false;
                 response.Message = "Second cannot be greater than 59.";
