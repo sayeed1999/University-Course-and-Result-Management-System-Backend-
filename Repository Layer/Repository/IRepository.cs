@@ -10,21 +10,21 @@ namespace Repository_Layer.Repository
     public interface IRepository<T> where T : class
     {
         // PRIMARY CRUD Operations ...
-        public Task<IEnumerable<T>> GetAll();
-        public Task<T> Find(long id); // Find() is only for PK's!
+        public Task<IEnumerable<T>> GetAllAsync();
+        public Task<T> FindAsync(long id); // FindAsync() is only for PK's!
         public Task AddAsync(T item);
         public void Update(T item);
         public void Update(long id, T item);
         public void Delete(T item);
         public void DeleteById(long id);
         // Additional Operations ...
-        public T? SingleOrDefault(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes); 
+        public Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes); 
         public IQueryable<T> Where(Expression<Func<T,bool>> expression, params Expression<Func<T, object>>[] includes);
-        public long Count();
-        public long Count(Expression<Func<T, bool>> expression);
-        public T? FirstOrDefault(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes);
-        public T? LastOrDefault(params Expression<Func<T, object>>[] includes);
-        public IEnumerable<T> ToList();
-        public bool Contains(Expression<Func<T, bool>> expression);
+        public Task<long> CountAsync();
+        public Task<long> CountAsync(Expression<Func<T, bool>> expression);
+        public Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes);
+        public Task<T> LastOrDefaultAsync(params Expression<Func<T, object>>[] includes);
+        public Task<bool> ContainsAsync(Expression<Func<T, bool>> expression);
+        public Task<IEnumerable<T>> ToListAsync();
     }
 }

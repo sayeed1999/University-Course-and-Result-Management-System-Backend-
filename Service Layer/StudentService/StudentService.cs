@@ -29,7 +29,7 @@ namespace Service_Layer.StudentService
             var response = new ServiceResponse<Student>();
             try
             {
-                response.Data = _unitOfWork.StudentRepository.SingleOrDefault(x => x.RegistrationNumber == regNum);
+                response.Data = await _unitOfWork.StudentRepository.SingleOrDefaultAsync(x => x.RegistrationNumber == regNum);
                 if (response.Data == null) throw new Exception("No student found with the registration number");
             }
             catch (Exception ex)
@@ -45,7 +45,7 @@ namespace Service_Layer.StudentService
             var response = new ServiceResponse<Student>();
             try
             {
-                response.Data = _unitOfWork.StudentRepository.SingleOrDefault(x => x.Email == email);
+                response.Data = await _unitOfWork.StudentRepository.SingleOrDefaultAsync(x => x.Email == email);
                 if (response.Data == null) throw new Exception("No student found with the email");
             }
             catch (Exception ex)
@@ -72,7 +72,7 @@ namespace Service_Layer.StudentService
 
             string reg = "";
             
-            Department dept = await _unitOfWork.DepartmentRepository.Find(student.DepartmentId);
+            Department dept = await _unitOfWork.DepartmentRepository.FindAsync(student.DepartmentId);
             if (dept == null)
             {
                 serviceResponse.Success = false;
@@ -82,7 +82,7 @@ namespace Service_Layer.StudentService
 
             reg += dept.Code + '-';
             reg += student.Date.Year.ToString() + '-';
-            long countOfStudents = _unitOfWork.StudentRepository.Count(x => x.DepartmentId == student.DepartmentId);
+            long countOfStudents = await _unitOfWork.StudentRepository.CountAsync(x => x.DepartmentId == student.DepartmentId);
             long id = countOfStudents + 1;
             if (id / 10 == 0) reg += "00";
             else if (id / 10 < 10) reg += "0";
@@ -122,7 +122,7 @@ namespace Service_Layer.StudentService
         {
             var serviceResponse = new ServiceResponse<StudentCourse>();
 
-            bool isCourseInDepartment = _unitOfWork.CourseRepository.Contains(x => x.Id == studentCourse.CourseId && x.DepartmentId == studentCourse.DepartmentId);
+            bool isCourseInDepartment = await _unitOfWork.CourseRepository.ContainsAsync(x => x.Id == studentCourse.CourseId && x.DepartmentId == studentCourse.DepartmentId);
             if (!isCourseInDepartment)
             {
                 serviceResponse.Message = "Course is not in the department";
@@ -130,7 +130,7 @@ namespace Service_Layer.StudentService
                 return serviceResponse;
             }
 
-            bool isStudentEnrolledInCourse = _unitOfWork.StudentCourseRepository.Contains(x => x.StudentId == studentCourse.StudentId && x.CourseId == studentCourse.CourseId);
+            bool isStudentEnrolledInCourse = await _unitOfWork.StudentCourseRepository.ContainsAsync(x => x.StudentId == studentCourse.StudentId && x.CourseId == studentCourse.CourseId);
             if (isStudentEnrolledInCourse)
             {
                 serviceResponse.Message = "Student is already enrolled in the course";
@@ -157,7 +157,7 @@ namespace Service_Layer.StudentService
             var serviceResponse = new ServiceResponse<StudentCourse>();
             try
             {
-                StudentCourse? studentCourse = _unitOfWork.StudentCourseRepository.FirstOrDefault(x => x.StudentId == data.StudentId && x.CourseId == data.CourseId);
+                StudentCourse? studentCourse = await _unitOfWork.StudentCourseRepository.FirstOrDefaultAsync(x => x.StudentId == data.StudentId && x.CourseId == data.CourseId);
                 if (studentCourse == null) throw new Exception("Student is not enrolled in the course. Try enrolling first.");
 
                 studentCourse.GradeId = data.GradeId;

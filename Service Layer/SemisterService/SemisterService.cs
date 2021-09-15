@@ -27,7 +27,7 @@ namespace Service_Layer.SemisterService
             var response = new ServiceResponse<IEnumerable<Semister>>();
             try
             {
-                response.Data = await _unitOfWork.SemisterRepository.GetAll();
+                response.Data = await _unitOfWork.SemisterRepository.GetAllAsync();
             }
             catch (Exception ex)
             {

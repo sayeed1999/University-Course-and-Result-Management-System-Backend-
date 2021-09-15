@@ -23,7 +23,7 @@ namespace Service_Layer.DayService
             var response = new ServiceResponse<IEnumerable<Day>>();
             try
             {
-                response.Data = await unitOfWork.DayRepository.GetAll();
+                response.Data = await unitOfWork.DayRepository.GetAllAsync();
             }
             catch (Exception ex)
             {

@@ -23,7 +23,7 @@ namespace Service_Layer.GradeService
             var response = new ServiceResponse<IEnumerable<Grade>>();
             try
             {
-                response.Data = await unitOfWork.GradeRepository.GetAll();
+                response.Data = await unitOfWork.GradeRepository.GetAllAsync();
             }
             catch (Exception ex)
             {

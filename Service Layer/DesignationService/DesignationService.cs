@@ -22,7 +22,7 @@ namespace Service_Layer.DesignationService
             var response = new ServiceResponse<IEnumerable<Designation>>();
             try
             {
-                response.Data = await _unitOfWork.DesignationRepository.GetAll();
+                response.Data = await _unitOfWork.DesignationRepository.GetAllAsync();
             }
             catch (Exception ex)
             {

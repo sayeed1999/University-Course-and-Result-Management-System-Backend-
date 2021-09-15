@@ -51,7 +51,7 @@ namespace Service_Layer.CourseService
                 }
                 try
                 {
-                    Course? _course = _unitOfWork.CourseRepository.SingleOrDefault(x => x.Code == course.Code);
+                    Course? _course = await _unitOfWork.CourseRepository.SingleOrDefaultAsync(x => x.Code == course.Code);
                     if(_course != null)
                     {
                         error += "\nCode is duplicate.";
@@ -63,7 +63,7 @@ namespace Service_Layer.CourseService
                 }
                 try
                 {
-                    Course? _course = _unitOfWork.CourseRepository.SingleOrDefault(x => x.Name == course.Name);
+                    Course? _course = await _unitOfWork.CourseRepository.SingleOrDefaultAsync(x => x.Name == course.Name);
                     if (_course != null)
                     {
                         error += "\nName is duplicate.";
@@ -109,7 +109,7 @@ namespace Service_Layer.CourseService
         public async Task<ServiceResponse<Course>> GetCourseById(long courseId)
         {
             var serviceResponse = new ServiceResponse<Course>();
-            serviceResponse.Data = await _unitOfWork.CourseRepository.Find(courseId);
+            serviceResponse.Data = await _unitOfWork.CourseRepository.FindAsync(courseId);
             if(serviceResponse.Data == null)
             {
                 serviceResponse.Message = "Not found";
@@ -123,8 +123,8 @@ namespace Service_Layer.CourseService
             var response = new ServiceResponse<IEnumerable<Course>>();
             try
             {
-                IEnumerable<Course> courses = _unitOfWork.CourseRepository.Where(x => x.DepartmentId == departmentId)
-                                                                          .ToList(); // ei amar where(arrow func.) tolistasync hoyna!
+                IEnumerable<Course> courses = await _unitOfWork.CourseRepository.Where(x => x.DepartmentId == departmentId)
+                                                                                .ToListAsync(); // ei amar where(arrow func.) tolistasync hoyna!
                 response.Data = courses;
             }
             catch(Exception ex)
@@ -140,10 +140,10 @@ namespace Service_Layer.CourseService
             var response = new ServiceResponse<IEnumerable<Course>>();
             try
             {
-                response.Data = _unitOfWork.CourseRepository.Where(x => x.DepartmentId == departmentId, 
-                                                                   x => x.Teacher, 
-                                                                   x => x.Semister)
-                                                            .ToList();
+                response.Data = await _unitOfWork.CourseRepository.Where(x => x.DepartmentId == departmentId, 
+                                                                         x => x.Teacher, 
+                                                                         x => x.Semister)
+                                                                  .ToListAsync();
             }
             catch(Exception ex)
             {
@@ -191,7 +191,9 @@ namespace Service_Layer.CourseService
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
             try
             {
-                IEnumerable<StudentCourse> studentCourse = _unitOfWork.StudentCourseRepository.Where(x => x.StudentId == studentId, x => x.Course);
+                IEnumerable<StudentCourse> studentCourse = await _unitOfWork.StudentCourseRepository
+                                                                            .Where(x => x.StudentId == studentId, x => x.Course)
+                                                                            .ToListAsync();
                 List<Course> courses = new List<Course>();
                 foreach (var tmp in studentCourse)
                 {
@@ -212,7 +214,7 @@ namespace Service_Layer.CourseService
             var serviceResponse = new ServiceResponse<IEnumerable<Course>>();
             try
             {
-                long count = _unitOfWork.CourseHistoryRepository.Count();
+                long count = await _unitOfWork.CourseHistoryRepository.CountAsync();
                 long unassignId = 0;
                 if (count == 0)
                 {
@@ -220,12 +222,12 @@ namespace Service_Layer.CourseService
                 }
                 else
                 {
-                    var temp = _unitOfWork.CourseHistoryRepository
-                                          .LastOrDefault();
+                    var temp = await _unitOfWork.CourseHistoryRepository
+                                                .LastOrDefaultAsync();
                     unassignId = (temp != null ? temp.NthHistory : 0) + 1;
                 }
 
-                IEnumerable<Course> courses = _unitOfWork.CourseRepository.Where(x => x.TeacherId != null).ToList();
+                IEnumerable<Course> courses = await _unitOfWork.CourseRepository.Where(x => x.TeacherId != null).ToListAsync();
                 foreach (Course course in courses)
                 {
                     CourseHistory courseHistory = new CourseHistory { CourseId = course.Id, DepartmentId = course.DepartmentId, SemisterId = course.SemisterId, TeacherId = course?.TeacherId, NthHistory = unassignId };
@@ -234,7 +236,7 @@ namespace Service_Layer.CourseService
                     _unitOfWork.CourseRepository.Update(course);
                 }
 
-                IEnumerable<StudentCourse> studentsCourses = _unitOfWork.StudentCourseRepository.ToList();
+                IEnumerable<StudentCourse> studentsCourses = await _unitOfWork.StudentCourseRepository.ToListAsync();
                 foreach (StudentCourse studentCourse in studentsCourses)
                 {
                     var newStudentCourse = new StudentCourseHistory { DepartmentId = studentCourse.DepartmentId, CourseId = studentCourse.CourseId, Date = studentCourse.Date, StudentId = studentCourse.StudentId, GradeId = studentCourse.GradeId, NthHistory = unassignId };

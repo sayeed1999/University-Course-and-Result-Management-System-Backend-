@@ -38,7 +38,7 @@ namespace Service_Layer.TeacherService
                 }
                 try
                 {
-                    Teacher? _teacher = _unitOfWork.TeacherRepository.SingleOrDefault(x => x.Email == teacher.Email);
+                    Teacher _teacher = await _unitOfWork.TeacherRepository.SingleOrDefaultAsync(x => x.Email == teacher.Email);
                     if(_teacher != null)
                     {
                         error += "Duplicate email found.\n";
@@ -69,10 +69,10 @@ namespace Service_Layer.TeacherService
             var serviceResponse = new ServiceResponse<IEnumerable<TeacherView>>();
             try
             {
-                IEnumerable<Teacher> teachers = _unitOfWork.TeacherRepository
+                IEnumerable<Teacher> teachers = await _unitOfWork.TeacherRepository
                                                                  .Where(x => x.DepartmentId == departmentId)
                                                                  .Include(x => x.Courses)
-                                                                 .ToList();
+                                                                 .ToListAsync();
                 serviceResponse.Message = "Data fetched successfully from the database";
 
                 var teacherViews = from teacher in teachers

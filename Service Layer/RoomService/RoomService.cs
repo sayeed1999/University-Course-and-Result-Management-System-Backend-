@@ -23,7 +23,7 @@ namespace Service_Layer.RoomService
             var response = new ServiceResponse<IEnumerable<Room>>();
             try
             {
-                response.Data = await _unitOfWork.RoomRepository.GetAll();
+                response.Data = await _unitOfWork.RoomRepository.GetAllAsync();
             }
             catch (Exception ex)
             {
@@ -59,10 +59,10 @@ namespace Service_Layer.RoomService
                 return response;
             }
 
-            long count = _unitOfWork.AllocateClassroomRepository
-                                   .Count(x => x.RoomId == data.RoomId
-                                          && x.DayId == data.DayId
-                                          && (x.From < data.To && x.To > data.From)
+            long count = await _unitOfWork.AllocateClassroomRepository
+                                   .CountAsync(x => x.RoomId == data.RoomId
+                                            && x.DayId == data.DayId
+                                            && (x.From < data.To && x.To > data.From)
                                    );
             if (count > 0)
             {
@@ -89,18 +89,18 @@ namespace Service_Layer.RoomService
             var serviceResponse = new ServiceResponse<IEnumerable<AllocateClassroom>>();
 
             long nthUnallocating = 0;
-            long count = _unitOfWork.AllocateClassroomHistoryRepository.Count();
+            long count = await _unitOfWork.AllocateClassroomHistoryRepository.CountAsync();
             if (count == 0)
             {
                 nthUnallocating = 1;
             }
             else
             {
-                var temp = _unitOfWork.AllocateClassroomHistoryRepository.LastOrDefault();
+                var temp = await _unitOfWork.AllocateClassroomHistoryRepository.LastOrDefaultAsync();
                 nthUnallocating = temp.NthHistory + 1; // this is the nth time you are unallocating classrooms...
             }
 
-            IEnumerable<AllocateClassroom> allocatedRooms = _unitOfWork.AllocateClassroomRepository.ToList();
+            IEnumerable<AllocateClassroom> allocatedRooms = await _unitOfWork.AllocateClassroomRepository.ToListAsync();
             foreach (var room in allocatedRooms)
             {
                 AllocateClassroomHistory roomHistory = new AllocateClassroomHistory { CourseId = room.CourseId, DayId = room.DayId, DepartmentId = room.DepartmentId, From = room.From, To = room.To, RoomId = room.RoomId, NthHistory = nthUnallocating };

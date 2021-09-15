@@ -34,7 +34,7 @@ namespace Repository_Layer.Repository
         /// </summary>
         /// <returns></returns>
         
-        public virtual async Task<IEnumerable<T>> GetAll()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             try
             {
@@ -46,7 +46,7 @@ namespace Repository_Layer.Repository
             }
         }
 
-        public virtual async Task<T> Find(long id)
+        public virtual async Task<T> FindAsync(long id)
         {
             return await _dbSet.FindAsync(id);    
         }
@@ -97,7 +97,7 @@ namespace Repository_Layer.Repository
         /// <param name="expression"></param>
         /// <returns></returns>
         
-        public T? SingleOrDefault(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes)
+        public async Task<T> SingleOrDefaultAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes)
         {
             try
             {
@@ -109,11 +109,11 @@ namespace Repository_Layer.Repository
                     {
                         queryable.Include(includes[i]);
                     }
-                    ret = queryable.SingleOrDefault(expression);
+                    ret = await queryable.SingleOrDefaultAsync(expression);
                 }
                 else
                 {
-                    ret = _dbSet.SingleOrDefault(expression);
+                    ret = await _dbSet.SingleOrDefaultAsync(expression);
                 }
                 return ret;
             }
@@ -140,17 +140,17 @@ namespace Repository_Layer.Repository
             }
         }
 
-        public long Count()
+        public async Task<long> CountAsync()
         {
-            return _dbSet.Count();
+            return await _dbSet.CountAsync();
         }
 
-        public long Count(Expression<Func<T, bool>> expression)
+        public async Task<long> CountAsync(Expression<Func<T, bool>> expression)
         {
-            return _dbSet.Count(expression);
+            return await _dbSet.CountAsync(expression);
         }
 
-        public T? FirstOrDefault(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes)
+        public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes)
         {
             T? ret = null;
             if (includes.Length > 0)
@@ -160,17 +160,17 @@ namespace Repository_Layer.Repository
                 {
                     queryable.Include(includes[i]);
                 }
-                ret = queryable.FirstOrDefault(expression);
+                ret = await queryable.FirstOrDefaultAsync(expression);
             }
             else
             {
-                ret = _dbSet.FirstOrDefault(expression);
+                ret = await _dbSet.FirstOrDefaultAsync(expression);
             }
             return ret;
         }
 
         // Since LastOrDefault doesn't support anymore, we customized it!
-        public T? LastOrDefault(params Expression<Func<T, object>>[] includes)
+        public async Task<T> LastOrDefaultAsync(params Expression<Func<T, object>>[] includes)
         {
             T? ret = null;
             if (includes.Length > 0)
@@ -180,23 +180,23 @@ namespace Repository_Layer.Repository
                 {
                     queryable.Include(includes[i]);
                 }
-                ret = queryable.Skip(_dbSet.Count() - 1).FirstOrDefault();
+                ret = await queryable.Skip(_dbSet.Count() - 1).FirstOrDefaultAsync();
             }
             else
             {
-                ret = _dbSet.Skip(_dbSet.Count() - 1).FirstOrDefault();
+                ret = await _dbSet.Skip(_dbSet.Count() - 1).FirstOrDefaultAsync();
             }
             return ret;
         }
 
-        public IEnumerable<T> ToList()
+        public async Task<bool> ContainsAsync(Expression<Func<T, bool>> expression)
         {
-            return _dbSet.ToList();
+            return await FirstOrDefaultAsync(expression) != null;
         }
 
-        public bool Contains(Expression<Func<T, bool>> expression)
+        public async Task<IEnumerable<T>> ToListAsync()
         {
-            return (FirstOrDefault(expression) != null);
+            return await _dbSet.ToListAsync();
         }
     }
 }

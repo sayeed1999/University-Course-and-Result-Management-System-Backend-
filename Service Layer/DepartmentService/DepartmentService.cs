@@ -42,7 +42,7 @@ namespace Service_Layer.DepartmentService
                 }
                 try
                 {
-                    Department? dept = _unitOfWork.DepartmentRepository.SingleOrDefault(x => x.Code == department.Code);
+                    Department dept = await _unitOfWork.DepartmentRepository.SingleOrDefaultAsync(x => x.Code == department.Code);
                     if(dept != null)
                     {
                         error += "Code is duplicate.\n";
@@ -54,7 +54,7 @@ namespace Service_Layer.DepartmentService
                 }
                 try
                 {
-                    Department? dept = _unitOfWork.DepartmentRepository.SingleOrDefault(x => x.Name == department.Name);
+                    Department dept = await _unitOfWork.DepartmentRepository.SingleOrDefaultAsync(x => x.Name == department.Name);
                     if (dept != null)
                     {
                         error += "Name is duplicate.\n";
@@ -86,7 +86,7 @@ namespace Service_Layer.DepartmentService
             var response = new ServiceResponse<IEnumerable<Department>>();
             try
             {
-                response.Data = await _unitOfWork.DepartmentRepository.GetAll();
+                response.Data = await _unitOfWork.DepartmentRepository.GetAllAsync();
             }
             catch (Exception ex)
             {

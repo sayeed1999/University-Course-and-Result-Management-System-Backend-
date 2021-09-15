@@ -38,15 +38,15 @@ namespace Service_Layer.MenuService
             var serviceResponse = new ServiceResponse<Menu>();
             serviceResponse.Message = "";
 
-            Menu temp = _unitOfWork.MenuRepository.SingleOrDefault(x => x.Name == item.Name);
+            Menu temp = await _unitOfWork.MenuRepository.SingleOrDefaultAsync(x => x.Name == item.Name);
             if (temp != null) serviceResponse.Message += "Duplicate Menu Name found.\n";
 
-            temp = _unitOfWork.MenuRepository.SingleOrDefault(x => x.Url == item.Url);
+            temp = await _unitOfWork.MenuRepository.SingleOrDefaultAsync(x => x.Url == item.Url);
             if (temp != null) serviceResponse.Message += "Duplicate URL found.\n";
 
             if (item.ParentId != null)
             {
-                temp = await _unitOfWork.MenuRepository.Find((long)item.ParentId);
+                temp = await _unitOfWork.MenuRepository.FindAsync((long)item.ParentId);
                 if (temp != null && temp.ParentId != null) serviceResponse.Message += "Route cannot be a child to a non-root route for this app!\n";
             }
 
@@ -93,7 +93,7 @@ namespace Service_Layer.MenuService
             var response = new ServiceResponse<IEnumerable<Menu>>();
             try
             {
-                response.Data = await _unitOfWork.MenuRepository.GetAll();
+                response.Data = await _unitOfWork.MenuRepository.GetAllAsync();
             }
             catch (Exception ex)
             {
@@ -149,7 +149,7 @@ namespace Service_Layer.MenuService
         public async Task<ServiceResponse<Menu>> GetById(long id)
         {
             var response = new ServiceResponse<Menu>();
-            response.Data = await _unitOfWork.MenuRepository.Find(id);
+            response.Data = await _unitOfWork.MenuRepository.FindAsync(id);
             if(response.Data == null)
             {
                 response.Message = "Not found";
@@ -239,7 +239,7 @@ namespace Service_Layer.MenuService
         {
             foreach (var menuId in menuIds)
             {
-                if (_unitOfWork.MenuWiseRolePermissionRepository.SingleOrDefault(x => x.RoleId == roleId && x.MenuId == menuId) == null)
+                if ((await _unitOfWork.MenuWiseRolePermissionRepository.SingleOrDefaultAsync(x => x.RoleId == roleId && x.MenuId == menuId)) == null)
                 {
                     var newMenuRole = new MenuRole() { Id = 0, MenuId = menuId, RoleId = roleId };
                     await _unitOfWork.MenuWiseRolePermissionRepository.AddAsync(newMenuRole);
