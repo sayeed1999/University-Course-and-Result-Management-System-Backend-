@@ -11,8 +11,6 @@ namespace Repository_Layer.Child_Repositories
 {
     public interface IStudentRepository : IRepository<Student>
     {
-        public Task<ServiceResponse<IEnumerable<Student>>> GetAllIncludingAll(string regNum);
-        public Task<ServiceResponse<Student>> GetStudentResultById(long id);
 
     }
 }

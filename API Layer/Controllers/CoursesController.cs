@@ -90,7 +90,7 @@ namespace API_Layer.Controllers
             return Ok(response);
         }
         
-        [HttpGet("Department/{departmentId:int}/ClassSchedule")] // theninclude unresolved!
+        [HttpGet("Department/{departmentId:int}/ClassSchedule")]
         public async Task<ActionResult<ServiceResponse<IEnumerable<ClassSchedule>>>> GetCoursesWithAllocatedRoomsByDepartment(long departmentId)
         {
             var response = await _service.GetClassScheduleByDepartment(departmentId);

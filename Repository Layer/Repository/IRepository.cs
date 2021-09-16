@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Query;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -26,5 +27,8 @@ namespace Repository_Layer.Repository
         public Task<T> LastOrDefaultAsync(params Expression<Func<T, object>>[] includes);
         public Task<bool> ContainsAsync(Expression<Func<T, bool>> expression);
         public Task<IEnumerable<T>> ToListAsync();
+        public IQueryable<T> GetByWhereClause(Expression<Func<T, bool>> expression, params Func<IQueryable<T>, IIncludableQueryable<T, object>>[] includes);
+        public Task<T> GetBySingleOrDefaultAsync(Expression<Func<T, bool>> expression, params Func<IQueryable<T>, IIncludableQueryable<T, object>>[] includes);
+        public Task<T> GetByFirstOrDefaultAsync(Expression<Func<T, bool>> expression, params Func<IQueryable<T>, IIncludableQueryable<T, object>>[] includes);
     }
 }

@@ -11,7 +11,6 @@ namespace Repository_Layer.Child_Repositories
 {
     public interface IDepartmentRepository : IRepository<Department>
     {
-        public Task<ServiceResponse<IEnumerable<Department>>> GetAllIncludingTeachersAndCourses();
-        public Task<ServiceResponse<IEnumerable<Department>>> GetAllIncludingCourses();
+
     }
 }

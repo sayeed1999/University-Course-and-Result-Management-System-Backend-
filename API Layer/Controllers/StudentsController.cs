@@ -27,7 +27,7 @@ namespace API_Layer.Controllers
             this._appSettings = appSettings.Value;
         }
         
-        [HttpGet] // theninclude unresolved!
+        [HttpGet]
         public async Task<ActionResult<ServiceResponse<IEnumerable<Student>>>> GetStudents(string regNum = "")
         {
             var serviceResponse = await _service.GetAllIncludingAll(regNum);
@@ -46,7 +46,7 @@ namespace API_Layer.Controllers
 
         // GET: Students/Results/Student/1
         [HttpGet]
-        [Route("Results/Student/{id:long}")] // theninclude unresolved!
+        [Route("Results/Student/{id:long}")]
         public async Task<ActionResult<ServiceResponse<Student>>> GetStudentResultById(long id)
         {
             var serviceResponse = await _service.GetStudentResultById(id);

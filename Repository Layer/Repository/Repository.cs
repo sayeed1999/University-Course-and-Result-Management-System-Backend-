@@ -1,5 +1,6 @@
 ﻿using Data_Access_Layer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Repository_Layer.UnitOfWork;
 using System;
@@ -123,6 +124,12 @@ namespace Repository_Layer.Repository
             }
         }
 
+        /// <summary>
+        /// This Where() doesn't support ThenInclude().
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="includes"></param>
+        /// <returns></returns>
         public IQueryable<T> Where(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes)
         {
             try
@@ -150,6 +157,12 @@ namespace Repository_Layer.Repository
             return await _dbSet.CountAsync(expression);
         }
 
+        /// <summary>
+        /// This FirstOrDefaultAsync() doesn't support ThenInclude().
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="includes"></param>
+        /// <returns></returns>
         public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> expression, params Expression<Func<T, object>>[] includes)
         {
             T? ret = null;
@@ -198,5 +211,67 @@ namespace Repository_Layer.Repository
         {
             return await _dbSet.ToListAsync();
         }
+
+        /// <summary>
+        /// This method supports multi level ThenIncludes().
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="includes"></param>
+        /// <returns></returns>
+        public IQueryable<T> GetByWhereClause(
+            Expression<Func<T, bool>> expression,
+            params Func<IQueryable<T>, IIncludableQueryable<T, object>>[] includes
+        ) {
+            IQueryable<T> queryable = _dbSet.Where(expression);
+
+            foreach (var include in includes)
+            {
+                queryable = include(queryable);
+            }
+
+            return queryable;
+        }
+
+        /// <summary>
+        /// This method supports multi level ThenIncludes().
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="includes"></param>
+        /// <returns></returns>
+        public async Task<T> GetBySingleOrDefaultAsync(
+            Expression<Func<T, bool>> expression, 
+            params Func<IQueryable<T>, IIncludableQueryable<T, object>>[] includes
+        ) {
+            IQueryable<T> queryable = _dbSet.AsQueryable();
+
+            foreach (var include in includes)
+            {
+                queryable = include(queryable);
+            }
+
+            return await queryable.SingleOrDefaultAsync(expression);
+        }
+
+        /// <summary>
+        /// This method supports multi level ThenIncludes().
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <param name="includes"></param>
+        /// <returns></returns>
+        public async Task<T> GetByFirstOrDefaultAsync(
+            Expression<Func<T, bool>> expression,
+            params Func<IQueryable<T>, IIncludableQueryable<T, object>>[] includes
+        )
+        {
+            IQueryable<T> queryable = _dbSet.AsQueryable();
+
+            foreach (var include in includes)
+            {
+                queryable = include(queryable);
+            }
+
+            return await queryable.FirstOrDefaultAsync(expression);
+        }
+
     }
 }

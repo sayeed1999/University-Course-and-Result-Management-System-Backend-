@@ -10,6 +10,6 @@ namespace Repository_Layer.Child_Repositories
 {
     public interface ICourseRepository : IRepository<Course>
     {
-        public Task<ServiceResponse<IEnumerable<Course>>> GetCoursesWithAllocatedRoomsByDepartment(long departmentId);
+
     }
 }

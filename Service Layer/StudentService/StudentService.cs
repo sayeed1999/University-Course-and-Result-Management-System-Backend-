@@ -21,7 +21,25 @@ namespace Service_Layer.StudentService
 
         public async Task<ServiceResponse<IEnumerable<Student>>> GetAllIncludingAll(string regNum = "")
         {
-            return await _unitOfWork.StudentRepository.GetAllIncludingAll(regNum);
+            var response = new ServiceResponse<IEnumerable<Student>>();
+            try
+            {
+                response.Data = await _unitOfWork.StudentRepository
+                    .GetByWhereClause(x => x.RegistrationNumber.Contains(regNum),
+                                      include => include.Include(x => x.Department),
+                                      include => include.Include(x => x.StudentsCourses)
+                                                        .ThenInclude(y => y.Course),
+                                      include => include.Include(x => x.StudentsCourses)
+                                                        .ThenInclude(y => y.Grade))
+                    .Take(10)
+                    .ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                response.Success = false;
+            }
+            return response;
         }
 
         public async Task<ServiceResponse<Student>> GetStudentByRegNum(string regNum)
@@ -177,7 +195,23 @@ namespace Service_Layer.StudentService
 
         public async Task<ServiceResponse<Student>> GetStudentResultById(long id)
         {
-            return await _unitOfWork.StudentRepository.GetStudentResultById(id);
+            var response = new ServiceResponse<Student>();
+            try
+            {
+                response.Data = await _unitOfWork.StudentRepository
+                                .GetBySingleOrDefaultAsync(x => x.Id == id,
+                                      include => include.Include(x => x.Department),
+                                      include => include.Include(x => x.StudentsCourses)
+                                                        .ThenInclude(y => y.Course),
+                                      include => include.Include(x => x.StudentsCourses)
+                                                        .ThenInclude(y => y.Grade));
+            }
+            catch (Exception ex)
+            {
+                response.Message = ex.Message;
+                response.Success = false;
+            }
+            return response;
         }
     }
 }

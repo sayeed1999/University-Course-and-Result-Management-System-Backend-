@@ -155,10 +155,18 @@ namespace Service_Layer.CourseService
 
         public async Task<ServiceResponse<IEnumerable<ClassSchedule>>> GetClassScheduleByDepartment(long departmentId)
         {
-            ServiceResponse<IEnumerable<Course>> coursesResponse = await _unitOfWork.CourseRepository.GetCoursesWithAllocatedRoomsByDepartment(departmentId);
+            IEnumerable<Course> courses = await _unitOfWork.CourseRepository
+                                                           .GetByWhereClause(
+                                                                x => x.DepartmentId == departmentId, 
+                                                                i => i.Include(x => x.AllocateClassrooms)
+                                                                      .ThenInclude(x => x.Room),
+                                                                i => i.Include(x => x.AllocateClassrooms)
+                                                                      .ThenInclude(x => x.Day))
+                                                           .ToListAsync();
+
             var response = new ServiceResponse<IEnumerable<ClassSchedule>>();
             var schedule = new List<ClassSchedule>();
-            foreach(var course in coursesResponse.Data)
+            foreach(var course in courses)
             {
                 StringBuilder scheduleInfo = new StringBuilder();
 
