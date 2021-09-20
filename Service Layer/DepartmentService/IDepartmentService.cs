@@ -12,5 +12,6 @@ namespace Service_Layer.DepartmentService
     {
         public Task<ServiceResponse<Department>> SaveDepartment(Department department); // Story 01
         public Task<ServiceResponse<IEnumerable<Department>>> GetDepartments(); // Story 02
+        public Task<ServiceResponse<IEnumerable<VIEW_Department>>> ViewDepartments(); // Story 02
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,5 +31,7 @@ namespace Repository_Layer.Repository
         public IQueryable<T> GetByWhereClause(Expression<Func<T, bool>> expression, params Func<IQueryable<T>, IIncludableQueryable<T, object>>[] includes);
         public Task<T> GetBySingleOrDefaultAsync(Expression<Func<T, bool>> expression, params Func<IQueryable<T>, IIncludableQueryable<T, object>>[] includes);
         public Task<T> GetByFirstOrDefaultAsync(Expression<Func<T, bool>> expression, params Func<IQueryable<T>, IIncludableQueryable<T, object>>[] includes);
+        public IQueryable<T> FromSql(string rawsql, params SqlParameter[] parameters);
+
     }
 }

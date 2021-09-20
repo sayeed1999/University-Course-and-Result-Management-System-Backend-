@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Data_Access_Layer;
+using Microsoft.EntityFrameworkCore;
 using Repository_Layer.Child_Repositories;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace Repository_Layer.UnitOfWork
     {
         IDepartmentRepository DepartmentRepository { get; }
         ICourseRepository CourseRepository { get; }
+        IClassScheduleRepository ClassScheduleRepository { get; }
         ICourseHistoryRepository CourseHistoryRepository { get; }
         ISemisterRepository SemisterRepository {  get; }
         ITeacherRepository TeacherRepository { get; }

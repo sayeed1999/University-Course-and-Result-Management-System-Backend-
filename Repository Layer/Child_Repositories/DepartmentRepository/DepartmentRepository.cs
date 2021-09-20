@@ -18,5 +18,18 @@ namespace Repository_Layer.Child_Repositories
         {
 
         }
+
+        public async Task<IEnumerable<VIEW_Department>> ViewAllDepartmentsAsync()
+        {
+            try
+            {
+                return await _dbContext.VIEW_Departments.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Data fetching error from the database");
+            }
+        }
+
     }
 }

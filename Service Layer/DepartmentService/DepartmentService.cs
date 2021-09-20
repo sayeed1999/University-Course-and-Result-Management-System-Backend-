@@ -81,6 +81,22 @@ namespace Service_Layer.DepartmentService
         }
 
         // Story 02
+        public async Task<ServiceResponse<IEnumerable<VIEW_Department>>> ViewDepartments()
+        {
+            var response = new ServiceResponse<IEnumerable<VIEW_Department>>();
+            try
+            {
+                response.Data = await _unitOfWork.DepartmentRepository.ViewAllDepartmentsAsync();
+            }
+            catch (Exception ex)
+            {
+                response.Message = "Department fetching failed. :(";
+                response.Success = false;
+            }
+            return response;
+        }
+
+        // Story 02
         public async Task<ServiceResponse<IEnumerable<Department>>> GetDepartments()
         {
             var response = new ServiceResponse<IEnumerable<Department>>();
@@ -95,6 +111,5 @@ namespace Service_Layer.DepartmentService
             }
             return response;
         }
-
     }
 }

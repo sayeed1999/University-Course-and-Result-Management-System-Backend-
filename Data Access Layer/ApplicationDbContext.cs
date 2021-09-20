@@ -1,4 +1,5 @@
-﻿using Entity_Layer;
+﻿using Data_Access_Layer.EntityConfigurations;
+using Entity_Layer;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,7 +15,10 @@ namespace Data_Access_Layer
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 
         public DbSet<Department> Departments { get; set; }
+        public DbSet<VIEW_Department> VIEW_Departments {  get; set; }
         public DbSet<Course> Courses { get; set; }
+        // this entity 'VIEW_ClassSchedule' is commented out migration, and it worked!
+        public DbSet<ClassSchedule> VIEW_ClassSchedule {  get; set; } // an entity to be used like a view
         public DbSet<Semister> Semisters { get; set; }
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Designation> Designations { get; set; }
@@ -38,8 +42,8 @@ namespace Data_Access_Layer
         {
             base.OnModelCreating(builder);
 
-            // builder.ApplyConfiguration(new DepartmentEntityConfiguration());
-
+            // Separate configuration files...
+            builder.ApplyConfiguration(new VIEW_Department_Config());
         }
     }
 }

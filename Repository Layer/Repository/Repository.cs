@@ -1,8 +1,8 @@
 ﻿using Data_Access_Layer;
+using Entity_Layer;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using Repository_Layer.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -265,12 +265,18 @@ namespace Repository_Layer.Repository
         {
             IQueryable<T> queryable = _dbSet.AsQueryable();
 
+            //use aggregate
             foreach (var include in includes)
             {
                 queryable = include(queryable);
             }
 
             return await queryable.FirstOrDefaultAsync(expression);
+        }
+
+        public IQueryable<T> FromSql(string rawsql, params SqlParameter[] parameters)
+        {
+            return _dbSet.FromSqlRaw(rawsql, parameters);
         }
 
     }
