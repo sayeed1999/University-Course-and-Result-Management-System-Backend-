@@ -48,7 +48,7 @@ namespace API_Layer
 
             services.AddMvc(options =>
             {
-                //options.Filters.Add(new AuthorizeFilter());
+                options.Filters.Add(new AuthorizeFilter());
             });
 
             services.AddControllers().AddNewtonsoftJson(options => {
