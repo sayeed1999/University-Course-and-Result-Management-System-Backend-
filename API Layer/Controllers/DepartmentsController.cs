@@ -35,6 +35,15 @@ namespace API_Layer.Controllers
             return Ok(serviceResponse);
         }
 
+        // GET: Departments/ViewAll
+        [HttpGet("ViewAll")]
+        public async Task<ActionResult<ServiceResponse<IEnumerable<VIEW_Department>>>> ViewDepartments()
+        {
+            var serviceResponse = await service.ViewDepartments();
+            if (serviceResponse.Success == false) return BadRequest(serviceResponse);
+            return Ok(serviceResponse);
+        }
+
         // POST: Departments
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]

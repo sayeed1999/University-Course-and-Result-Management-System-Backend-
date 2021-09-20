@@ -1,4 +1,5 @@
 ﻿using Entity_Layer;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Repository_Layer;
 using Repository_Layer.UnitOfWork;
@@ -155,7 +156,11 @@ namespace Service_Layer.CourseService
 
         public async Task<ServiceResponse<IEnumerable<ClassSchedule>>> GetClassScheduleByDepartment(long departmentId)
         {
-            IEnumerable<Course> courses = await _unitOfWork.CourseRepository
+            var response = new ServiceResponse<IEnumerable<ClassSchedule>>();
+
+            var param = new SqlParameter("@departmentId", departmentId);
+            IEnumerable<ClassSchedule> classSchedules = await _unitOfWork.ClassScheduleRepository.FromSql($"exec dbo.SP_GetClassScheduleByDepartment @departmentId", param).ToListAsync();
+            /*IEnumerable<Course> courses = await _unitOfWork.CourseRepository
                                                            .GetByWhereClause(
                                                                 x => x.DepartmentId == departmentId, 
                                                                 i => i.Include(x => x.AllocateClassrooms)
@@ -189,8 +194,8 @@ namespace Service_Layer.CourseService
                     Name = course.Name,
                     ScheduleInfo = course.AllocateClassrooms.Count > 0 ? scheduleInfo.ToString() : "Not Scheduled Yet",
                 });
-            }
-            response.Data = schedule;
+            }*/
+            response.Data = classSchedules;
             return response;
         }
 

@@ -48,7 +48,7 @@ namespace API_Layer
 
             services.AddMvc(options =>
             {
-                options.Filters.Add(new AuthorizeFilter());
+                //options.Filters.Add(new AuthorizeFilter());
             });
 
             services.AddControllers().AddNewtonsoftJson(options => {
@@ -78,6 +78,7 @@ namespace API_Layer
             // ChildRepositories
             services.AddScoped<IDepartmentRepository, DepartmentRepository>();
             services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<IClassScheduleRepository, ClassScheduleRepository>();
             services.AddScoped<ICourseHistoryRepository, CourseHistoryRepository>();
             services.AddScoped<ISemisterRepository, SemisterRepository>();
             services.AddScoped<IDesignationRepository, DesignationRepository>();

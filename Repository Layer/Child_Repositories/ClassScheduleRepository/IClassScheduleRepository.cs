@@ -1,5 +1,4 @@
 ﻿using Entity_Layer;
-using Repository_Layer;
 using Repository_Layer.Repository;
 using System;
 using System.Collections.Generic;
@@ -9,8 +8,7 @@ using System.Threading.Tasks;
 
 namespace Repository_Layer.Child_Repositories
 {
-    public interface IDepartmentRepository : IRepository<Department>
+    public interface IClassScheduleRepository : IRepository<ClassSchedule>
     {
-        public Task<IEnumerable<VIEW_Department>> ViewAllDepartmentsAsync();
     }
 }

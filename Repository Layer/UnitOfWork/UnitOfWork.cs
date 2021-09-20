@@ -1,9 +1,5 @@
 ﻿using Data_Access_Layer;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Repository_Layer.Child_Repositories;
-using System;
 using System.Threading.Tasks;
 
 namespace Repository_Layer.UnitOfWork
@@ -13,6 +9,7 @@ namespace Repository_Layer.UnitOfWork
         private readonly ApplicationDbContext _dbContext;
         public IDepartmentRepository DepartmentRepository { get; private set; }
         public ICourseRepository CourseRepository {  get; private set; }
+        public IClassScheduleRepository ClassScheduleRepository { get; private set; }
         public ICourseHistoryRepository CourseHistoryRepository { get; private set; }
         public ISemisterRepository SemisterRepository {  get; private set; }
         public ITeacherRepository TeacherRepository { get; private set; }
@@ -31,6 +28,7 @@ namespace Repository_Layer.UnitOfWork
             ApplicationDbContext dbContext,
             IDepartmentRepository departmentRepository,
             ICourseRepository courseRepository,
+            IClassScheduleRepository classScheduleRepository,
             ICourseHistoryRepository courseHistoryRepository,
             ISemisterRepository semisterRepository,
             ITeacherRepository teacherRepository,
@@ -49,6 +47,7 @@ namespace Repository_Layer.UnitOfWork
             _dbContext = dbContext;
             DepartmentRepository = departmentRepository;
             CourseRepository = courseRepository;
+            ClassScheduleRepository = classScheduleRepository;
             CourseHistoryRepository = courseHistoryRepository;
             SemisterRepository = semisterRepository;
             TeacherRepository = teacherRepository;
