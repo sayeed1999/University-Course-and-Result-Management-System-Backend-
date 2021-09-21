@@ -35,7 +35,6 @@ namespace API_Layer.Controllers
             _menuService = menuService;
         }
 
-        [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<ActionResult<ServiceResponse<RegisterDto>>> Register(RegisterDto model)
         {

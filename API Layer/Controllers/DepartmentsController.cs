@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 
 namespace API_Layer.Controllers
 {
-    [AllowAnonymous]
     [ApiController]
     [Route("[controller]")]
     public class DepartmentsController : ControllerBase

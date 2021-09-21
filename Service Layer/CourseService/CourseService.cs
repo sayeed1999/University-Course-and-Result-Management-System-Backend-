@@ -157,9 +157,28 @@ namespace Service_Layer.CourseService
         public async Task<ServiceResponse<IEnumerable<ClassSchedule>>> GetClassScheduleByDepartment(long departmentId)
         {
             var response = new ServiceResponse<IEnumerable<ClassSchedule>>();
+            
+            if (!(await _unitOfWork.DepartmentRepository.ContainsAsync(x => x.Id == departmentId)))
+            {
+                response.Message = "No department with the given id";
+                response.Success = false;
+                return response;
+            }
 
-            var param = new SqlParameter("@departmentId", departmentId);
-            IEnumerable<ClassSchedule> classSchedules = await _unitOfWork.ClassScheduleRepository.FromSql($"exec dbo.SP_GetClassScheduleByDepartment @departmentId", param).ToListAsync();
+            try
+            {
+                var param = new SqlParameter("@departmentId", departmentId);
+                IEnumerable<ClassSchedule> classSchedules = await _unitOfWork.ClassScheduleRepository.FromSql($"exec dbo.SP_GetClassScheduleByDepartment @departmentId", param).ToListAsync();
+                response.Data = classSchedules;
+            }
+            catch(Exception ex)
+            {
+                response.Message = "failed to get class schedules!";
+                response.Success = false;
+            }
+
+            return response;
+
             /*IEnumerable<Course> courses = await _unitOfWork.CourseRepository
                                                            .GetByWhereClause(
                                                                 x => x.DepartmentId == departmentId, 
@@ -195,8 +214,6 @@ namespace Service_Layer.CourseService
                     ScheduleInfo = course.AllocateClassrooms.Count > 0 ? scheduleInfo.ToString() : "Not Scheduled Yet",
                 });
             }*/
-            response.Data = classSchedules;
-            return response;
         }
 
         public async Task<ServiceResponse<IEnumerable<Course>>> GetEnrolledCoursesByStudent(long studentId)
